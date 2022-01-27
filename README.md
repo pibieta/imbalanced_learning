@@ -1,6 +1,6 @@
 # Imbalanced Binary Classification: A Survey with code
 Repository for the **Imbalanced Binary Classification** Review
-# Folder Structure
+## Folder Structure
 imbalanced_learning
 ```bash
 ├── LICENSE
