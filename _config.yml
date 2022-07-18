@@ -1,0 +1,10 @@
+# In _config.yml
+title: The Practical Man's Guide to Binary Imbalanced Classification
+author: Experian LatAm DataLab
+logo: images/DataLab-logo-white.png
+execute:
+  execute_notebooks: off
+
+# Add a bibtex file so that we can create citations
+# bibtex_bibfiles:
+  # - references.bib
