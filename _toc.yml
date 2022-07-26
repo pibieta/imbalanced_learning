@@ -3,4 +3,5 @@ format: jb-book
 root: README.md
 chapters:
 - file: notebooks/Loss functions.ipynb
+- file: notebooks/Metrics 1 - KS.ipynb
 - file: notebooks/Calibration.ipynb
