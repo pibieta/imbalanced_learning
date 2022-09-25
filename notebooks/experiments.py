@@ -22,10 +22,12 @@ def plot(df_groups, alphas, n_samples_list, logy=False, shap=False):
         ax[j].set_xticks(alphas, alphas, rotation=90)
         ax[j].set_title(f'{n_samples=}')
         ax[j].set_xlabel('alpha')
+        ax[j].set_ylabel('Feature importances')
         ax2 = ax[j].twinx()
         ax2.errorbar(df_group_performance.index, df_group_performance.ROCAUC_mean,
                      df_group_performance.ROCAUC_std, c='k')
         ax2.set_ylim(0, 1)
+        ax2.set_ylabel('Performance (ROC AUC)')
 
     plt.tight_layout()
 
