@@ -2,8 +2,9 @@ import numpy as np
 import pandas as pd
 from typing import Any, List, Dict
 
+from sklearn.datasets import make_classification
 from sklearn.metrics import roc_auc_score, roc_curve, matthews_corrcoef,  precision_recall_curve,\
-                            average_precision_score, f1_score, auc
+                            average_precision_score, f1_score, auc, log_loss
 
 
 def bootstrap_samples(y_true: List, y_pred: List, n_batches: int = 100) -> List:
@@ -195,3 +196,71 @@ def compute_metrics_bootstrap(y_true, y_pred, n_batches=100):
                        'metrics_stats': metrics_stats,
                        'df_metrics': df_metrics}
     return metrics_summary
+
+def create_imbalanced_binary_classification(n_samples: int = 1000, 
+                                            n_features: int = 4,
+                                            n_informative: int = None, 
+                                            imbalance: float = 0.1,
+                                            random_state: int = 42,
+                                            class_sep : float = 1.0) -> pd.DataFrame:
+    """Creates an imbalanced dataset for binary classification
+    Parameters
+    ----------
+    n_samples: int, default = 1000,
+            number of samples to generate
+    n_features: int default = 4,
+            number of features (not all are informative)
+    n_informative: int default = None,
+            number of informative features
+            if none is specified floor(n_features/2) 
+            will be taken
+    imbalance: float, default = 0.1
+            proportion of the minority class
+    random_state: int, default = 42
+    class_sep: float, default = 1.0
+        The larger the value the easier the classification task
+    Returns
+    -------
+    data: pd.DataFrame,
+        dataframe with n_features + 1 columns
+    """
+    if n_informative == None:
+        n_informative = int(n_features/2)
+    weights = [1 - imbalance, imbalance]
+    X, y = make_classification(n_samples = n_samples,
+                                n_features = n_features,
+                                n_classes=2,
+                                n_informative = n_informative,
+                                weights = weights,                
+                                random_state = random_state,
+                                class_sep = class_sep)
+    column_names = [ f'feature_{i}' for i in np.arange(n_features)]      
+    data = pd.concat([pd.DataFrame(X, columns = column_names), pd.DataFrame(y, columns = ['target'])], axis = 1)
+    return data, column_names
+
+def run_cross_validation_from_split(model, kfold, X_dev, y_dev, X_valid, y_valid):
+    """
+    trains and evaluates a model given the kfold generator
+    """
+    # results storage:
+    try:
+        n_splits = kfold.n_splits
+    except Exception as e:
+        print(e)
+        n_splits = kfold.get_n_splits()
+    results_cv = {f'{i+1}': {
+                            'test': None,
+                            'valid': None
+                            } 
+                    for i in range(n_splits)
+                }
+    for i, (train_index, test_index) in enumerate(kfold.split(X_dev, y_dev)):
+        X_train, X_test = X_dev.iloc[train_index], X_dev.iloc[test_index]
+        y_train, y_test = y_dev.iloc[train_index], y_dev.iloc[test_index]
+        ### model training and evaluation
+        model.fit(X_train,y_train)
+        y_proba = model.predict_proba(X_test)
+        y_proba_valid = model.predict_proba(X_valid)
+        results_cv[f'{i+1}']['test'] = log_loss(y_test, y_proba)
+        results_cv[f'{i+1}']['valid'] = log_loss(y_valid, y_proba_valid)
+    return results_cv
