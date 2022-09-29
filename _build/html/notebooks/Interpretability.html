@@ -1,0 +1,795 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>How imbalanced learning affects the interpretability of a model &#8212; The Practical Man&#39;s Guide to Binary Imbalanced Classification</title>
+    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
+    
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Model calibration part I - reliability assessment" href="Calibration.html" />
+    <link rel="prev" title="Feature selection via the Boruta algorithm" href="Feature%20selection%20methods.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+<!-- Checkboxes to toggle the left sidebar -->
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
+<label class="overlay overlay-navbar" for="__navigation">
+    <div class="visually-hidden">Toggle navigation sidebar</div>
+</label>
+<!-- Checkboxes to toggle the in-page toc -->
+<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
+<label class="overlay overlay-pagetoc" for="__page-toc">
+    <div class="visually-hidden">Toggle in-page Table of Contents</div>
+</label>
+<!-- Headers at the top -->
+<div class="announcement header-item noprint"></div>
+<div class="header header-item noprint"></div>
+
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<!-- Sidebar -->
+<div class="bd-sidebar noprint" id="site-navigation">
+    <div class="bd-sidebar__content">
+        <div class="bd-sidebar__top"><div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="../index.html">
+      
+        <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
+        
+      
+      
+      <img src="../_static/DataLab-logo-white.png" class="logo" alt="logo">
+      
+      
+      <h1 class="site-logo" id="site-title">The Practical Man's Guide to Binary Imbalanced Classification</h1>
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="Introduction.html">
+                    Introduction
+                </a>
+            </li>
+        </ul>
+        <ul class="current nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="Loss%20functions.html">
+   Loss functions
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="Metrics%201%20-%20Intro%20%26%20ROC%20AUC.html">
+   Classification metrics
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="Metrics%202%20-%20Lift%20curve.html">
+   A complement to the ROC: the lift curve (aka CAP curve)
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="Metrics%203%20-%20KS%20score.html">
+   The KS score and Youden’s J
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="Metrics%204%20-%20Precision%20and%20Recall.html">
+   Precision, recall, and
+   <span class="math notranslate nohighlight">
+    \(F\)
+   </span>
+   -scores
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="pablo-baseline-experiment.html">
+   Choosing a baseline model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="Feature%20selection%20methods.html">
+   Feature selection via the Boruta algorithm
+  </a>
+ </li>
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   How imbalanced learning affects the interpretability of a model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="Calibration.html">
+   Model calibration part I - reliability assessment
+  </a>
+ </li>
+</ul>
+
+    </div>
+</nav></div>
+        <div class="bd-sidebar__bottom">
+             <!-- To handle the deprecated key -->
+            
+            <div class="navbar_extra_footer">
+            Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+            </div>
+            
+        </div>
+    </div>
+    <div id="rtd-footer-container"></div>
+</div>
+
+
+          
+
+
+          
+<!-- A tiny helper pixel to detect if we've scrolled -->
+<div class="sbt-scroll-pixel-helper"></div>
+<!-- Main content -->
+<div class="col py-0 content-container">
+    
+    <div class="header-article row sticky-top noprint">
+        
+
+
+
+<div class="col py-1 d-flex header-article-main">
+    <div class="header-article__left">
+        
+        <label for="__navigation"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="right"
+title="Toggle navigation"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-bars"></i>
+  </span>
+
+</label>
+
+        
+    </div>
+    <div class="header-article__right">
+<div class="menu-dropdown menu-dropdown-launch-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Launch interactive content">
+      <i class="fas fa-rocket"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="https://mybinder.org/v2/gh/executablebooks/jupyter-book/master?urlpath=tree/notebooks/Interpretability.ipynb"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Launch on Binder"
+>
+  
+
+<span class="headerbtn__icon-container">
+  
+    <img src="../_static/images/logo_binder.svg">
+  </span>
+<span class="headerbtn__text-container">Binder</span>
+</a>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+
+<button onclick="toggleFullScreen()"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="bottom"
+title="Fullscreen mode"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+<div class="menu-dropdown menu-dropdown-download-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Download this page">
+      <i class="fas fa-download"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="../_sources/notebooks/Interpretability.ipynb"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Download source file"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="headerbtn__text-container">.ipynb</span>
+</a>
+
+      </li>
+      
+      <li>
+        
+<button onclick="printPdf(this)"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="left"
+title="Print to PDF"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="headerbtn__text-container">.pdf</span>
+</button>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+<label for="__page-toc"
+  class="headerbtn headerbtn-page-toc"
+  
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-list"></i>
+  </span>
+
+</label>
+
+    </div>
+</div>
+
+<!-- Table of contents -->
+<div class="col-md-3 bd-toc show noprint">
+    <div class="tocsection onthispage pt-5 pb-3">
+        <i class="fas fa-list"></i> Contents
+    </div>
+    <nav id="bd-toc-nav" aria-label="Page">
+        <ul class="visible nav section-nav flex-column">
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#">
+   How imbalanced learning affects the interpretability of a model
+  </a>
+  <ul class="visible nav section-nav flex-column">
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#feature-importances">
+     Feature importances
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#shap">
+     SHAP
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#usual-feature-importance-random-forest">
+     1. Usual feature importance Random Forest
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#shap-importance-random-forest">
+     2. SHAP importance Random Forest
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#shap-y-1-importance-random-forest">
+     3. SHAP[y==1] importance Random Forest
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#shap-importance-normalization-random-forest">
+     4. SHAP importance normalization Random Forest
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#conclusion">
+   Conclusion
+  </a>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#references">
+   References
+  </a>
+ </li>
+</ul>
+
+    </nav>
+</div>
+    </div>
+    <div class="article row">
+        <div class="col pl-md-3 pl-lg-5 content-container">
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>How imbalanced learning affects the interpretability of a model</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#">
+   How imbalanced learning affects the interpretability of a model
+  </a>
+  <ul class="visible nav section-nav flex-column">
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#feature-importances">
+     Feature importances
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#shap">
+     SHAP
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#usual-feature-importance-random-forest">
+     1. Usual feature importance Random Forest
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#shap-importance-random-forest">
+     2. SHAP importance Random Forest
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#shap-y-1-importance-random-forest">
+     3. SHAP[y==1] importance Random Forest
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#shap-importance-normalization-random-forest">
+     4. SHAP importance normalization Random Forest
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#conclusion">
+   Conclusion
+  </a>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#references">
+   References
+  </a>
+ </li>
+</ul>
+
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            <main id="main-content" role="main">
+                
+              <div>
+                
+  <section class="tex2jax_ignore mathjax_ignore" id="how-imbalanced-learning-affects-the-interpretability-of-a-model">
+<h1>How imbalanced learning affects the interpretability of a model<a class="headerlink" href="#how-imbalanced-learning-affects-the-interpretability-of-a-model" title="Permalink to this headline">#</a></h1>
+<p>In numerous data science applications, it’s important not only to get a correct prediction but also a comprehensive explanation of the inference process. This lends credibility to the model, making us comfortable in its use and ensuring that we are not “overfitting” on elements that are not relevant to the problem at hand.</p>
+<p>There are several different approaches to interpretability. In particular, one of the categorizations is splitting the methods between global explanations and local explanations. At a high level, a local explanation of a model is concerned with describing the reasoning behind a prediction (for example, LIME), while a global explanation attempts to describe the model’s behavior in completeness (such as using surrogate models with shallow decision trees).</p>
+<section id="feature-importances">
+<h2>Feature importances<a class="headerlink" href="#feature-importances" title="Permalink to this headline">#</a></h2>
+<p>Tree-based algorithms, during training, naturally build a list of relevant variables. This happens due to their greedy strategy of making the best possible split, with the best possible variable, at any given moment (according to some criterion, usually related to the purity of the created leaves in the case of classification). Poorly discriminating variables are used much less than the variables that help to make the prediction. This process naturally derives measures of importance for variables such as the number of times it is used or a weighting of the information gained during the choice of tree splits.</p>
+<p>As tree-based models empirically tend to perform well, it’s usual to analyze the <a class="reference external" href="https://scikit-learn.org/stable/auto_examples/ensemble/plot_forest_importances.html"><code class="docutils literal notranslate"><span class="pre">.feature_importances</span></code></a> attribute of models to see which variables are relevant to the model we are auditing.</p>
+</section>
+<section id="shap">
+<h2>SHAP<a class="headerlink" href="#shap" title="Permalink to this headline">#</a></h2>
+<p>The current state of the art for model interpretation is <a class="reference external" href="https://github.com/slundberg/shap">SHAP</a> (SHapley Additive exPlanations). It is model-agnostic (that is, it can be used with any model), which is very useful and has an elegant high-level understanding. Its main idea is to decompose the final forecast of a given instance into factors associated with each of its variables. To do this, it compares what the forecast would be for that model if a specific variable were not available and sees the delta we get when we add it up. This process is not trivial since the order of withdrawal influences the deltas. Also, it’s not obvious what a model that doesn’t have a subset of the variables means (should we retrain it?). SHAP has some inferences trying to get around these problems. It works really well and is the most used methodology on the market for explainability today.</p>
+<p>Mathematically, SHAP generates, for each instance, a value for each variable so that the sum of these individual contributions is equivalent to the value predicted by the model, that is,</p>
+<div class="math notranslate nohighlight">
+\[ f(x_i) = \phi_0 + \sum_{j=1}^d \phi_j(x_i), \]</div>
+<p>where <span class="math notranslate nohighlight">\(f\)</span> is our model, <span class="math notranslate nohighlight">\(x_i\)</span> is the instance we are trying to understand, <span class="math notranslate nohighlight">\(d\)</span> is the number of features, <span class="math notranslate nohighlight">\(\phi_j(x_i)\)</span> is the contribution for feature <span class="math notranslate nohighlight">\(j\)</span> for the observation <span class="math notranslate nohighlight">\(x_i\)</span>, and <span class="math notranslate nohighlight">\(\phi_0 \propto \frac{1}{N}\sum_{i=1}^N y_i\)</span> is a kind of prior, related to the average of the target in our dataset.</p>
+<p>SHAP is a local explanation algorithm, as should have become clear since we are calculating the prediction contributions of an instance <span class="math notranslate nohighlight">\(x_i\)</span>, but it allows a global explanation similar to what <code class="docutils literal notranslate"><span class="pre">.feature_importances_</span></code> represents for a tree-based algorithm model: if we group (as the average) the absolute values of the SHAPs of each variable, that is, <span class="math notranslate nohighlight">\(\bar{\phi_j} = \frac{1}{N} \sum_{i=1}^N |\phi_j(x_i)|\)</span> we get the average contribution per feature. This interpretation allows us to see, on average, what impact a given variable has on decision-making power.</p>
+<p>It is important to note that, usually, for a binary classification problem, the SHAP scale is in log-odds (so if your dataset has a ratio of 0.5-0.5, then <span class="math notranslate nohighlight">\(\phi_0 = 0\)</span>). But it is possible, in recent versions of <code class="docutils literal notranslate"><span class="pre">shap</span></code>, to put the SHAP scale in probability.</p>
+<hr class="docutils" />
+<p>In this notebook, we will discuss the use of variable importance methods (mainly using the technique of grouping the SHAPs of a given column by the average of the absolute values) when we have a class imbalance. The idea is to see where we should be careful when interpreting the results and when we can use the usual habits without class imbalance-related problems.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
+
+<span class="kn">import</span> <span class="nn">shap</span>
+
+<span class="kn">from</span> <span class="nn">sklearn.datasets</span> <span class="kn">import</span> <span class="n">make_classification</span>
+<span class="kn">from</span> <span class="nn">sklearn.ensemble</span> <span class="kn">import</span> <span class="n">RandomForestClassifier</span>
+<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">train_test_split</span>
+<span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">roc_auc_score</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>C:\Users\Carlo\anaconda3\envs\shapimblearn\lib\site-packages\tqdm\auto.py:22: TqdmWarning: IProgress not found. Please update jupyter and ipywidgets. See https://ipywidgets.readthedocs.io/en/stable/user_install.html
+  from .autonotebook import tqdm as notebook_tqdm
+</pre></div>
+</div>
+</div>
+</div>
+<p>For this experiment, we are creating a dataset using <a class="reference external" href="https://scikit-learn.org/stable/modules/generated/sklearn.datasets.make_classification"><code class="docutils literal notranslate"><span class="pre">sklearn.datasets.make_classification</span></code></a> and, modifying the imbalance, we track how the different ways of calculating <code class="docutils literal notranslate"><span class="pre">.feature_importances</span></code> are affected (we are always using the same algorithm, a <a class="reference external" href="https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html"><code class="docutils literal notranslate"><span class="pre">sklearn.ensemble.RandomForestClassifier</span></code></a>). We will be using 4 different types of <code class="docutils literal notranslate"><span class="pre">feature_importances_</span></code> calculations:</p>
+<ol class="simple">
+<li><p>Usual gain feature importance from sklearn;</p></li>
+<li><p>Aggregating  SHAP by mean of absolute value (as discussed above);</p></li>
+<li><p>Aggregating  SHAP by mean of absolute value but restricted to <code class="docutils literal notranslate"><span class="pre">y==1</span></code> samples;</p></li>
+<li><p>Aggregating  SHAP by mean of absolute value but normalizing for the sum to add to 1.</p></li>
+</ol>
+<p>Note that, in the code, when <code class="docutils literal notranslate"><span class="pre">n_samples</span></code> is fixed, as we vary the imbalance we are not generating new rounds of <a class="reference external" href="https://scikit-learn.org/stable/modules/generated/sklearn.datasets.make_classification"><code class="docutils literal notranslate"><span class="pre">sklearn.datasets.make_classification</span></code></a> with different <code class="docutils literal notranslate"><span class="pre">weights</span></code>, we are explicitly throwing out samples from the original dataset to create the imbalance, so the variables should continue to have the same importance.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">experiments</span> <span class="kn">import</span> <span class="n">plot</span><span class="p">,</span> <span class="n">undersample</span>
+
+<span class="k">def</span> <span class="nf">experiment</span><span class="p">(</span><span class="n">n_samples</span><span class="p">,</span> <span class="n">alphas</span><span class="p">,</span> <span class="n">estimator</span><span class="p">,</span> <span class="n">bootstrap</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+    <span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> \
+    <span class="n">make_classification</span><span class="p">(</span><span class="n">n_samples</span><span class="o">=</span><span class="n">n_samples</span><span class="p">,</span>
+                        <span class="n">n_features</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+                        <span class="n">n_informative</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span>
+                        <span class="n">n_redundant</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+                        <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                        <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span>
+                       <span class="p">)</span>
+    <span class="c1"># 10 first variables are usefull of 20 in total</span>
+
+    <span class="n">feat_imp</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">alpha</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">alphas</span><span class="p">):</span>
+        <span class="n">X_under</span><span class="p">,</span> <span class="n">y_under</span> <span class="o">=</span> <span class="n">undersample</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">alpha</span><span class="p">)</span>
+        <span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">X_under</span><span class="p">,</span> <span class="n">y_under</span><span class="p">,</span>
+                                                            <span class="n">stratify</span><span class="o">=</span><span class="n">y_under</span><span class="p">,</span>
+                                                            <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span>
+                                                            <span class="n">test_size</span><span class="o">=</span><span class="mf">0.25</span><span class="p">)</span>
+        <span class="c1"># Bootstraping for confidence intervals</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">bootstrap</span><span class="p">):</span>
+            <span class="n">model</span> <span class="o">=</span> <span class="n">estimator</span><span class="p">(</span><span class="n">random_state</span><span class="o">=</span><span class="n">j</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+            <span class="n">feat_imp</span><span class="p">[</span><span class="s1">&#39;alpha&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">alpha</span><span class="p">)</span>
+            <span class="n">feat_imp</span><span class="p">[</span><span class="s1">&#39;imp&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">feature_importances_</span><span class="p">)</span>
+            <span class="n">feat_imp</span><span class="p">[</span><span class="s1">&#39;performance&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">roc_auc_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">X_test</span><span class="p">)[:,</span><span class="mi">1</span><span class="p">]))</span>
+
+    <span class="k">return</span> <span class="p">(</span><span class="n">agregate_dataframe</span><span class="p">(</span><span class="n">feat_imp</span><span class="p">,</span> <span class="s1">&#39;imp&#39;</span><span class="p">,</span> <span class="n">bootstrap</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">alphas</span><span class="p">),</span>
+            <span class="n">agregate_dataframe</span><span class="p">(</span><span class="n">feat_imp</span><span class="p">,</span> <span class="s1">&#39;performance&#39;</span><span class="p">,</span> <span class="n">bootstrap</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">alphas</span><span class="p">,</span> <span class="kc">True</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">agregate_dataframe</span><span class="p">(</span><span class="n">feat_imp</span><span class="p">,</span> <span class="n">col</span><span class="p">,</span> <span class="n">bootstrap</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">alphas</span><span class="p">,</span> <span class="n">performance</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    
+    <span class="k">if</span> <span class="n">performance</span><span class="p">:</span>
+        <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;ROCAUC&#39;</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;column_</span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])]</span>
+    
+    <span class="n">df</span> <span class="o">=</span> \
+    <span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">feat_imp</span><span class="p">[</span><span class="n">col</span><span class="p">],</span>
+                  <span class="n">index</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">bootstrap</span><span class="o">*</span><span class="p">[</span><span class="n">val</span><span class="p">]</span> <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">alphas</span><span class="p">])</span><span class="o">.</span><span class="n">flatten</span><span class="p">(),</span>
+                  <span class="n">columns</span><span class="o">=</span><span class="n">columns</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">reset_index</span><span class="p">())</span>
+
+    <span class="n">df_group</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="s1">&#39;index&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">agg</span><span class="p">({</span><span class="n">col</span><span class="p">:</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">]</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">columns</span><span class="p">})</span>
+    <span class="n">df_group</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">col</span><span class="p">)</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">df_group</span><span class="o">.</span><span class="n">columns</span><span class="p">]</span>
+    
+    <span class="k">return</span> <span class="n">df_group</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">n_samples_list</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2000</span><span class="p">,</span> <span class="mi">5000</span><span class="p">,</span> <span class="mi">10000</span><span class="p">,</span> <span class="mi">20000</span><span class="p">]</span>
+<span class="n">alphas</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.005</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.025</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.35</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.75</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="usual-feature-importance-random-forest">
+<h2>1. Usual feature importance Random Forest<a class="headerlink" href="#usual-feature-importance-random-forest" title="Permalink to this headline">#</a></h2>
+<p>First, let’s evaluate the usual way of calculating <code class="docutils literal notranslate"><span class="pre">.feature_importances</span></code>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">estimator</span> <span class="o">=</span> <span class="n">RandomForestClassifier</span>
+
+<span class="n">df_groups_feat_imp</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">n_samples</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">n_samples_list</span><span class="p">):</span>
+    <span class="n">df_group_imp</span><span class="p">,</span> <span class="n">df_group_performance</span> <span class="o">=</span> <span class="n">experiment</span><span class="p">(</span><span class="n">n_samples</span><span class="p">,</span> <span class="n">alphas</span><span class="p">,</span> <span class="n">estimator</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+    <span class="n">df_groups_feat_imp</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">df_group_imp</span><span class="p">,</span> <span class="n">df_group_performance</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>100%|██████████| 10/10 [00:39&lt;00:00,  3.90s/it]
+100%|██████████| 10/10 [01:20&lt;00:00,  8.03s/it]
+100%|██████████| 10/10 [02:50&lt;00:00, 17.07s/it]
+100%|██████████| 10/10 [09:15&lt;00:00, 55.52s/it]
+</pre></div>
+</div>
+</div>
+</div>
+<p>Here, we define <code class="docutils literal notranslate"><span class="pre">alpha</span></code> as “the number of instances of the minority class” over “the number of instances of the majority class”. In the plot below we see that when <code class="docutils literal notranslate"><span class="pre">alpha</span></code> is close to 1, all models, even those with smaller <code class="docutils literal notranslate"><span class="pre">n_samples</span></code>, have reasonable performance. When we change <code class="docutils literal notranslate"><span class="pre">alpha</span></code> to values closer to 0 (note that the x-axis is in log scale), then the model starts to have worse performance and gets confused, mixing the <code class="docutils literal notranslate"><span class="pre">.feature_importances</span></code> of the bad variables (in orange) with the useful variables (in blue). This effect is increasingly worse as we reduce the total samples we have in the dataset. This demonstrates that, here, <em>absolute imbalance</em> leads us to a more serious problem than <em>relative imbalance</em>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot</span><span class="p">(</span><span class="n">df_groups_feat_imp</span><span class="p">,</span> <span class="n">alphas</span><span class="p">,</span> <span class="n">n_samples_list</span><span class="p">,</span> <span class="n">logy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p><img alt="image.png" src="notebooks/attachment:image.png" /></p>
+</section>
+<section id="shap-importance-random-forest">
+<h2>2. SHAP importance Random Forest<a class="headerlink" href="#shap-importance-random-forest" title="Permalink to this headline">#</a></h2>
+<p>When aggregating SHAP, we have a problem: the proportion between the classes is no longer equal, so <span class="math notranslate nohighlight">\(\phi_0 \propto \frac{1}{N}\sum_{i=1}^N y_i \approx 0\)</span> (in log-odds, as we shrink <code class="docutils literal notranslate"><span class="pre">alpha</span></code>, <span class="math notranslate nohighlight">\(\phi_0\)</span> grows to larger and larger negative values). We’ll see the impact this has on the plot.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">SHAPImportanceRandomForestClassifier</span>
+
+<span class="n">estimator</span> <span class="o">=</span> <span class="n">SHAPImportanceRandomForestClassifier</span>
+
+<span class="n">df_groups_shap</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">n_samples</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">n_samples_list</span><span class="p">):</span>
+    <span class="n">df_group_imp</span><span class="p">,</span> <span class="n">df_group_performance</span> <span class="o">=</span> <span class="n">experiment</span><span class="p">(</span><span class="n">n_samples</span><span class="p">,</span> <span class="n">alphas</span><span class="p">,</span> <span class="n">estimator</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+    <span class="n">df_groups_shap</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">df_group_imp</span><span class="p">,</span> <span class="n">df_group_performance</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>100%|██████████| 10/10 [01:57&lt;00:00, 11.78s/it]
+100%|██████████| 10/10 [14:17&lt;00:00, 85.70s/it] 
+100%|██████████| 10/10 [45:10&lt;00:00, 271.08s/it]
+100%|██████████| 10/10 [3:00:00&lt;00:00, 1080.07s/it]
+</pre></div>
+</div>
+</div>
+</div>
+<p>Here, the amounts fall close to zero, regardless of the number of samples we have. This problem occurs because since <span class="math notranslate nohighlight">\(\phi_0\)</span> is close to the prediction of the majority class, then the values of <span class="math notranslate nohighlight">\(\phi_j(x_i)\)</span> for the majority class instances do not need to be large for the sum to remain close to <span class="math notranslate nohighlight">\(\phi_0\)</span>. When we group on average, as these samples are the majority (if our model has a minimally reasonable performance) they push the value of <span class="math notranslate nohighlight">\(\bar{\phi_j}\)</span> close to zero.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot</span><span class="p">(</span><span class="n">df_groups_shap</span><span class="p">,</span> <span class="n">alphas</span><span class="p">,</span> <span class="n">n_samples_list</span><span class="p">,</span> <span class="n">logy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p><img alt="image.png" src="notebooks/attachment:image.png" /></p>
+</section>
+<section id="shap-y-1-importance-random-forest">
+<h2>3. SHAP[y==1] importance Random Forest<a class="headerlink" href="#shap-y-1-importance-random-forest" title="Permalink to this headline">#</a></h2>
+<p>One of the ways to try to get around this is to calculate a different version of <span class="math notranslate nohighlight">\(\bar{\phi_j}\)</span>, such as, for example, averaging only the samples where the target is from the minority class.</p>
+<p>This idea of analyzing aggregate SHAP into subgroups is very useful and gives interesting insights that are halfway between global and local explanations, that is, you see globally what happens in a region of your feature space. A very interesting article on the subject is the post <a class="reference external" href="https://towardsdatascience.com/you-are-underutilizing-shap-values-understanding-populations-and-events-7f4a45202d5">You are underutilizing SHAP values: understanding populations and events
+</a> by Estevão Uyrá, a former DataLab data scientist.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">SHAP1ImportanceRandomForestClassifier</span>
+
+<span class="n">estimator</span> <span class="o">=</span> <span class="n">SHAP1ImportanceRandomForestClassifier</span>
+
+<span class="n">df_groups_shap1</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">n_samples</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">n_samples_list</span><span class="p">):</span>
+    <span class="n">df_group_imp</span><span class="p">,</span> <span class="n">df_group_performance</span> <span class="o">=</span> <span class="n">experiment</span><span class="p">(</span><span class="n">n_samples</span><span class="p">,</span> <span class="n">alphas</span><span class="p">,</span> <span class="n">estimator</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+    <span class="n">df_groups_shap1</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">df_group_imp</span><span class="p">,</span> <span class="n">df_group_performance</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>100%|██████████| 10/10 [00:52&lt;00:00,  5.24s/it]
+100%|██████████| 10/10 [05:28&lt;00:00, 32.85s/it]
+100%|██████████| 10/10 [16:38&lt;00:00, 99.88s/it] 
+100%|██████████| 10/10 [1:04:58&lt;00:00, 389.81s/it]
+</pre></div>
+</div>
+</div>
+</div>
+<p>Here we see that the effect is more or less similar to what we have for the usual <code class="docutils literal notranslate"><span class="pre">.feature_importances_</span></code> from <code class="docutils literal notranslate"><span class="pre">RandomForest</span></code>, with absolute imbalance playing a more important role than relative imbalance.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot</span><span class="p">(</span><span class="n">df_groups_shap1</span><span class="p">,</span> <span class="n">alphas</span><span class="p">,</span> <span class="n">n_samples_list</span><span class="p">,</span> <span class="n">logy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p><img alt="image.png" src="notebooks/attachment:image.png" /></p>
+</section>
+<section id="shap-importance-normalization-random-forest">
+<h2>4. SHAP importance normalization Random Forest<a class="headerlink" href="#shap-importance-normalization-random-forest" title="Permalink to this headline">#</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">.feature_importances_</span></code> of a <a class="reference external" href="https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html"><code class="docutils literal notranslate"><span class="pre">sklearn.ensemble.RandomForestClassifier</span></code></a> actually has a normalization at the end that makes <code class="docutils literal notranslate"><span class="pre">.feature_importances_.sum()</span> <span class="pre">==</span> <span class="pre">1</span></code>. This idea can be applied to SHAP as well.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">SHAPNormalizationImportanceRandomForestClassifier</span>
+
+<span class="n">estimator</span> <span class="o">=</span> <span class="n">SHAPNormalizationImportanceRandomForestClassifier</span>
+
+<span class="n">df_groups_shap_norm</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">n_samples</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">n_samples_list</span><span class="p">):</span>
+    <span class="n">df_group_imp</span><span class="p">,</span> <span class="n">df_group_performance</span> <span class="o">=</span> <span class="n">experiment</span><span class="p">(</span><span class="n">n_samples</span><span class="p">,</span> <span class="n">alphas</span><span class="p">,</span> <span class="n">estimator</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+    <span class="n">df_groups_shap_norm</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">df_group_imp</span><span class="p">,</span> <span class="n">df_group_performance</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>100%|██████████| 10/10 [01:56&lt;00:00, 11.70s/it]
+100%|██████████| 10/10 [14:15&lt;00:00, 85.59s/it] 
+100%|██████████| 10/10 [45:09&lt;00:00, 270.96s/it]
+100%|██████████| 10/10 [3:00:07&lt;00:00, 1080.72s/it]
+</pre></div>
+</div>
+</div>
+</div>
+<p>With this normalization, we see that SHAP behaves similarly to how the usual <code class="docutils literal notranslate"><span class="pre">feature_importances_</span></code> behaves. Separating useful variables (blue) from useless variables (orange) reasonably well and being affected by absolute imbalance, but dealing well with relative imbalance (eg when <code class="docutils literal notranslate"><span class="pre">n_samples=20000</span></code>).</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot</span><span class="p">(</span><span class="n">df_groups_shap_norm</span><span class="p">,</span> <span class="n">alphas</span><span class="p">,</span> <span class="n">n_samples_list</span><span class="p">,</span> <span class="n">logy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p><img alt="image.png" src="notebooks/attachment:image.png" /></p>
+</section>
+</section>
+<hr class="docutils" />
+<section class="tex2jax_ignore mathjax_ignore" id="conclusion">
+<h1>Conclusion<a class="headerlink" href="#conclusion" title="Permalink to this headline">#</a></h1>
+<p>We have seen that the methods of variable importance presented are more impacted with the absolute imbalance than with the relative imbalance, except for the “purest” SHAP. This occurred because the variation of <span class="math notranslate nohighlight">\(\phi_0\)</span> as we change the relative imbalance has a significant impact on the values that the SHAPs assume, due to the additive interpretation of their sum being the result of the forecast. It is important to note, however, that despite the values in these cases being on a bad scale, we still have a good ordering that was evidenced by the last use of SHAP, from the simple normalization.</p>
+<p>You should keep using SHAP importances. It shines when absolute imbalance is not a problem: comparing the <code class="docutils literal notranslate"><span class="pre">n_samples=20000</span></code> example we can see that SHAP importances divides the good features from the bad while the usual feature importance method from sklearn can get confused. You should pay attention to the scale, but as we saw, a simple normalization can solve to problem. Nonetheless, the usual feature importance is decent so if you are concerned with computational time, you don’t lose a lot by using it.</p>
+</section>
+<hr class="docutils" />
+<section class="tex2jax_ignore mathjax_ignore" id="references">
+<h1>References<a class="headerlink" href="#references" title="Permalink to this headline">#</a></h1>
+<ul class="simple">
+<li><p>[1] SHAP library: <a class="reference external" href="https://github.com/slundberg/shap">https://github.com/slundberg/shap</a></p></li>
+<li><p>[2] You are underutilizing SHAP values: understanding populations and events: <a class="reference external" href="https://towardsdatascience.com/you-are-underutilizing-shap-values-understanding-populations-and-events-7f4a45202d5">https://towardsdatascience.com/you-are-underutilizing-shap-values-understanding-populations-and-events-7f4a45202d5</a></p></li>
+</ul>
+<hr class="docutils" />
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "shapimblearn"
+        },
+        kernelOptions: {
+            kernelName: "shapimblearn",
+            path: "./notebooks"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'shapimblearn'</script>
+
+              </div>
+              
+            </main>
+            <footer class="footer-article noprint">
+                
+    <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+    <a class='left-prev' id="prev-link" href="Feature%20selection%20methods.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">Feature selection via the Boruta algorithm</p>
+        </div>
+    </a>
+    <a class='right-next' id="next-link" href="Calibration.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Model calibration part I - reliability assessment</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
+</div>
+            </footer>
+        </div>
+    </div>
+    <div class="footer-content row">
+        <footer class="col footer"><p>
+  
+    By Experian LatAm DataLab<br/>
+  
+      &copy; Copyright 2022.<br/>
+</p>
+        </footer>
+    </div>
+    
+</div>
+
+
+      </div>
+    </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+
+
+  </body>
+</html>

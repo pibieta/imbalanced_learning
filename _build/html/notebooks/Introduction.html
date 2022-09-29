@@ -1,0 +1,586 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Introduction &#8212; The Practical Man&#39;s Guide to Binary Imbalanced Classification</title>
+    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
+    
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Loss functions" href="Loss%20functions.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+<!-- Checkboxes to toggle the left sidebar -->
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
+<label class="overlay overlay-navbar" for="__navigation">
+    <div class="visually-hidden">Toggle navigation sidebar</div>
+</label>
+<!-- Checkboxes to toggle the in-page toc -->
+<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
+<label class="overlay overlay-pagetoc" for="__page-toc">
+    <div class="visually-hidden">Toggle in-page Table of Contents</div>
+</label>
+<!-- Headers at the top -->
+<div class="announcement header-item noprint"></div>
+<div class="header header-item noprint"></div>
+
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<!-- Sidebar -->
+<div class="bd-sidebar noprint" id="site-navigation">
+    <div class="bd-sidebar__content">
+        <div class="bd-sidebar__top"><div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="../index.html">
+      
+        <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
+        
+      
+      
+      <img src="../_static/DataLab-logo-white.png" class="logo" alt="logo">
+      
+      
+      <h1 class="site-logo" id="site-title">The Practical Man's Guide to Binary Imbalanced Classification</h1>
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1 current active">
+                <a class="reference internal" href="#">
+                    Introduction
+                </a>
+            </li>
+        </ul>
+        <ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="Loss%20functions.html">
+   Loss functions
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="Metrics%201%20-%20Intro%20%26%20ROC%20AUC.html">
+   Classification metrics
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="Metrics%202%20-%20Lift%20curve.html">
+   A complement to the ROC: the lift curve (aka CAP curve)
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="Metrics%203%20-%20KS%20score.html">
+   The KS score and Youden’s J
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="Metrics%204%20-%20Precision%20and%20Recall.html">
+   Precision, recall, and
+   <span class="math notranslate nohighlight">
+    \(F\)
+   </span>
+   -scores
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="pablo-baseline-experiment.html">
+   Choosing a baseline model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="Feature%20selection%20methods.html">
+   Feature selection via the Boruta algorithm
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="Interpretability.html">
+   How imbalanced learning affects the interpretability of a model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="Calibration.html">
+   Model calibration part I - reliability assessment
+  </a>
+ </li>
+</ul>
+
+    </div>
+</nav></div>
+        <div class="bd-sidebar__bottom">
+             <!-- To handle the deprecated key -->
+            
+            <div class="navbar_extra_footer">
+            Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+            </div>
+            
+        </div>
+    </div>
+    <div id="rtd-footer-container"></div>
+</div>
+
+
+          
+
+
+          
+<!-- A tiny helper pixel to detect if we've scrolled -->
+<div class="sbt-scroll-pixel-helper"></div>
+<!-- Main content -->
+<div class="col py-0 content-container">
+    
+    <div class="header-article row sticky-top noprint">
+        
+
+
+
+<div class="col py-1 d-flex header-article-main">
+    <div class="header-article__left">
+        
+        <label for="__navigation"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="right"
+title="Toggle navigation"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-bars"></i>
+  </span>
+
+</label>
+
+        
+    </div>
+    <div class="header-article__right">
+<div class="menu-dropdown menu-dropdown-launch-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Launch interactive content">
+      <i class="fas fa-rocket"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="https://mybinder.org/v2/gh/executablebooks/jupyter-book/master?urlpath=tree/notebooks/Introduction.ipynb"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Launch on Binder"
+>
+  
+
+<span class="headerbtn__icon-container">
+  
+    <img src="../_static/images/logo_binder.svg">
+  </span>
+<span class="headerbtn__text-container">Binder</span>
+</a>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+
+<button onclick="toggleFullScreen()"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="bottom"
+title="Fullscreen mode"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+<div class="menu-dropdown menu-dropdown-download-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Download this page">
+      <i class="fas fa-download"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="../_sources/notebooks/Introduction.ipynb"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Download source file"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="headerbtn__text-container">.ipynb</span>
+</a>
+
+      </li>
+      
+      <li>
+        
+<button onclick="printPdf(this)"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="left"
+title="Print to PDF"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="headerbtn__text-container">.pdf</span>
+</button>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+<label for="__page-toc"
+  class="headerbtn headerbtn-page-toc"
+  
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-list"></i>
+  </span>
+
+</label>
+
+    </div>
+</div>
+
+<!-- Table of contents -->
+<div class="col-md-3 bd-toc show noprint">
+    <div class="tocsection onthispage pt-5 pb-3">
+        <i class="fas fa-list"></i> Contents
+    </div>
+    <nav id="bd-toc-nav" aria-label="Page">
+        <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#yet-another-book-on-imbalanced-learning">
+   Yet another book on imbalanced learning?
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#who-is-this-book-for">
+   Who is this book for?
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#imbalance-might-mean-something-different-from-what-you-think">
+   “Imbalance” might mean something different from what you think
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#notation">
+   Notation
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#what-aspects-do-we-cover-here">
+   What aspects do we cover here?
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#the-authors">
+   The authors
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#license">
+   License
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#references">
+   References
+  </a>
+ </li>
+</ul>
+
+    </nav>
+</div>
+    </div>
+    <div class="article row">
+        <div class="col pl-md-3 pl-lg-5 content-container">
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>Introduction</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#yet-another-book-on-imbalanced-learning">
+   Yet another book on imbalanced learning?
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#who-is-this-book-for">
+   Who is this book for?
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#imbalance-might-mean-something-different-from-what-you-think">
+   “Imbalance” might mean something different from what you think
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#notation">
+   Notation
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#what-aspects-do-we-cover-here">
+   What aspects do we cover here?
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#the-authors">
+   The authors
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#license">
+   License
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#references">
+   References
+  </a>
+ </li>
+</ul>
+
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            <main id="main-content" role="main">
+                
+              <div>
+                
+  <section class="tex2jax_ignore mathjax_ignore" id="introduction">
+<h1>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">#</a></h1>
+<p>Class imbalance in classification problems is a long-standing complication. All data scientists hear about it; many know some off-the-shelf techniques to deal with it; yet it is still a complicated problem, because there are not real one-size-fits-all approaches to tackling imbalanced classification problems.</p>
+<p>We aim to share a bit of our experience and practices on how to attack this issue. This is a constantly-evolving compilation of techniques that we have employed over the years to address complications that appeared in our daily work as data scientists, especially dealing with the problem of creditworthiness assessment.</p>
+<section id="yet-another-book-on-imbalanced-learning">
+<h2>Yet another book on imbalanced learning?<a class="headerlink" href="#yet-another-book-on-imbalanced-learning" title="Permalink to this headline">#</a></h2>
+<p>There are many articles on class imbalance in standard data science forums. Similarly, there are both academic books [1, 2] and more applied materials [3, 4]. Indeed, there is a plethora of available resources for the practitioner to refer to.</p>
+<p>Our experience with imbalanced classification is that it is this variety that makes the subject more difficult: there are so many techniques and recommendations that one often gets confused on which to apply. All? None?</p>
+<p>Our purpose with this document is to share our best practices on binary classification under class imbalance, from a practical point of view. We try to answer the question:</p>
+<blockquote>
+<div><p>What should I be worrying about if I have class imbalance?</p>
+</div></blockquote>
+</section>
+<section id="who-is-this-book-for">
+<h2>Who is this book for?<a class="headerlink" href="#who-is-this-book-for" title="Permalink to this headline">#</a></h2>
+<p>Everyone. The language and formalism might be more suited for data scientists, but we hope the techniques presented here can help anyone working with data.</p>
+</section>
+<section id="imbalance-might-mean-something-different-from-what-you-think">
+<h2>“Imbalance” might mean something different from what you think<a class="headerlink" href="#imbalance-might-mean-something-different-from-what-you-think" title="Permalink to this headline">#</a></h2>
+<p>In most of the literature, class imbalance refers to situations where the proportion between the two classes is far from 50%, or equivalently, when the proportion of the so-called positive class against the rest of the dataset is small. There is no consensus on what “far” or “small” mean in the previous sentence: anecdotal experience for the smallness varies across 4 orders of magnitude, from 10% to 0.01%.</p>
+<p>As pointed out by [1], however, more than the <em>relative</em> imbalance between classes, it is perhaps more important – and less common – to look at the <em>absolute</em> imbalance, i.e. by how much the total amount of positive samples is smaller than those of the negative class. A dataset A with 10,000 samples of the positive class, out of one million total samples, has a 1% imbalance, yet the difficulty of the problem is evidently different from that of a dataset B, with 1,000 total samples, where 10 are in the positive class.</p>
+<p>Relative and absolute imbalance do not imply one another, but they are certainly related. If a large dataset (with length <span class="math notranslate nohighlight">\(10^6\)</span>, say) has an extreme imbalance ratio (say <span class="math notranslate nohighlight">\(10^{-4}\)</span>), it is likely that the absolute value of samples in the positive class will be small (in this case, <span class="math notranslate nohighlight">\(10^6 \times 10^{-4} = 100\)</span>, which is considered small by most practitioners). Similarly, in industries such as health or pharmacy, in which clinical trials are expensive and not numerous, both the total sample size and the incidence of the positive class are small.</p>
+<p>In other words, imbalanced classification deals with two different, but correlated, issues:</p>
+<ol class="simple">
+<li><p><strong>Relative data imbalance</strong>, which affects proportion-based metrics such as training losses and model calibration;</p></li>
+<li><p><strong>Small data samples</strong>, which affects everything from model performance, estimation of feature importance, to interpretability and feature selection methods.</p></li>
+</ol>
+<p>In practice, we try to focus on methods to deal with the former issue; however, we will commonly see that when reaching a certain level of imbalance, we fall into the latter.</p>
+</section>
+<section id="notation">
+<h2>Notation<a class="headerlink" href="#notation" title="Permalink to this headline">#</a></h2>
+<p>Throughout this book, we will consider the standard binary classification problem as follows. Let <span class="math notranslate nohighlight">\((X,Y)\)</span> be jointly distributed random variables, where <span class="math notranslate nohighlight">\(Y\)</span> takes values on <span class="math notranslate nohighlight">\(\{0,1\}\)</span>.</p>
+<blockquote>
+<div><p>Other references choose to use <span class="math notranslate nohighlight">\(\{-1,1\}\)</span>, especially in cases such as support vector machines where this cleans up the notation.</p>
+</div></blockquote>
+<p>We do not care much about the set where <span class="math notranslate nohighlight">\(X\)</span> takes values; for all purposes, it might be considered as some subset of <span class="math notranslate nohighlight">\(\mathbb R^n\)</span>.</p>
+<p>Random variables are denoted in uppercase, whereas the values they take are written in lowercase. So, for instance, we might write <span class="math notranslate nohighlight">\(\mathbb P(Y=y)\)</span>.</p>
+<p>Following these notations, we observe <span class="math notranslate nohighlight">\(N\)</span> iid copies of <span class="math notranslate nohighlight">\((X,Y)\)</span>, namely, <span class="math notranslate nohighlight">\(\{(X_i, Y_i)\}_{i=1}^N\)</span> taking values <span class="math notranslate nohighlight">\(\{x_i, y_i\}_{i=1}^N\)</span>, where <span class="math notranslate nohighlight">\(y_i \in \{0,1\}\)</span>. If we denote by <span class="math notranslate nohighlight">\(n_0\)</span>, <span class="math notranslate nohighlight">\(n_1\)</span> the total entries in classes 0 and 1, we have</p>
+<div class="math notranslate nohighlight">
+\[n_1 = \sum_{i=1}^N 1_{y_i=1} = \sum_{i=1}^N y_i\]</div>
+<div class="math notranslate nohighlight">
+\[n_0 = \sum_{i=1}^N 1_{y_i=0} = \sum_{i=1}^N (1-y_i)\]</div>
+<p>where <span class="math notranslate nohighlight">\(1_A\)</span> denotes the indicator function which takes the value 1 when <span class="math notranslate nohighlight">\(A\)</span> is true and zero otherwise.</p>
+<p>With no loss of generality, we take class 1 to be the minority class, so that <span class="math notranslate nohighlight">\(n_1 \ll n_0\)</span>. We will interchangeably call this class the <strong>positive</strong> or <strong>minority class</strong>, or simply <strong>class 1</strong>, and analogously, class 0 will be called the <strong>negative</strong> or <strong>majority class</strong> or just <strong>class 0</strong>.</p>
+</section>
+<section id="what-aspects-do-we-cover-here">
+<h2>What aspects do we cover here?<a class="headerlink" href="#what-aspects-do-we-cover-here" title="Permalink to this headline">#</a></h2>
+<p>This is a book, first and foremost, on binary classification: our hope is that a reader might gain from it regardless of her interest in <em>imbalanced</em> learning. With that being said, the imbalanced case is the most important for us since it is part of our daily work in credit modelling.</p>
+<p>We try to sort the chapters in order to somewhat follow the real-life machine learning modelling process, and introduces issues approximately around when they would be addressed in the data science workflow. However, we make trade-offs:</p>
+<ul class="simple">
+<li><p>There is no discussion on <strong>exploratory data analysis</strong> or data pre-processing outside of training;</p></li>
+<li><p>We do not discuss (in this version of the book) the issue of <strong>threshold selection</strong> to convert continuous scores into binary values;</p></li>
+<li><p>We do not discuss (in this version of the book) <strong>sampling methods</strong>, such as random under/overfitting or SMOTE, regarding model training. In our experience these rarely help compared to algorithm-level solutions, which is in agreement with research on the subject (cf. chapter 2 of [1]).</p></li>
+</ul>
+<p>Instead, we focus on areas that, from experience, are both important and also lack thorough references:</p>
+<ul class="simple">
+<li><p><strong>Model calibration</strong>, including procedures focused on imbalanced datasets: it is an often overlooked part of probabilistic modelling, yet more often than not we see ourselves needing precise estimates of probability instead of just ordering of samples;</p></li>
+<li><p><strong>Model interpretability</strong>, a necessary step for sanity checking our model and providing useful insights both to advance development and convince clients of the model’s predictive power;</p></li>
+<li><p><strong>Feature selection</strong>: as we often have many features, originating from different datasets and sources, this is a key step in reducing model complexity and dependence on sources outside our range of control;</p></li>
+<li><p><strong>Imbalance-specific metrics and losses</strong>: we study how the main performance metrics and training losses change under imbalance, and show alternatives which can be more insightful;</p></li>
+<li><p><strong>Error estimation</strong>, especifically for model selection, via different methods (repeated cross-validation, bootstrap).</p></li>
+</ul>
+<p>We draw much from our experience in credit modelling. As a credit bureau, our main service is to calculate payment default probabilities for the Brazilian population. This is an imbalanced problem, with imbalance ratio usually 5-10%.</p>
+</section>
+<section id="the-authors">
+<h2>The authors<a class="headerlink" href="#the-authors" title="Permalink to this headline">#</a></h2>
+<p><img alt="image.png" src="notebooks/attachment:image.png" /></p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://www.linkedin.com/in/atmg92/"><strong>Alessandro</strong></a> is the Head of Data Science &#64;DataLab, which provides him with the financial resources to do what he likes best: eating and singing at karaokes with a passion that unfortunately is not matched by his musical talents.</p></li>
+<li><p><a class="reference external" href="https://github.com/pibieta"><strong>Juan Pablo</strong></a> is a Staff Data Scientist &#64;DataLab who thinks that all work and no play makes Jack a dull boy.</p></li>
+<li><p><a class="reference external" href="https://vitaliset.github.io/"><strong>Carlo</strong></a> is a Senior Data Scientist &#64;DataLab and the author of the Quora question “Why can’t I do basic math at 25 years old?”.</p></li>
+</ul>
+<p>We also acknowledge Evanildo Lacerda Jr and Renato Vicente for their advice and fruitful conversations during the development of this book.</p>
+</section>
+<section id="license">
+<h2>License<a class="headerlink" href="#license" title="Permalink to this headline">#</a></h2>
+<p>The code in the notebooks is released under a <a class="reference external" href="https://www.gnu.org/licenses/gpl-3.0.en.html">GNU GPL v3.0 license</a>. The prose and pictures are released under a <a class="reference external" href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0 license</a>.</p>
+</section>
+<section id="references">
+<h2>References<a class="headerlink" href="#references" title="Permalink to this headline">#</a></h2>
+<p>[1] Haibo He; Yunqian Ma, <em>Imbalanced Learning: Foundations, Algorithms, and Applications</em>. Wiley-IEEE Press (2013)</p>
+<p>[2] Alberto Fernández, Salvador García, Mikel Galar, Ronaldo C. Prati, Bartosz Krawczyk, Francisco Herrera, <em>Learning from Imbalanced Data Sets</em>. Springer (2018)</p>
+<p>[3] <a class="reference external" href="https://machinelearningmastery.com/imbalanced-classification-with-python/">https://machinelearningmastery.com/imbalanced-classification-with-python/</a></p>
+<p>[4] Le Borgne, Yann-Aël and Siblini, Wissam and Lebichot, Bertrand and Bontempi, Gianluca, <em>Reproducible Machine Learning for Credit Card Fraud Detection - Practical Handbook</em>. Université Libre de Bruxelles (2022). Available at <a class="reference external" href="https://github.com/Fraud-Detection-Handbook/fraud-detection-handbook">https://github.com/Fraud-Detection-Handbook/fraud-detection-handbook</a></p>
+</section>
+<hr class="docutils" />
+<div class="toctree-wrapper compound">
+</div>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            kernelName: "python3",
+            path: "./notebooks"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+              </div>
+              
+            </main>
+            <footer class="footer-article noprint">
+                
+    <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+    <a class='right-next' id="next-link" href="Loss%20functions.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Loss functions</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
+</div>
+            </footer>
+        </div>
+    </div>
+    <div class="footer-content row">
+        <footer class="col footer"><p>
+  
+    By Experian LatAm DataLab<br/>
+  
+      &copy; Copyright 2022.<br/>
+</p>
+        </footer>
+    </div>
+    
+</div>
+
+
+      </div>
+    </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+
+
+  </body>
+</html>

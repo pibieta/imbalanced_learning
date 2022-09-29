@@ -1,6 +1,13 @@
 # In _toc.yml
 format: jb-book
-root: README.md
+root: notebooks/Introduction.ipynb
 chapters:
 - file: notebooks/Loss functions.ipynb
+- file: notebooks/Metrics 1 - Intro & ROC AUC.ipynb
+- file: notebooks/Metrics 2 - Lift curve.ipynb
+- file: notebooks/Metrics 3 - KS score.ipynb
+- file: notebooks/Metrics 4 - Precision and Recall.ipynb
+- file: notebooks/pablo-baseline-experiment.ipynb
+- file: notebooks/Feature selection methods.ipynb
+- file: notebooks/Interpretability.ipynb
 - file: notebooks/Calibration.ipynb
