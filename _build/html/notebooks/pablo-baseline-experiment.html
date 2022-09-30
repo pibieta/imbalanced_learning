@@ -1,0 +1,1241 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Choosing a baseline model &#8212; The Practical Man&#39;s Guide to Binary Imbalanced Classification</title>
+    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
+    
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Feature selection via the Boruta algorithm" href="Feature%20selection%20methods.html" />
+    <link rel="prev" title="Precision, recall, and \(F\)-scores" href="Metrics%204%20-%20Precision%20and%20Recall.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+<!-- Checkboxes to toggle the left sidebar -->
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
+<label class="overlay overlay-navbar" for="__navigation">
+    <div class="visually-hidden">Toggle navigation sidebar</div>
+</label>
+<!-- Checkboxes to toggle the in-page toc -->
+<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
+<label class="overlay overlay-pagetoc" for="__page-toc">
+    <div class="visually-hidden">Toggle in-page Table of Contents</div>
+</label>
+<!-- Headers at the top -->
+<div class="announcement header-item noprint"></div>
+<div class="header header-item noprint"></div>
+
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<!-- Sidebar -->
+<div class="bd-sidebar noprint" id="site-navigation">
+    <div class="bd-sidebar__content">
+        <div class="bd-sidebar__top"><div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="../index.html">
+      
+        <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
+        
+      
+      
+      <img src="../_static/DataLab-logo-white.png" class="logo" alt="logo">
+      
+      
+      <h1 class="site-logo" id="site-title">The Practical Man's Guide to Binary Imbalanced Classification</h1>
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="Introduction.html">
+                    Introduction
+                </a>
+            </li>
+        </ul>
+        <ul class="current nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="Loss%20functions.html">
+   Loss functions
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="Metrics%201%20-%20Intro%20%26%20ROC%20AUC.html">
+   Classification metrics
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="Metrics%202%20-%20Lift%20curve.html">
+   A complement to the ROC: the lift curve (aka CAP curve)
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="Metrics%203%20-%20KS%20score.html">
+   The KS score and Youden’s J
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="Metrics%204%20-%20Precision%20and%20Recall.html">
+   Precision, recall, and
+   <span class="math notranslate nohighlight">
+    \(F\)
+   </span>
+   -scores
+  </a>
+ </li>
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   Choosing a baseline model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="Feature%20selection%20methods.html">
+   Feature selection via the Boruta algorithm
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="Interpretability.html">
+   How imbalanced learning affects the interpretability of a model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="Calibration.html">
+   Model calibration part I - reliability assessment
+  </a>
+ </li>
+</ul>
+
+    </div>
+</nav></div>
+        <div class="bd-sidebar__bottom">
+             <!-- To handle the deprecated key -->
+            
+            <div class="navbar_extra_footer">
+            Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+            </div>
+            
+        </div>
+    </div>
+    <div id="rtd-footer-container"></div>
+</div>
+
+
+          
+
+
+          
+<!-- A tiny helper pixel to detect if we've scrolled -->
+<div class="sbt-scroll-pixel-helper"></div>
+<!-- Main content -->
+<div class="col py-0 content-container">
+    
+    <div class="header-article row sticky-top noprint">
+        
+
+
+
+<div class="col py-1 d-flex header-article-main">
+    <div class="header-article__left">
+        
+        <label for="__navigation"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="right"
+title="Toggle navigation"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-bars"></i>
+  </span>
+
+</label>
+
+        
+    </div>
+    <div class="header-article__right">
+<div class="menu-dropdown menu-dropdown-launch-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Launch interactive content">
+      <i class="fas fa-rocket"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="https://mybinder.org/v2/gh/executablebooks/jupyter-book/master?urlpath=tree/notebooks/pablo-baseline-experiment.ipynb"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Launch on Binder"
+>
+  
+
+<span class="headerbtn__icon-container">
+  
+    <img src="../_static/images/logo_binder.svg">
+  </span>
+<span class="headerbtn__text-container">Binder</span>
+</a>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+
+<button onclick="toggleFullScreen()"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="bottom"
+title="Fullscreen mode"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+<div class="menu-dropdown menu-dropdown-download-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Download this page">
+      <i class="fas fa-download"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="../_sources/notebooks/pablo-baseline-experiment.ipynb"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Download source file"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="headerbtn__text-container">.ipynb</span>
+</a>
+
+      </li>
+      
+      <li>
+        
+<button onclick="printPdf(this)"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="left"
+title="Print to PDF"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="headerbtn__text-container">.pdf</span>
+</button>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+<label for="__page-toc"
+  class="headerbtn headerbtn-page-toc"
+  
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-list"></i>
+  </span>
+
+</label>
+
+    </div>
+</div>
+
+<!-- Table of contents -->
+<div class="col-md-3 bd-toc show noprint">
+    <div class="tocsection onthispage pt-5 pb-3">
+        <i class="fas fa-list"></i> Contents
+    </div>
+    <nav id="bd-toc-nav" aria-label="Page">
+        <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#methodology">
+   Methodology
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#data">
+   Data
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#synthetic-dataset-make-classification">
+     Synthetic Dataset (
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       make_classification
+      </span>
+     </code>
+     )
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#real-life-dataset-i-census-income">
+     Real Life Dataset I :
+     <strong>
+      Census Income
+     </strong>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#real-life-dataset-ii-spam-e-mail">
+     Real-Life dataset II:
+     <strong>
+      Spam e-mail
+     </strong>
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#model-comparison">
+   Model comparison
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#synthetic-dataset">
+     Synthetic dataset
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#income-census-dataset">
+     Income census dataset
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#spam-e-mail-dataset">
+     Spam e-mail dataset
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#conclusions">
+   Conclusions
+  </a>
+ </li>
+</ul>
+
+    </nav>
+</div>
+    </div>
+    <div class="article row">
+        <div class="col pl-md-3 pl-lg-5 content-container">
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>Choosing a baseline model</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#methodology">
+   Methodology
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#data">
+   Data
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#synthetic-dataset-make-classification">
+     Synthetic Dataset (
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       make_classification
+      </span>
+     </code>
+     )
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#real-life-dataset-i-census-income">
+     Real Life Dataset I :
+     <strong>
+      Census Income
+     </strong>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#real-life-dataset-ii-spam-e-mail">
+     Real-Life dataset II:
+     <strong>
+      Spam e-mail
+     </strong>
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#model-comparison">
+   Model comparison
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#synthetic-dataset">
+     Synthetic dataset
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#income-census-dataset">
+     Income census dataset
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#spam-e-mail-dataset">
+     Spam e-mail dataset
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#conclusions">
+   Conclusions
+  </a>
+ </li>
+</ul>
+
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            <main id="main-content" role="main">
+                
+              <div>
+                
+  <section class="tex2jax_ignore mathjax_ignore" id="choosing-a-baseline-model">
+<h1>Choosing a baseline model<a class="headerlink" href="#choosing-a-baseline-model" title="Permalink to this headline">#</a></h1>
+<p>In this section we discuss what is usually the first stage in tackling an imbalanced classfication problem, namely, to choose a good enough baseline model so further modelling developments are to be compared with this <strong>baseline</strong> model. The discussion can be guided by the following driving questions:</p>
+<ul class="simple">
+<li><p>What is the effect of class imbalance on different classification algorithms?</p></li>
+<li><p>Is class imbalance really a problem when there is enough data?</p></li>
+<li><p>What is the best benchmark model to start with? What does “best” actually mean in this situation?</p></li>
+<li><p>What can be done to mitigate the effect of imbalance on specific algorithms?</p></li>
+</ul>
+<section id="methodology">
+<h2>Methodology<a class="headerlink" href="#methodology" title="Permalink to this headline">#</a></h2>
+<p>We intend to study the behavior (in terms of binary classification metrics) of different classification algorithms under various imbalance scenarios.
+At this point we won’t pay too much attention on optimizing the model’s parameters. Rather, we will work with the vanilla versions of the models as we are interested in finding a “quick” generic approach to solving an imbalanced binary classification problem.</p>
+<p>The classical algorithm used for solving a binary classification problem is the Logistic Regression (citation needed!), two types of regularization (L1 and L2) will be considered to see the effect of regularization in the imbalanced case. On the other hand, it is also common to use tree-based ensemble methods to construct a model for binary classification. Thus, it is natural to consider a couple of Tree ensemble algorithms, such as Random Forests and Gradient Boosting Machines for our experiments.</p>
+<p>Three datasets will be used for the experiments, namely, we will test the algorithms on a synthetic dataset and on a couple of real dataset from which we can sample observations such that the class imbalance ratio can be changed at will.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># basics</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">joblib</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="nn">sns</span>
+
+<span class="kn">from</span> <span class="nn">tqdm.auto</span> <span class="kn">import</span> <span class="n">tqdm</span>
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">product</span>
+
+<span class="c1"># plotting</span>
+<span class="kn">import</span> <span class="nn">matplotlib</span>
+<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+
+<span class="c1"># sklearn</span>
+<span class="kn">from</span> <span class="nn">sklearn.datasets</span> <span class="kn">import</span> <span class="n">make_classification</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="data">
+<h2>Data<a class="headerlink" href="#data" title="Permalink to this headline">#</a></h2>
+<p>Let us begin by constructing the synthetic dataset, to do this we can use the <code class="docutils literal notranslate"><span class="pre">make_classification</span></code> function from scikit-learn <a class="reference external" href="https://scikit-learn.org/stable/modules/generated/sklearn.datasets.make_classification.html">see here</a>. This function allow us to quickly build a synthetic dataset for binary classification with some specificities such as the sample size, the number of informative features and the actual imbalance ratio, to name a few.</p>
+<section id="synthetic-dataset-make-classification">
+<h3>Synthetic Dataset (<code class="docutils literal notranslate"><span class="pre">make_classification</span></code>)<a class="headerlink" href="#synthetic-dataset-make-classification" title="Permalink to this headline">#</a></h3>
+<p>To easen the use of such function we will write a very simple wrapper that uses the <code class="docutils literal notranslate"><span class="pre">make_classification</span></code> function and returns a pandas dataframe with the actual synthetic dataset such that we can simply pass the class imbalance level as the <code class="docutils literal notranslate"><span class="pre">imbalance</span></code> parameter.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">create_imbalanced_binary_classification</span><span class="p">(</span><span class="n">n_samples</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">,</span> 
+                                            <span class="n">n_features</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span>
+                                            <span class="n">n_informative</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> 
+                                            <span class="n">imbalance</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">,</span>
+                                            <span class="n">random_state</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">42</span><span class="p">,</span>
+                                            <span class="n">class_sep</span> <span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Creates an imbalanced dataset for binary classification</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    n_samples: int, default = 1000,</span>
+<span class="sd">            number of samples to generate</span>
+<span class="sd">    n_features: int default = 4,</span>
+<span class="sd">            number of features (not all are informative)</span>
+<span class="sd">    n_informative: int default = None,</span>
+<span class="sd">            number of informative features</span>
+<span class="sd">            if none is specified floor(n_features/2) </span>
+<span class="sd">            will be taken</span>
+<span class="sd">    imbalance: float, default = 0.1</span>
+<span class="sd">            proportion of the minority class</span>
+<span class="sd">    random_state: int, default = 42</span>
+<span class="sd">    class_sep: float, default = 1.0</span>
+<span class="sd">        The larger the value the easier the classification task</span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    data: pd.DataFrame,</span>
+<span class="sd">        dataframe with n_features + 1 columns</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">n_informative</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">n_informative</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">n_features</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">weights</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span> <span class="o">-</span> <span class="n">imbalance</span><span class="p">,</span> <span class="n">imbalance</span><span class="p">]</span>
+    <span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">make_classification</span><span class="p">(</span><span class="n">n_samples</span> <span class="o">=</span> <span class="n">n_samples</span><span class="p">,</span>
+                                <span class="n">n_features</span> <span class="o">=</span> <span class="n">n_features</span><span class="p">,</span>
+                                <span class="n">n_classes</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+                                <span class="n">n_informative</span> <span class="o">=</span> <span class="n">n_informative</span><span class="p">,</span>
+                                <span class="n">weights</span> <span class="o">=</span> <span class="n">weights</span><span class="p">,</span>                
+                                <span class="n">random_state</span> <span class="o">=</span> <span class="n">random_state</span><span class="p">,</span>
+                                <span class="n">class_sep</span> <span class="o">=</span> <span class="n">class_sep</span><span class="p">)</span>
+    <span class="n">column_names</span> <span class="o">=</span> <span class="p">[</span> <span class="sa">f</span><span class="s1">&#39;feature_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">n_features</span><span class="p">)]</span>      
+    <span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">columns</span> <span class="o">=</span> <span class="n">column_names</span><span class="p">),</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;target&#39;</span><span class="p">])],</span> <span class="n">axis</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">data</span><span class="p">,</span> <span class="n">column_names</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>To see how this function works, let us quickly build a dataset and visualize their features:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">n_samples</span> <span class="o">=</span> <span class="mi">10</span><span class="o">**</span><span class="mi">3</span>
+<span class="n">n_features</span> <span class="o">=</span> <span class="mi">4</span>
+<span class="n">imbalance</span> <span class="o">=</span> <span class="mf">0.1</span>
+<span class="n">n_informative</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">class_sep</span> <span class="o">=</span> <span class="mf">0.5</span>
+<span class="n">data</span><span class="p">,</span> <span class="n">column_names</span> <span class="o">=</span> <span class="n">create_imbalanced_binary_classification</span><span class="p">(</span><span class="n">n_samples</span> <span class="o">=</span> <span class="n">n_samples</span><span class="p">,</span> 
+                                        <span class="n">n_features</span> <span class="o">=</span> <span class="n">n_features</span><span class="p">,</span>
+                                        <span class="n">n_informative</span> <span class="o">=</span> <span class="n">n_informative</span><span class="p">,</span>
+                                        <span class="n">imbalance</span> <span class="o">=</span> <span class="n">imbalance</span><span class="p">,</span>
+                                        <span class="n">class_sep</span> <span class="o">=</span> <span class="n">class_sep</span><span class="p">)</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">pairplot</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">hue</span> <span class="o">=</span> <span class="s1">&#39;target&#39;</span><span class="p">,</span> <span class="n">plot_kws</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;alpha&#39;</span> <span class="p">:</span> <span class="mf">0.4</span><span class="p">})</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/pablo-baseline-experiment_5_0.png" src="../_images/pablo-baseline-experiment_5_0.png" />
+</div>
+</div>
+</section>
+<section id="real-life-dataset-i-census-income">
+<h3>Real Life Dataset I : <strong>Census Income</strong><a class="headerlink" href="#real-life-dataset-i-census-income" title="Permalink to this headline">#</a></h3>
+<p>Additionally, we collected two <em>real-life</em> datasets. The first one is related to a classification task that asks for predicting whether a subject’s income exceeds 50K USD/yr based on census data. Also known as “Census Income” dataset that can be found <a class="reference external" href="https://archive-beta.ics.uci.edu/ml/datasets/adult">here</a>.</p>
+<p>The target is defined as whether the income is greater than 50k USD. The covariates are (mostly) categorical features related to census data, so we will have to apply some feature processing before we can actually use the data. Since our discussion is centered on the binary classification problem as a whole we will not spend too much time trying to choose the best way to encode these variables. Rather, we will just apply a <strong>one hot encoding</strong> technique to transform the categorical features into mumerical ones. To do that, we use scikit-learn’s <code class="docutils literal notranslate"><span class="pre">OneHotEncoder</span></code> object <a class="reference external" href="https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.OneHotEncoder.html">see here</a>. Let us then load the dataset and perform the encoding.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Census-income dataset</span>
+<span class="n">census_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;../data/adult.data&#39;</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span> <span class="kc">None</span><span class="p">)</span>
+
+<span class="n">census_col_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;age&#39;</span><span class="p">,</span> <span class="s1">&#39;workclass&#39;</span><span class="p">,</span> <span class="s1">&#39;fnlwgt&#39;</span><span class="p">,</span> <span class="s1">&#39;education&#39;</span><span class="p">,</span> <span class="s1">&#39;education-num&#39;</span><span class="p">,</span> <span class="s1">&#39;marital-status&#39;</span><span class="p">,</span> \
+                    <span class="s1">&#39;occupation&#39;</span><span class="p">,</span> <span class="s1">&#39;relationship&#39;</span><span class="p">,</span> <span class="s1">&#39;race&#39;</span><span class="p">,</span> <span class="s1">&#39;sex&#39;</span><span class="p">,</span> <span class="s1">&#39;capital-gain&#39;</span><span class="p">,</span> <span class="s1">&#39;capital-loss&#39;</span><span class="p">,</span> <span class="s1">&#39;hours-per-week&#39;</span><span class="p">,</span> \
+                    <span class="s1">&#39;native-country&#39;</span><span class="p">]</span>
+<span class="n">census_df</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="n">census_col_names</span> <span class="o">+</span> <span class="p">[</span><span class="s1">&#39;income&#39;</span><span class="p">]</span>
+<span class="c1"># encode the target label</span>
+<span class="n">census_df</span><span class="p">[</span><span class="s1">&#39;target&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">census_df</span><span class="o">.</span><span class="n">income</span> <span class="o">==</span> <span class="s1">&#39; &gt;50K&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.preprocessing</span> <span class="kn">import</span> <span class="n">OneHotEncoder</span>
+
+<span class="n">census_categorical_features</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;workclass&#39;</span><span class="p">,</span> <span class="s1">&#39;education&#39;</span><span class="p">,</span> <span class="s1">&#39;marital-status&#39;</span><span class="p">,</span> <span class="s1">&#39;occupation&#39;</span><span class="p">,</span> <span class="s1">&#39;relationship&#39;</span><span class="p">,</span> <span class="s1">&#39;race&#39;</span><span class="p">,</span> <span class="s1">&#39;sex&#39;</span><span class="p">,</span> <span class="s1">&#39;native-country&#39;</span><span class="p">]</span>
+<span class="n">census_numerical_features</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;age&#39;</span><span class="p">,</span> <span class="s1">&#39;fnlwgt&#39;</span><span class="p">,</span> <span class="s1">&#39;education-num&#39;</span><span class="p">,</span> <span class="s1">&#39;capital-gain&#39;</span><span class="p">,</span> <span class="s1">&#39;capital-loss&#39;</span><span class="p">,</span> <span class="s1">&#39;hours-per-week&#39;</span><span class="p">]</span>
+<span class="c1"># One hot encoding of categorical features and join with numerical features</span>
+<span class="n">ohe</span> <span class="o">=</span> <span class="n">OneHotEncoder</span><span class="p">()</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">census_df</span><span class="p">[</span><span class="n">census_categorical_features</span><span class="p">])</span>
+<span class="n">census_ohe</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">ohe</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">census_df</span><span class="p">[</span><span class="n">census_categorical_features</span><span class="p">])</span><span class="o">.</span><span class="n">toarray</span><span class="p">(),</span> <span class="n">columns</span> <span class="o">=</span> <span class="n">ohe</span><span class="o">.</span><span class="n">get_feature_names_out</span><span class="p">())</span>
+<span class="n">census_df_processed</span> <span class="o">=</span> <span class="n">census_df</span><span class="p">[</span><span class="n">census_numerical_features</span> <span class="o">+</span> <span class="p">[</span><span class="s1">&#39;target&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">census_ohe</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="real-life-dataset-ii-spam-e-mail">
+<h3>Real-Life dataset II: <strong>Spam e-mail</strong><a class="headerlink" href="#real-life-dataset-ii-spam-e-mail" title="Permalink to this headline">#</a></h3>
+<p>The second dataset is related to a classification task that asks for predicting if an e-mail is spam or not, based on a very simple text encoding that counts the frequency of appearance of certain words in the e-mail text. The dataset can be found <a class="reference external" href="https://archive-beta.ics.uci.edu/ml/datasets/spambase">here</a>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">spam_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;../data/spambase.data&#39;</span><span class="p">,</span> <span class="n">header</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span>
+<span class="c1"># Load column names:</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;../data/spam_col_names.z&#39;</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">spam_column_names</span> <span class="o">=</span> <span class="n">joblib</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+<span class="n">spam_df</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="n">spam_column_names</span> <span class="o">+</span> <span class="p">[</span><span class="s1">&#39;target&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="model-comparison">
+<h2>Model comparison<a class="headerlink" href="#model-comparison" title="Permalink to this headline">#</a></h2>
+<p>In this section we will compare the performance (and other aspects) of different models under different class imbalance scenarios.
+We will start by analyzing the performance dependence on the class imbalance index which we define as being the minority class ratio or <em>Prevalence</em>. If we call <span class="math notranslate nohighlight">\(N_{P}\)</span> and <span class="math notranslate nohighlight">\(N_{N}\)</span> the number of positive and negative observations, the prevalance is given by:
+$<span class="math notranslate nohighlight">\(\nu := \dfrac{N_{P}}{N_{P}+N_{N}}.\)</span><span class="math notranslate nohighlight">\(
+The main parameter to be explored is \)</span>\nu$, going from an equal-class setup to a highly imbalanced scenario where there really few examples of the minority class.</p>
+<p>The first simple analysis is to be made upon the performance impact of the imbalance in classes for several algorithms. At this point we are interested in answering a simple practical question:</p>
+<center><span style="background-color: blue">What is the best benchmark algorithm in the presence of class imbalance?</span></center>
+<p>To answer this question we might be interested in looking at other aspects of the statistical learning process aside of the classification performance metrics, such as model complexity and fit time. However, we will keep the discussion focused on the effect of class imbalance on the performance metrics of several classsification algorithms for now.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Dict</span>
+<span class="kn">from</span> <span class="nn">sklearn.pipeline</span> <span class="kn">import</span> <span class="n">Pipeline</span>
+<span class="kn">from</span> <span class="nn">sklearn.preprocessing</span> <span class="kn">import</span> <span class="n">StandardScaler</span>
+<span class="kn">from</span> <span class="nn">sklearn.linear_model</span> <span class="kn">import</span> <span class="n">LogisticRegression</span>
+<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">train_test_split</span>
+<span class="kn">from</span> <span class="nn">sklearn.ensemble</span> <span class="kn">import</span> <span class="n">RandomForestClassifier</span><span class="p">,</span> <span class="n">HistGradientBoostingClassifier</span>
+
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;../src/&#39;</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">compute_metrics_bootstrap</span>
+</pre></div>
+</div>
+</div>
+</div>
+<section id="synthetic-dataset">
+<h3>Synthetic dataset<a class="headerlink" href="#synthetic-dataset" title="Permalink to this headline">#</a></h3>
+<p>Now we can actually begin our experiments starting with the synthetic dataset. We will train and evaluate 3 main algorithms, namely:</p>
+<ul class="simple">
+<li><p>Logistic Regression with two types of regularization <a class="reference external" href="https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html">see here</a></p></li>
+<li><p>Random Forests with and without <code class="docutils literal notranslate"><span class="pre">class_weight</span></code> parameter set <a class="reference external" href="https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html">see here</a></p></li>
+<li><p>Gradient Boosting Decision Trees with and without a fixed value for the <code class="docutils literal notranslate"><span class="pre">max_depth</span></code> parameter <a class="reference external" href="https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.HistGradientBoostingClassifier.html">see here</a></p></li>
+</ul>
+<p>For all the above algorithms we will use their usual scikit-learn implementations. Evidently, more combinations of parameters for each of the above algorithms could be explored but are outside the reach of this book.</p>
+<p>The experiment runs as follows:</p>
+<ul class="simple">
+<li><p>Generate the synthetic dataset with the desired imbalance level.</p></li>
+<li><p>Perform a train/test split.</p></li>
+<li><p>Train each algorithm on the train set and compute bootstrapped classification metrics on the test set</p></li>
+<li><p>Save the metrics and visualize the dependence on the imbalance ratio.</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">n_samples</span> <span class="o">=</span> <span class="mi">10</span><span class="o">**</span><span class="mi">4</span>
+<span class="n">n_features</span> <span class="o">=</span> <span class="mi">6</span>
+<span class="n">n_informative</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="n">class_sep</span> <span class="o">=</span> <span class="mf">0.5</span>
+<span class="n">metrics</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">imbalances</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">,</span> <span class="mf">5e-3</span><span class="p">,</span> <span class="mf">1e-3</span><span class="p">,</span> <span class="mf">5e-4</span><span class="p">]</span>
+<span class="n">random_state</span> <span class="o">=</span> <span class="mi">42</span>
+<span class="k">for</span> <span class="n">imbalance</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">imbalances</span><span class="p">):</span>
+    <span class="n">metrics</span><span class="p">[</span><span class="n">imbalance</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="c1"># Create dataset</span>
+    <span class="n">data</span><span class="p">,</span> <span class="n">column_names</span> <span class="o">=</span> <span class="n">create_imbalanced_binary_classification</span><span class="p">(</span><span class="n">n_samples</span> <span class="o">=</span> <span class="n">n_samples</span><span class="p">,</span> 
+                                        <span class="n">n_features</span> <span class="o">=</span> <span class="n">n_features</span><span class="p">,</span>
+                                        <span class="n">n_informative</span> <span class="o">=</span> <span class="n">n_informative</span><span class="p">,</span>
+                                        <span class="n">imbalance</span> <span class="o">=</span> <span class="n">imbalance</span><span class="p">,</span>
+                                        <span class="n">class_sep</span> <span class="o">=</span> <span class="n">class_sep</span><span class="p">)</span>
+    <span class="c1"># Train test split (Stratified)</span>
+    <span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">column_names</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;target&#39;</span><span class="p">]</span>
+    <span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="n">random_state</span><span class="p">,</span> <span class="n">stratify</span> <span class="o">=</span> <span class="n">y</span><span class="p">)</span>
+    
+    <span class="c1"># Logistic Regression L2</span>
+    <span class="n">lr_pipeline</span> <span class="o">=</span> <span class="n">Pipeline</span><span class="p">([(</span><span class="s1">&#39;scaler&#39;</span><span class="p">,</span> <span class="n">StandardScaler</span><span class="p">()),</span>
+                            <span class="p">(</span><span class="s1">&#39;logreg&#39;</span><span class="p">,</span> <span class="n">LogisticRegression</span><span class="p">())])</span>
+    <span class="n">lr_pipeline</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+    <span class="n">y_proba_lr</span> <span class="o">=</span> <span class="n">lr_pipeline</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+    <span class="n">metrics</span><span class="p">[</span><span class="n">imbalance</span><span class="p">][</span><span class="s1">&#39;logreg_l2&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">compute_metrics_bootstrap</span><span class="p">(</span><span class="n">y_true</span> <span class="o">=</span> <span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span> <span class="o">=</span> <span class="n">y_proba_lr</span><span class="p">[:,</span><span class="mi">1</span><span class="p">])</span>
+    
+    <span class="c1"># Logistic Regression L1</span>
+    <span class="n">lr_pipeline_2</span> <span class="o">=</span> <span class="n">Pipeline</span><span class="p">([(</span><span class="s1">&#39;scaler&#39;</span><span class="p">,</span> <span class="n">StandardScaler</span><span class="p">()),</span>
+                            <span class="p">(</span><span class="s1">&#39;logreg&#39;</span><span class="p">,</span> <span class="n">LogisticRegression</span><span class="p">(</span><span class="n">penalty</span><span class="o">=</span> <span class="s1">&#39;l1&#39;</span><span class="p">,</span> <span class="n">solver</span> <span class="o">=</span> <span class="s1">&#39;saga&#39;</span><span class="p">,</span> <span class="n">max_iter</span> <span class="o">=</span> <span class="mi">200</span><span class="p">))])</span>
+    <span class="n">lr_pipeline_2</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+    <span class="n">y_proba_lr_2</span> <span class="o">=</span> <span class="n">lr_pipeline_2</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+    <span class="n">metrics</span><span class="p">[</span><span class="n">imbalance</span><span class="p">][</span><span class="s1">&#39;logreg_l1&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">compute_metrics_bootstrap</span><span class="p">(</span><span class="n">y_true</span> <span class="o">=</span> <span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span> <span class="o">=</span> <span class="n">y_proba_lr_2</span><span class="p">[:,</span><span class="mi">1</span><span class="p">])</span>
+    
+    <span class="c1"># Random Forest</span>
+    <span class="n">rf_clf</span> <span class="o">=</span> <span class="n">RandomForestClassifier</span><span class="p">()</span>
+    <span class="n">rf_clf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+    <span class="n">y_proba_rf</span> <span class="o">=</span> <span class="n">rf_clf</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+    <span class="n">metrics</span><span class="p">[</span><span class="n">imbalance</span><span class="p">][</span><span class="s1">&#39;rf&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">compute_metrics_bootstrap</span><span class="p">(</span><span class="n">y_true</span> <span class="o">=</span> <span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span> <span class="o">=</span> <span class="n">y_proba_rf</span><span class="p">[:,</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="c1"># Random Forest class weight</span>
+    <span class="n">rf_clf_2</span> <span class="o">=</span> <span class="n">RandomForestClassifier</span><span class="p">(</span><span class="n">class_weight</span> <span class="o">=</span> <span class="s1">&#39;balanced&#39;</span><span class="p">)</span>
+    <span class="n">rf_clf_2</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+    <span class="n">y_proba_rf_2</span> <span class="o">=</span> <span class="n">rf_clf_2</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+    <span class="n">metrics</span><span class="p">[</span><span class="n">imbalance</span><span class="p">][</span><span class="s1">&#39;rf_2&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">compute_metrics_bootstrap</span><span class="p">(</span><span class="n">y_true</span> <span class="o">=</span> <span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span> <span class="o">=</span> <span class="n">y_proba_rf_2</span><span class="p">[:,</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="c1"># Gradient Boosting Machine</span>
+    <span class="n">gb_clf</span> <span class="o">=</span> <span class="n">HistGradientBoostingClassifier</span><span class="p">()</span>
+    <span class="n">gb_clf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+    <span class="n">y_proba_gb</span> <span class="o">=</span> <span class="n">gb_clf</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+    <span class="n">metrics</span><span class="p">[</span><span class="n">imbalance</span><span class="p">][</span><span class="s1">&#39;gb&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">compute_metrics_bootstrap</span><span class="p">(</span><span class="n">y_true</span> <span class="o">=</span> <span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span> <span class="o">=</span> <span class="n">y_proba_gb</span><span class="p">[:,</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="c1"># Gradient Boosting Machine with fixed max_depth</span>
+    <span class="n">gb_clf_2</span> <span class="o">=</span> <span class="n">HistGradientBoostingClassifier</span><span class="p">(</span><span class="n">max_depth</span> <span class="o">=</span> <span class="mi">5</span><span class="p">)</span>
+    <span class="n">gb_clf_2</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+    <span class="n">y_proba_gb_2</span> <span class="o">=</span> <span class="n">gb_clf_2</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+    <span class="n">metrics</span><span class="p">[</span><span class="n">imbalance</span><span class="p">][</span><span class="s1">&#39;gb_2&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">compute_metrics_bootstrap</span><span class="p">(</span><span class="n">y_true</span> <span class="o">=</span> <span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span> <span class="o">=</span> <span class="n">y_proba_gb_2</span><span class="p">[:,</span><span class="mi">1</span><span class="p">])</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Experiment ended!&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<script type="application/vnd.jupyter.widget-view+json">
+{"model_id": "1808653b1d71448e83166e318457fa21", "version_major": 2, "version_minor": 0}
+</script><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/Users/c85538a/anaconda3/envs/ibc/lib/python3.9/site-packages/sklearn/linear_model/_sag.py:350: ConvergenceWarning: The max_iter was reached which means the coef_ did not converge
+  warnings.warn(
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Experiment ended!
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">plot_metric_evolution</span><span class="p">(</span><span class="n">metrics</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> 
+                          <span class="n">model_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                          <span class="n">metric_4_display</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;roc_auc&#39;</span><span class="p">,</span>
+                          <span class="n">color</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;purple&#39;</span><span class="p">,</span> 
+                          <span class="n">ax</span><span class="p">:</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">axis</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">axis</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Plots the imbalance-evolution of classification metrics</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">labels</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;logreg_l2&#39;</span><span class="p">:</span> <span class="s1">&#39;Logistic Regression L2&#39;</span><span class="p">,</span>
+              <span class="s1">&#39;logreg_l1&#39;</span><span class="p">:</span> <span class="s1">&#39;Logistic Regression L1&#39;</span><span class="p">,</span>
+              <span class="s1">&#39;rf&#39;</span><span class="p">:</span> <span class="s1">&#39;Random Forest&#39;</span><span class="p">,</span>
+              <span class="s1">&#39;rf_2&#39;</span><span class="p">:</span> <span class="s1">&#39;Random Forest w/ class weight&#39;</span><span class="p">,</span>
+              <span class="s1">&#39;gb&#39;</span><span class="p">:</span> <span class="s1">&#39;Gradient Boosting&#39;</span><span class="p">,</span>
+              <span class="s1">&#39;gb_2&#39;</span><span class="p">:</span> <span class="s1">&#39;Gradient Boosting max_depth = 5&#39;</span>
+              <span class="p">}</span>
+    <span class="k">if</span> <span class="n">ax</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">f</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">dpi</span> <span class="o">=</span> <span class="mi">100</span><span class="p">)</span>
+    <span class="n">metrics_mean</span> <span class="o">=</span> <span class="p">[</span><span class="n">metrics</span><span class="p">[</span><span class="n">x</span><span class="p">][</span><span class="n">model_name</span><span class="p">][</span><span class="s1">&#39;metrics_stats&#39;</span><span class="p">][</span><span class="n">metric_4_display</span><span class="p">][</span><span class="s1">&#39;mean&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">metrics</span><span class="o">.</span><span class="n">keys</span><span class="p">()]</span>
+    <span class="n">metrics_std</span> <span class="o">=</span> <span class="p">[</span><span class="n">metrics</span><span class="p">[</span><span class="n">x</span><span class="p">][</span><span class="n">model_name</span><span class="p">][</span><span class="s1">&#39;metrics_stats&#39;</span><span class="p">][</span><span class="n">metric_4_display</span><span class="p">][</span><span class="s1">&#39;std&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">metrics</span><span class="o">.</span><span class="n">keys</span><span class="p">()]</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">metrics</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">metrics_mean</span><span class="p">,</span> <span class="n">marker</span> <span class="o">=</span> <span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="n">linestyle</span> <span class="o">=</span> <span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">lw</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+            <span class="n">color</span> <span class="o">=</span> <span class="n">color</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="n">labels</span><span class="p">[</span><span class="n">model_name</span><span class="p">],</span>
+            <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.8</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span><span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="p">,</span> 
+                    <span class="n">y1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">subtract</span><span class="p">(</span><span class="n">metrics_mean</span><span class="p">,</span> <span class="n">metrics_std</span><span class="p">),</span> 
+                    <span class="n">y2</span> <span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">metrics_mean</span><span class="p">,</span> <span class="n">metrics_std</span><span class="p">),</span>
+                    <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.2</span><span class="p">,</span> <span class="n">facecolor</span> <span class="o">=</span> <span class="n">color</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">(</span><span class="n">metrics</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Minority class proportion&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ax</span>
+
+<span class="k">def</span> <span class="nf">clean_ax</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="nb">all</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Clean spines of a matplotlib axis&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">all</span><span class="p">:</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s2">&quot;left&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s2">&quot;bottom&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s2">&quot;right&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>    
+    <span class="n">ax</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s2">&quot;top&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ax</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">metric_4_display</span> <span class="o">=</span> <span class="s1">&#39;roc_auc&#39;</span>
+<span class="n">colors</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;logreg_l2&#39;</span><span class="p">:</span> <span class="s1">&#39;C0&#39;</span><span class="p">,</span>
+          <span class="s1">&#39;logreg_l1&#39;</span><span class="p">:</span> <span class="s1">&#39;C1&#39;</span><span class="p">,</span>
+          <span class="s1">&#39;rf&#39;</span><span class="p">:</span> <span class="s1">&#39;C2&#39;</span><span class="p">,</span>
+          <span class="s1">&#39;rf_2&#39;</span><span class="p">:</span> <span class="s1">&#39;C3&#39;</span><span class="p">,</span>
+          <span class="s1">&#39;gb&#39;</span><span class="p">:</span> <span class="s1">&#39;C4&#39;</span><span class="p">,</span>
+          <span class="s1">&#39;gb_2&#39;</span><span class="p">:</span> <span class="s1">&#39;C5&#39;</span><span class="p">}</span>
+<span class="n">f</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">dpi</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span> <span class="n">figsize</span> <span class="o">=</span> <span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="mi">5</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">model_name</span><span class="p">,</span> <span class="n">color</span> <span class="ow">in</span> <span class="n">colors</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="n">plot_metric_evolution</span><span class="p">(</span><span class="n">metrics</span><span class="p">,</span> <span class="n">model_name</span><span class="p">,</span> <span class="n">metric_4_display</span><span class="o">=</span> <span class="n">metric_4_display</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="n">color</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">ax</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span> <span class="o">=</span> <span class="s1">&#39;best&#39;</span><span class="p">,</span> <span class="n">frameon</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">axis</span> <span class="o">=</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.4</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">metric_4_display</span><span class="o">.</span><span class="n">upper</span><span class="p">())</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Census Income dataset&#39;</span><span class="p">)</span>
+<span class="n">clean_ax</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
+<span class="n">f</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/pablo-baseline-experiment_16_0.png" src="../_images/pablo-baseline-experiment_16_0.png" />
+</div>
+</div>
+<p>Before we go to the next experiment, let us discuss the above results a bit. One interesting conclusion that can be drawn from the above figure is that both versions of the <strong>Logistic Regression</strong> algorithm are the “most stable” ones as the imbalance gets harder. Clearly the more complex models are better at solving the classification problem for the no-imbalance scenario but this advantage gets smaller as the imbalance grows (to the right of the figure). The error regions represent one standard deviation and were computed using the bootstrap technique.</p>
+</section>
+<section id="income-census-dataset">
+<h3>Income census dataset<a class="headerlink" href="#income-census-dataset" title="Permalink to this headline">#</a></h3>
+<p>Now we can use a real-life dataset and run a similar comparison experiment. For this round we will use the <strong>Income Census</strong> dataset that can be found <a class="reference external" href="https://archive-beta.ics.uci.edu/ml/datasets/adult">here</a>. To force several class imbalance levels we will write a very simple function that accepts the desired imbalance level and performs an undersampling of the positive class (the minority class).</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">undersample</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Constructs a dataset by undersampling the positive class given a certain </span>
+<span class="sd">    imbalance ratio</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    X: pd.DataFrame</span>
+<span class="sd">    y: pd.Series</span>
+<span class="sd">    d: float </span>
+<span class="sd">        desired imbalance ratio</span>
+<span class="sd">    random_state: int (default = 42)</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    X, y with the desired imbalance ratio</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">alpha</span> <span class="o">=</span> <span class="o">-</span> <span class="n">d</span><span class="o">/</span><span class="p">(</span><span class="n">d</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">size</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">y</span><span class="o">==</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">*</span><span class="n">alpha</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">X</span><span class="p">[</span><span class="n">y</span><span class="o">==</span><span class="mi">0</span><span class="p">],</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">y</span><span class="o">==</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="n">size</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="n">random_state</span><span class="p">)]),</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">([</span><span class="n">y</span><span class="p">[</span><span class="n">y</span><span class="o">==</span><span class="mi">0</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">size</span><span class="o">*</span><span class="p">[</span><span class="mi">1</span><span class="p">])])</span>
+        <span class="p">)</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">census_feature_names</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">census_df_processed</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="nb">set</span><span class="p">([</span><span class="s1">&#39;target&#39;</span><span class="p">])))</span>
+<span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">undersample</span><span class="p">(</span><span class="n">census_df_processed</span><span class="p">[</span><span class="n">census_feature_names</span><span class="p">],</span> <span class="n">census_df_processed</span><span class="p">[</span><span class="s1">&#39;target&#39;</span><span class="p">],</span> <span class="n">d</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">)</span>
+
+<span class="n">metrics</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">fit_time</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">imbalances</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">,</span> <span class="mf">5e-3</span><span class="p">,</span> <span class="mf">2e-3</span><span class="p">]</span>
+<span class="n">random_state</span> <span class="o">=</span> <span class="mi">42</span>
+<span class="k">for</span> <span class="n">imbalance</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">imbalances</span><span class="p">):</span>
+    <span class="n">metrics</span><span class="p">[</span><span class="n">imbalance</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="c1"># generate imbalanced dataset</span>
+    <span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">undersample</span><span class="p">(</span><span class="n">census_df_processed</span><span class="p">[</span><span class="n">census_feature_names</span><span class="p">],</span> <span class="n">census_df_processed</span><span class="p">[</span><span class="s1">&#39;target&#39;</span><span class="p">],</span> <span class="n">d</span> <span class="o">=</span> <span class="n">imbalance</span><span class="p">)</span>
+    <span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="n">random_state</span><span class="p">,</span> <span class="n">stratify</span> <span class="o">=</span> <span class="n">y</span><span class="p">)</span>
+    
+    <span class="c1"># Logistic Regression L2</span>
+    <span class="n">lr_pipeline</span> <span class="o">=</span> <span class="n">Pipeline</span><span class="p">([(</span><span class="s1">&#39;scaler&#39;</span><span class="p">,</span> <span class="n">StandardScaler</span><span class="p">()),</span>
+                            <span class="p">(</span><span class="s1">&#39;logreg&#39;</span><span class="p">,</span> <span class="n">LogisticRegression</span><span class="p">())])</span>
+    <span class="n">lr_pipeline</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+    <span class="n">y_proba_lr</span> <span class="o">=</span> <span class="n">lr_pipeline</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+    <span class="n">metrics</span><span class="p">[</span><span class="n">imbalance</span><span class="p">][</span><span class="s1">&#39;logreg_l2&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">compute_metrics_bootstrap</span><span class="p">(</span><span class="n">y_true</span> <span class="o">=</span> <span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span> <span class="o">=</span> <span class="n">y_proba_lr</span><span class="p">[:,</span><span class="mi">1</span><span class="p">])</span>
+    
+    <span class="c1"># Logistic Regression L1</span>
+    <span class="n">lr_pipeline_2</span> <span class="o">=</span> <span class="n">Pipeline</span><span class="p">([(</span><span class="s1">&#39;scaler&#39;</span><span class="p">,</span> <span class="n">StandardScaler</span><span class="p">()),</span>
+                            <span class="p">(</span><span class="s1">&#39;logreg&#39;</span><span class="p">,</span> <span class="n">LogisticRegression</span><span class="p">(</span><span class="n">penalty</span><span class="o">=</span> <span class="s1">&#39;l1&#39;</span><span class="p">,</span> <span class="n">solver</span> <span class="o">=</span> <span class="s1">&#39;saga&#39;</span><span class="p">,</span> <span class="n">max_iter</span> <span class="o">=</span> <span class="mi">200</span><span class="p">))])</span>
+    <span class="n">lr_pipeline_2</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+    <span class="n">y_proba_lr_2</span> <span class="o">=</span> <span class="n">lr_pipeline_2</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+    <span class="n">metrics</span><span class="p">[</span><span class="n">imbalance</span><span class="p">][</span><span class="s1">&#39;logreg_l1&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">compute_metrics_bootstrap</span><span class="p">(</span><span class="n">y_true</span> <span class="o">=</span> <span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span> <span class="o">=</span> <span class="n">y_proba_lr_2</span><span class="p">[:,</span><span class="mi">1</span><span class="p">])</span>
+    
+    <span class="c1"># Random Forest</span>
+    <span class="n">rf_clf</span> <span class="o">=</span> <span class="n">RandomForestClassifier</span><span class="p">()</span>
+    <span class="n">rf_clf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+    <span class="n">y_proba_rf</span> <span class="o">=</span> <span class="n">rf_clf</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+    <span class="n">metrics</span><span class="p">[</span><span class="n">imbalance</span><span class="p">][</span><span class="s1">&#39;rf&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">compute_metrics_bootstrap</span><span class="p">(</span><span class="n">y_true</span> <span class="o">=</span> <span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span> <span class="o">=</span> <span class="n">y_proba_rf</span><span class="p">[:,</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="c1"># Random Forest class weight</span>
+    <span class="n">rf_clf_2</span> <span class="o">=</span> <span class="n">RandomForestClassifier</span><span class="p">(</span><span class="n">class_weight</span> <span class="o">=</span> <span class="s1">&#39;balanced&#39;</span><span class="p">)</span>
+    <span class="n">rf_clf_2</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+    <span class="n">y_proba_rf_2</span> <span class="o">=</span> <span class="n">rf_clf_2</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+    <span class="n">metrics</span><span class="p">[</span><span class="n">imbalance</span><span class="p">][</span><span class="s1">&#39;rf_2&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">compute_metrics_bootstrap</span><span class="p">(</span><span class="n">y_true</span> <span class="o">=</span> <span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span> <span class="o">=</span> <span class="n">y_proba_rf_2</span><span class="p">[:,</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="c1"># Gradient Boosting Machine</span>
+    <span class="n">gb_clf</span> <span class="o">=</span> <span class="n">HistGradientBoostingClassifier</span><span class="p">()</span>
+    <span class="n">gb_clf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+    <span class="n">y_proba_gb</span> <span class="o">=</span> <span class="n">gb_clf</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+    <span class="n">metrics</span><span class="p">[</span><span class="n">imbalance</span><span class="p">][</span><span class="s1">&#39;gb&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">compute_metrics_bootstrap</span><span class="p">(</span><span class="n">y_true</span> <span class="o">=</span> <span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span> <span class="o">=</span> <span class="n">y_proba_gb</span><span class="p">[:,</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="c1"># Gradient Boosting Machine with fixed max_depth</span>
+    <span class="n">gb_clf_2</span> <span class="o">=</span> <span class="n">HistGradientBoostingClassifier</span><span class="p">(</span><span class="n">max_depth</span> <span class="o">=</span> <span class="mi">5</span><span class="p">)</span>
+    <span class="n">gb_clf_2</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+    <span class="n">y_proba_gb_2</span> <span class="o">=</span> <span class="n">gb_clf_2</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+    <span class="n">metrics</span><span class="p">[</span><span class="n">imbalance</span><span class="p">][</span><span class="s1">&#39;gb_2&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">compute_metrics_bootstrap</span><span class="p">(</span><span class="n">y_true</span> <span class="o">=</span> <span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span> <span class="o">=</span> <span class="n">y_proba_gb_2</span><span class="p">[:,</span><span class="mi">1</span><span class="p">])</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Experiment ended!&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<script type="application/vnd.jupyter.widget-view+json">
+{"model_id": "e459cf36e59940aaa16eac13e93d4954", "version_major": 2, "version_minor": 0}
+</script><div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Minority class proportion: 0.2
+	Log Regression L2 ...
+	Log Regression L1 ...
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/Users/c85538a/anaconda3/envs/ibc/lib/python3.9/site-packages/sklearn/linear_model/_sag.py:350: ConvergenceWarning: The max_iter was reached which means the coef_ did not converge
+  warnings.warn(
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>	Random Forest ...
+	Random Forest w/ class weight...
+	Gradient Boosting ...
+	Gradient Boosting w/ fixed max depth...
+Minority class proportion: 0.1
+	Log Regression L2 ...
+	Log Regression L1 ...
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/Users/c85538a/anaconda3/envs/ibc/lib/python3.9/site-packages/sklearn/linear_model/_sag.py:350: ConvergenceWarning: The max_iter was reached which means the coef_ did not converge
+  warnings.warn(
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>	Random Forest ...
+	Random Forest w/ class weight...
+	Gradient Boosting ...
+	Gradient Boosting w/ fixed max depth...
+Minority class proportion: 0.05
+	Log Regression L2 ...
+	Log Regression L1 ...
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/Users/c85538a/anaconda3/envs/ibc/lib/python3.9/site-packages/sklearn/linear_model/_sag.py:350: ConvergenceWarning: The max_iter was reached which means the coef_ did not converge
+  warnings.warn(
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>	Random Forest ...
+	Random Forest w/ class weight...
+	Gradient Boosting ...
+	Gradient Boosting w/ fixed max depth...
+Minority class proportion: 0.01
+	Log Regression L2 ...
+	Log Regression L1 ...
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/Users/c85538a/anaconda3/envs/ibc/lib/python3.9/site-packages/sklearn/linear_model/_sag.py:350: ConvergenceWarning: The max_iter was reached which means the coef_ did not converge
+  warnings.warn(
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>	Random Forest ...
+	Random Forest w/ class weight...
+	Gradient Boosting ...
+	Gradient Boosting w/ fixed max depth...
+Minority class proportion: 0.005
+	Log Regression L2 ...
+	Log Regression L1 ...
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/Users/c85538a/anaconda3/envs/ibc/lib/python3.9/site-packages/sklearn/linear_model/_sag.py:350: ConvergenceWarning: The max_iter was reached which means the coef_ did not converge
+  warnings.warn(
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>	Random Forest ...
+	Random Forest w/ class weight...
+	Gradient Boosting ...
+	Gradient Boosting w/ fixed max depth...
+Minority class proportion: 0.002
+	Log Regression L2 ...
+	Log Regression L1 ...
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/Users/c85538a/anaconda3/envs/ibc/lib/python3.9/site-packages/sklearn/linear_model/_sag.py:350: ConvergenceWarning: The max_iter was reached which means the coef_ did not converge
+  warnings.warn(
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>	Random Forest ...
+	Random Forest w/ class weight...
+	Gradient Boosting ...
+	Gradient Boosting w/ fixed max depth...
+end
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">metric_4_display</span> <span class="o">=</span> <span class="s1">&#39;roc_auc&#39;</span>
+<span class="n">colors</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;logreg_l2&#39;</span><span class="p">:</span> <span class="s1">&#39;C0&#39;</span><span class="p">,</span>
+          <span class="s1">&#39;logreg_l1&#39;</span><span class="p">:</span> <span class="s1">&#39;C1&#39;</span><span class="p">,</span>
+          <span class="s1">&#39;rf&#39;</span><span class="p">:</span> <span class="s1">&#39;C2&#39;</span><span class="p">,</span>
+          <span class="s1">&#39;rf_2&#39;</span><span class="p">:</span> <span class="s1">&#39;C3&#39;</span><span class="p">,</span>
+          <span class="s1">&#39;gb&#39;</span><span class="p">:</span> <span class="s1">&#39;C4&#39;</span><span class="p">,</span>
+          <span class="s1">&#39;gb_2&#39;</span><span class="p">:</span> <span class="s1">&#39;C5&#39;</span><span class="p">}</span>
+<span class="n">f</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">dpi</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span> <span class="n">figsize</span> <span class="o">=</span> <span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="mi">5</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">model_name</span><span class="p">,</span> <span class="n">color</span> <span class="ow">in</span> <span class="n">colors</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="n">plot_metric_evolution</span><span class="p">(</span><span class="n">metrics</span><span class="p">,</span> <span class="n">model_name</span><span class="p">,</span> <span class="n">metric_4_display</span><span class="o">=</span> <span class="n">metric_4_display</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="n">color</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">ax</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span> <span class="o">=</span> <span class="s1">&#39;best&#39;</span><span class="p">,</span> <span class="n">frameon</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">axis</span> <span class="o">=</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.4</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">metric_4_display</span><span class="o">.</span><span class="n">upper</span><span class="p">())</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Census Income dataset&#39;</span><span class="p">)</span>
+<span class="n">clean_ax</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/pablo-baseline-experiment_21_0.png" src="../_images/pablo-baseline-experiment_21_0.png" />
+</div>
+</div>
+<p>The above figure suggests, once again, that both versions of the Logistic Regression are more stable as the class imbalance gets stronger. Morevoer, the L1 regularized logistic regression appears to perform better than its L2 counterpart in regions where imbalance gets more extreme.</p>
+</section>
+<section id="spam-e-mail-dataset">
+<h3>Spam e-mail dataset<a class="headerlink" href="#spam-e-mail-dataset" title="Permalink to this headline">#</a></h3>
+<p>The last <em>real-life</em> dataset that we will use is related to classifying whether an e-mail is spam or not.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">spam_feature_names</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">spam_df</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="nb">set</span><span class="p">([</span><span class="s1">&#39;target&#39;</span><span class="p">]))</span>
+<span class="n">metrics</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">imbalances</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.35</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.06</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.006</span><span class="p">]</span>
+<span class="n">random_state</span> <span class="o">=</span> <span class="mi">42</span>
+<span class="k">for</span> <span class="n">imbalance</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">imbalances</span><span class="p">):</span>
+    <span class="n">metrics</span><span class="p">[</span><span class="n">imbalance</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="c1"># generate imbalanced dataset</span>
+    <span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">undersample</span><span class="p">(</span><span class="n">spam_df</span><span class="p">[</span><span class="n">spam_feature_names</span><span class="p">],</span> <span class="n">spam_df</span><span class="p">[</span><span class="s1">&#39;target&#39;</span><span class="p">],</span> <span class="n">d</span> <span class="o">=</span> <span class="n">imbalance</span><span class="p">)</span>
+    <span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="n">random_state</span><span class="p">,</span> <span class="n">stratify</span> <span class="o">=</span> <span class="n">y</span><span class="p">,</span> <span class="n">test_size</span> <span class="o">=</span> <span class="mf">0.4</span><span class="p">)</span>
+    
+    <span class="c1"># Logistic Regression L2</span>
+    <span class="n">lr_pipeline</span> <span class="o">=</span> <span class="n">Pipeline</span><span class="p">([(</span><span class="s1">&#39;scaler&#39;</span><span class="p">,</span> <span class="n">StandardScaler</span><span class="p">()),</span>
+                            <span class="p">(</span><span class="s1">&#39;logreg&#39;</span><span class="p">,</span> <span class="n">LogisticRegression</span><span class="p">())])</span>
+    <span class="n">lr_pipeline</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+    <span class="n">y_proba_lr</span> <span class="o">=</span> <span class="n">lr_pipeline</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+    <span class="n">metrics</span><span class="p">[</span><span class="n">imbalance</span><span class="p">][</span><span class="s1">&#39;logreg_l2&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">compute_metrics_bootstrap</span><span class="p">(</span><span class="n">y_true</span> <span class="o">=</span> <span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span> <span class="o">=</span> <span class="n">y_proba_lr</span><span class="p">[:,</span><span class="mi">1</span><span class="p">])</span>
+    
+    <span class="c1"># Logistic Regression L1</span>
+    <span class="n">lr_pipeline_2</span> <span class="o">=</span> <span class="n">Pipeline</span><span class="p">([(</span><span class="s1">&#39;scaler&#39;</span><span class="p">,</span> <span class="n">StandardScaler</span><span class="p">()),</span>
+                            <span class="p">(</span><span class="s1">&#39;logreg&#39;</span><span class="p">,</span> <span class="n">LogisticRegression</span><span class="p">(</span><span class="n">penalty</span><span class="o">=</span> <span class="s1">&#39;l1&#39;</span><span class="p">,</span> <span class="n">solver</span> <span class="o">=</span> <span class="s1">&#39;saga&#39;</span><span class="p">,</span> <span class="n">max_iter</span> <span class="o">=</span> <span class="mi">200</span><span class="p">))])</span>
+    <span class="n">lr_pipeline_2</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+    <span class="n">y_proba_lr_2</span> <span class="o">=</span> <span class="n">lr_pipeline_2</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+    <span class="n">metrics</span><span class="p">[</span><span class="n">imbalance</span><span class="p">][</span><span class="s1">&#39;logreg_l1&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">compute_metrics_bootstrap</span><span class="p">(</span><span class="n">y_true</span> <span class="o">=</span> <span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span> <span class="o">=</span> <span class="n">y_proba_lr_2</span><span class="p">[:,</span><span class="mi">1</span><span class="p">])</span>
+    
+    <span class="c1"># Random Forest</span>
+    <span class="n">rf_clf</span> <span class="o">=</span> <span class="n">RandomForestClassifier</span><span class="p">()</span>
+    <span class="n">rf_clf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+    <span class="n">y_proba_rf</span> <span class="o">=</span> <span class="n">rf_clf</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+    <span class="n">metrics</span><span class="p">[</span><span class="n">imbalance</span><span class="p">][</span><span class="s1">&#39;rf&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">compute_metrics_bootstrap</span><span class="p">(</span><span class="n">y_true</span> <span class="o">=</span> <span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span> <span class="o">=</span> <span class="n">y_proba_rf</span><span class="p">[:,</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="c1"># Random Forest class weight</span>
+    <span class="n">rf_clf_2</span> <span class="o">=</span> <span class="n">RandomForestClassifier</span><span class="p">(</span><span class="n">class_weight</span> <span class="o">=</span> <span class="s1">&#39;balanced&#39;</span><span class="p">)</span>
+    <span class="n">rf_clf_2</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+    <span class="n">y_proba_rf_2</span> <span class="o">=</span> <span class="n">rf_clf_2</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+    <span class="n">metrics</span><span class="p">[</span><span class="n">imbalance</span><span class="p">][</span><span class="s1">&#39;rf_2&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">compute_metrics_bootstrap</span><span class="p">(</span><span class="n">y_true</span> <span class="o">=</span> <span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span> <span class="o">=</span> <span class="n">y_proba_rf_2</span><span class="p">[:,</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="c1"># Gradient Boosting Machine</span>
+    <span class="n">gb_clf</span> <span class="o">=</span> <span class="n">HistGradientBoostingClassifier</span><span class="p">()</span>
+    <span class="n">gb_clf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+    <span class="n">y_proba_gb</span> <span class="o">=</span> <span class="n">gb_clf</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+    <span class="n">metrics</span><span class="p">[</span><span class="n">imbalance</span><span class="p">][</span><span class="s1">&#39;gb&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">compute_metrics_bootstrap</span><span class="p">(</span><span class="n">y_true</span> <span class="o">=</span> <span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span> <span class="o">=</span> <span class="n">y_proba_gb</span><span class="p">[:,</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="c1"># Gradient Boosting Machine with fixed max_depth</span>
+    <span class="n">gb_clf_2</span> <span class="o">=</span> <span class="n">HistGradientBoostingClassifier</span><span class="p">(</span><span class="n">max_depth</span> <span class="o">=</span> <span class="mi">5</span><span class="p">)</span>
+    <span class="n">gb_clf_2</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+    <span class="n">y_proba_gb_2</span> <span class="o">=</span> <span class="n">gb_clf_2</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+    <span class="n">metrics</span><span class="p">[</span><span class="n">imbalance</span><span class="p">][</span><span class="s1">&#39;gb_2&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">compute_metrics_bootstrap</span><span class="p">(</span><span class="n">y_true</span> <span class="o">=</span> <span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span> <span class="o">=</span> <span class="n">y_proba_gb_2</span><span class="p">[:,</span><span class="mi">1</span><span class="p">])</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Experiment ended!&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<script type="application/vnd.jupyter.widget-view+json">
+{"model_id": "7114d00635e3478e9b45fbc143bec02d", "version_major": 2, "version_minor": 0}
+</script><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/var/folders/b5/2y0s6nqs0lbf7n8b47ll_3j40000gs/T/ipykernel_41063/2121354437.py:8: FutureWarning: Passing a set as an indexer is deprecated and will raise in a future version. Use a list instead.
+  X, y = undersample(spam_df[spam_feature_names], spam_df[&#39;target&#39;], d = imbalance)
+/Users/c85538a/anaconda3/envs/ibc/lib/python3.9/site-packages/sklearn/linear_model/_sag.py:350: ConvergenceWarning: The max_iter was reached which means the coef_ did not converge
+  warnings.warn(
+/var/folders/b5/2y0s6nqs0lbf7n8b47ll_3j40000gs/T/ipykernel_41063/2121354437.py:8: FutureWarning: Passing a set as an indexer is deprecated and will raise in a future version. Use a list instead.
+  X, y = undersample(spam_df[spam_feature_names], spam_df[&#39;target&#39;], d = imbalance)
+/Users/c85538a/anaconda3/envs/ibc/lib/python3.9/site-packages/sklearn/linear_model/_sag.py:350: ConvergenceWarning: The max_iter was reached which means the coef_ did not converge
+  warnings.warn(
+/var/folders/b5/2y0s6nqs0lbf7n8b47ll_3j40000gs/T/ipykernel_41063/2121354437.py:8: FutureWarning: Passing a set as an indexer is deprecated and will raise in a future version. Use a list instead.
+  X, y = undersample(spam_df[spam_feature_names], spam_df[&#39;target&#39;], d = imbalance)
+/Users/c85538a/anaconda3/envs/ibc/lib/python3.9/site-packages/sklearn/linear_model/_sag.py:350: ConvergenceWarning: The max_iter was reached which means the coef_ did not converge
+  warnings.warn(
+/var/folders/b5/2y0s6nqs0lbf7n8b47ll_3j40000gs/T/ipykernel_41063/2121354437.py:8: FutureWarning: Passing a set as an indexer is deprecated and will raise in a future version. Use a list instead.
+  X, y = undersample(spam_df[spam_feature_names], spam_df[&#39;target&#39;], d = imbalance)
+/Users/c85538a/anaconda3/envs/ibc/lib/python3.9/site-packages/sklearn/linear_model/_sag.py:350: ConvergenceWarning: The max_iter was reached which means the coef_ did not converge
+  warnings.warn(
+/var/folders/b5/2y0s6nqs0lbf7n8b47ll_3j40000gs/T/ipykernel_41063/2121354437.py:8: FutureWarning: Passing a set as an indexer is deprecated and will raise in a future version. Use a list instead.
+  X, y = undersample(spam_df[spam_feature_names], spam_df[&#39;target&#39;], d = imbalance)
+/Users/c85538a/anaconda3/envs/ibc/lib/python3.9/site-packages/sklearn/linear_model/_sag.py:350: ConvergenceWarning: The max_iter was reached which means the coef_ did not converge
+  warnings.warn(
+/var/folders/b5/2y0s6nqs0lbf7n8b47ll_3j40000gs/T/ipykernel_41063/2121354437.py:8: FutureWarning: Passing a set as an indexer is deprecated and will raise in a future version. Use a list instead.
+  X, y = undersample(spam_df[spam_feature_names], spam_df[&#39;target&#39;], d = imbalance)
+/Users/c85538a/anaconda3/envs/ibc/lib/python3.9/site-packages/sklearn/linear_model/_sag.py:350: ConvergenceWarning: The max_iter was reached which means the coef_ did not converge
+  warnings.warn(
+/var/folders/b5/2y0s6nqs0lbf7n8b47ll_3j40000gs/T/ipykernel_41063/2121354437.py:8: FutureWarning: Passing a set as an indexer is deprecated and will raise in a future version. Use a list instead.
+  X, y = undersample(spam_df[spam_feature_names], spam_df[&#39;target&#39;], d = imbalance)
+/Users/c85538a/anaconda3/envs/ibc/lib/python3.9/site-packages/sklearn/linear_model/_sag.py:350: ConvergenceWarning: The max_iter was reached which means the coef_ did not converge
+  warnings.warn(
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Experiment ended!
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">metric_4_display</span> <span class="o">=</span> <span class="s1">&#39;roc_auc&#39;</span>
+<span class="n">colors</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;logreg_l2&#39;</span><span class="p">:</span> <span class="s1">&#39;C0&#39;</span><span class="p">,</span>
+          <span class="s1">&#39;logreg_l1&#39;</span><span class="p">:</span> <span class="s1">&#39;C1&#39;</span><span class="p">,</span>
+          <span class="s1">&#39;rf&#39;</span><span class="p">:</span> <span class="s1">&#39;C2&#39;</span><span class="p">,</span>
+          <span class="s1">&#39;rf_2&#39;</span><span class="p">:</span> <span class="s1">&#39;C3&#39;</span><span class="p">,</span>
+          <span class="s1">&#39;gb&#39;</span><span class="p">:</span> <span class="s1">&#39;C4&#39;</span><span class="p">,</span>
+          <span class="s1">&#39;gb_2&#39;</span><span class="p">:</span> <span class="s1">&#39;C5&#39;</span><span class="p">}</span>
+<span class="n">f</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">dpi</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span> <span class="n">figsize</span> <span class="o">=</span> <span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="mi">5</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">model_name</span><span class="p">,</span> <span class="n">color</span> <span class="ow">in</span> <span class="n">colors</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="n">plot_metric_evolution</span><span class="p">(</span><span class="n">metrics</span><span class="p">,</span> <span class="n">model_name</span><span class="p">,</span> <span class="n">metric_4_display</span><span class="o">=</span> <span class="n">metric_4_display</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="n">color</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">ax</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span> <span class="o">=</span> <span class="s1">&#39;best&#39;</span><span class="p">,</span> <span class="n">frameon</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">axis</span> <span class="o">=</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.4</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">metric_4_display</span><span class="o">.</span><span class="n">upper</span><span class="p">())</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Spam e-mail dataset&#39;</span><span class="p">)</span>
+<span class="n">clean_ax</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/pablo-baseline-experiment_25_0.png" src="../_images/pablo-baseline-experiment_25_0.png" />
+</div>
+</div>
+</section>
+</section>
+<section id="conclusions">
+<h2>Conclusions<a class="headerlink" href="#conclusions" title="Permalink to this headline">#</a></h2>
+<p>Both experiments 1 and 2 (synthetic dataset and census income dataset) suggest that a simple Logistic Regression with L1 or L2 regularization mantain a somewhat consistent performance even when the imbalance gets more extreme, as in the case of the synthetic dataset. Both logistic regressions in the last experiment (with spam e-mail data) are the worst performers most of the time, until the imbalance begins to get extreme (0.01). Again, logistic regression appears to have a consistent performance along the imbalance scenarios. Thus, we think it is safe to say that a good baseline model for imbalanced classification problems is a <strong>Logistic Regression</strong>. In some cases L1 or L2 regularization can perform better, and this can depend on the nature of the problem. However, an L1 regularization is advised if we additionally want to perform some feature selection along the modelling process.</p>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            kernelName: "python3",
+            path: "./notebooks"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+              </div>
+              
+            </main>
+            <footer class="footer-article noprint">
+                
+    <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+    <a class='left-prev' id="prev-link" href="Metrics%204%20-%20Precision%20and%20Recall.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">Precision, recall, and <span class="math notranslate nohighlight">\(F\)</span>-scores</p>
+        </div>
+    </a>
+    <a class='right-next' id="next-link" href="Feature%20selection%20methods.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Feature selection via the Boruta algorithm</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
+</div>
+            </footer>
+        </div>
+    </div>
+    <div class="footer-content row">
+        <footer class="col footer"><p>
+  
+    By Experian LatAm DataLab<br/>
+  
+      &copy; Copyright 2022.<br/>
+</p>
+        </footer>
+    </div>
+    
+</div>
+
+
+      </div>
+    </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+
+
+  </body>
+</html>

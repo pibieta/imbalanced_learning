@@ -1,0 +1,1219 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Classification metrics &#8212; The Practical Man&#39;s Guide to Binary Imbalanced Classification</title>
+    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
+    
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="A complement to the ROC: the lift curve (aka CAP curve)" href="Metrics%202%20-%20Lift%20curve.html" />
+    <link rel="prev" title="Loss functions" href="Loss%20functions.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+<!-- Checkboxes to toggle the left sidebar -->
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
+<label class="overlay overlay-navbar" for="__navigation">
+    <div class="visually-hidden">Toggle navigation sidebar</div>
+</label>
+<!-- Checkboxes to toggle the in-page toc -->
+<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
+<label class="overlay overlay-pagetoc" for="__page-toc">
+    <div class="visually-hidden">Toggle in-page Table of Contents</div>
+</label>
+<!-- Headers at the top -->
+<div class="announcement header-item noprint"></div>
+<div class="header header-item noprint"></div>
+
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<!-- Sidebar -->
+<div class="bd-sidebar noprint" id="site-navigation">
+    <div class="bd-sidebar__content">
+        <div class="bd-sidebar__top"><div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="../index.html">
+      
+        <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
+        
+      
+      
+      <img src="../_static/DataLab-logo-white.png" class="logo" alt="logo">
+      
+      
+      <h1 class="site-logo" id="site-title">The Practical Man's Guide to Binary Imbalanced Classification</h1>
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="Introduction.html">
+                    Introduction
+                </a>
+            </li>
+        </ul>
+        <ul class="current nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="Loss%20functions.html">
+   Loss functions
+  </a>
+ </li>
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   Classification metrics
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="Metrics%202%20-%20Lift%20curve.html">
+   A complement to the ROC: the lift curve (aka CAP curve)
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="Metrics%203%20-%20KS%20score.html">
+   The KS score and Youden’s J
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="Metrics%204%20-%20Precision%20and%20Recall.html">
+   Precision, recall, and
+   <span class="math notranslate nohighlight">
+    \(F\)
+   </span>
+   -scores
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="pablo-baseline-experiment.html">
+   Choosing a baseline model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="Feature%20selection%20methods.html">
+   Feature selection via the Boruta algorithm
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="Interpretability.html">
+   How imbalanced learning affects the interpretability of a model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="Calibration.html">
+   Model calibration part I - reliability assessment
+  </a>
+ </li>
+</ul>
+
+    </div>
+</nav></div>
+        <div class="bd-sidebar__bottom">
+             <!-- To handle the deprecated key -->
+            
+            <div class="navbar_extra_footer">
+            Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+            </div>
+            
+        </div>
+    </div>
+    <div id="rtd-footer-container"></div>
+</div>
+
+
+          
+
+
+          
+<!-- A tiny helper pixel to detect if we've scrolled -->
+<div class="sbt-scroll-pixel-helper"></div>
+<!-- Main content -->
+<div class="col py-0 content-container">
+    
+    <div class="header-article row sticky-top noprint">
+        
+
+
+
+<div class="col py-1 d-flex header-article-main">
+    <div class="header-article__left">
+        
+        <label for="__navigation"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="right"
+title="Toggle navigation"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-bars"></i>
+  </span>
+
+</label>
+
+        
+    </div>
+    <div class="header-article__right">
+<div class="menu-dropdown menu-dropdown-launch-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Launch interactive content">
+      <i class="fas fa-rocket"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="https://mybinder.org/v2/gh/executablebooks/jupyter-book/master?urlpath=tree/notebooks/Metrics 1 - Intro & ROC AUC.ipynb"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Launch on Binder"
+>
+  
+
+<span class="headerbtn__icon-container">
+  
+    <img src="../_static/images/logo_binder.svg">
+  </span>
+<span class="headerbtn__text-container">Binder</span>
+</a>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+
+<button onclick="toggleFullScreen()"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="bottom"
+title="Fullscreen mode"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+<div class="menu-dropdown menu-dropdown-download-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Download this page">
+      <i class="fas fa-download"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="../_sources/notebooks/Metrics 1 - Intro & ROC AUC.ipynb"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Download source file"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="headerbtn__text-container">.ipynb</span>
+</a>
+
+      </li>
+      
+      <li>
+        
+<button onclick="printPdf(this)"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="left"
+title="Print to PDF"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="headerbtn__text-container">.pdf</span>
+</button>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+<label for="__page-toc"
+  class="headerbtn headerbtn-page-toc"
+  
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-list"></i>
+  </span>
+
+</label>
+
+    </div>
+</div>
+
+<!-- Table of contents -->
+<div class="col-md-3 bd-toc show noprint">
+    <div class="tocsection onthispage pt-5 pb-3">
+        <i class="fas fa-list"></i> Contents
+    </div>
+    <nav id="bd-toc-nav" aria-label="Page">
+        <ul class="visible nav section-nav flex-column">
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#">
+   Classification metrics
+  </a>
+  <ul class="visible nav section-nav flex-column">
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#our-sample-data">
+     Our sample data
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#the-base-ingredient-confusion-matrices">
+     The base ingredient: confusion matrices
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h3 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#a-quick-disclaimer-predict-vs-predict-proba">
+       A quick disclaimer:
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         predict
+        </span>
+       </code>
+       vs.
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         predict_proba
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h3 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#how-well-did-our-model-do">
+       How well did our model do?
+      </a>
+     </li>
+     <li class="toc-h3 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#ratios-of-the-confusion-matrix">
+       Ratios of the confusion matrix
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#the-roc-curve-and-the-roc-auc">
+     The ROC curve and the ROC AUC
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h3 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#constructing-the-roc-curve">
+       Constructing the ROC curve
+      </a>
+      <ul class="nav section-nav flex-column">
+       <li class="toc-h4 nav-item toc-entry">
+        <a class="reference internal nav-link" href="#interpretable-area-under-the-curve-roc-auc">
+         1. Interpretable area under the curve (ROC AUC)
+        </a>
+       </li>
+       <li class="toc-h4 nav-item toc-entry">
+        <a class="reference internal nav-link" href="#invariance-under-class-imbalance">
+         2. Invariance under class imbalance
+        </a>
+       </li>
+       <li class="toc-h4 nav-item toc-entry">
+        <a class="reference internal nav-link" href="#existence-of-a-universal-baseline">
+         3. Existence of a universal baseline
+        </a>
+       </li>
+       <li class="toc-h4 nav-item toc-entry">
+        <a class="reference internal nav-link" href="#convexity">
+         4. Convexity
+        </a>
+       </li>
+      </ul>
+     </li>
+     <li class="toc-h3 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#is-this-cheating">
+       Is this cheating?
+      </a>
+     </li>
+     <li class="toc-h3 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#takeaways">
+       Takeaways
+      </a>
+     </li>
+    </ul>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#appendix">
+   Appendix:
+  </a>
+  <ul class="visible nav section-nav flex-column">
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#proof-of-probabilistic-interpretation-of-the-roc-auc">
+     Proof of probabilistic interpretation of the ROC AUC
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#further-properties-of-the-roc-curve">
+     Further properties of the ROC curve
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#references">
+     References:
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#further-reading">
+     Further reading:
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+    </nav>
+</div>
+    </div>
+    <div class="article row">
+        <div class="col pl-md-3 pl-lg-5 content-container">
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>Classification metrics</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#">
+   Classification metrics
+  </a>
+  <ul class="visible nav section-nav flex-column">
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#our-sample-data">
+     Our sample data
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#the-base-ingredient-confusion-matrices">
+     The base ingredient: confusion matrices
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h3 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#a-quick-disclaimer-predict-vs-predict-proba">
+       A quick disclaimer:
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         predict
+        </span>
+       </code>
+       vs.
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         predict_proba
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h3 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#how-well-did-our-model-do">
+       How well did our model do?
+      </a>
+     </li>
+     <li class="toc-h3 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#ratios-of-the-confusion-matrix">
+       Ratios of the confusion matrix
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#the-roc-curve-and-the-roc-auc">
+     The ROC curve and the ROC AUC
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h3 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#constructing-the-roc-curve">
+       Constructing the ROC curve
+      </a>
+      <ul class="nav section-nav flex-column">
+       <li class="toc-h4 nav-item toc-entry">
+        <a class="reference internal nav-link" href="#interpretable-area-under-the-curve-roc-auc">
+         1. Interpretable area under the curve (ROC AUC)
+        </a>
+       </li>
+       <li class="toc-h4 nav-item toc-entry">
+        <a class="reference internal nav-link" href="#invariance-under-class-imbalance">
+         2. Invariance under class imbalance
+        </a>
+       </li>
+       <li class="toc-h4 nav-item toc-entry">
+        <a class="reference internal nav-link" href="#existence-of-a-universal-baseline">
+         3. Existence of a universal baseline
+        </a>
+       </li>
+       <li class="toc-h4 nav-item toc-entry">
+        <a class="reference internal nav-link" href="#convexity">
+         4. Convexity
+        </a>
+       </li>
+      </ul>
+     </li>
+     <li class="toc-h3 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#is-this-cheating">
+       Is this cheating?
+      </a>
+     </li>
+     <li class="toc-h3 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#takeaways">
+       Takeaways
+      </a>
+     </li>
+    </ul>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#appendix">
+   Appendix:
+  </a>
+  <ul class="visible nav section-nav flex-column">
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#proof-of-probabilistic-interpretation-of-the-roc-auc">
+     Proof of probabilistic interpretation of the ROC AUC
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#further-properties-of-the-roc-curve">
+     Further properties of the ROC curve
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#references">
+     References:
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#further-reading">
+     Further reading:
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            <main id="main-content" role="main">
+                
+              <div>
+                
+  <section class="tex2jax_ignore mathjax_ignore" id="classification-metrics">
+<h1>Classification metrics<a class="headerlink" href="#classification-metrics" title="Permalink to this headline">#</a></h1>
+<p>We focus our discussion on <strong>threshold-independent metrics</strong>.</p>
+<p>Recall that the threshold is the number <span class="math notranslate nohighlight">\(\lambda\)</span> such that we set the model’s prediction to 1 if the score is greater than <span class="math notranslate nohighlight">\(\lambda\)</span>, and 0 otherwise. Mathematically, given a machine learning model <span class="math notranslate nohighlight">\(f\)</span> and a feature vector <span class="math notranslate nohighlight">\(x\)</span>, a binarized prediction can be built by comparing the model output (the <strong>score</strong>) to the threshold:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\hat{y}(x) = \begin{cases}
+1 &amp; \mbox{if } \hat{f}(x) \geq \lambda \\
+0 &amp; \mbox{if } \hat{f}(x) &lt; \lambda
+\end{cases}
+\end{split}\]</div>
+<p>With a fixed threshold, we can build confusion matrices and all metrics which derive from them: accuracy, precision, recall, F1, MCC, among others.</p>
+<p>There are two reasons to focus on metrics which do not depend on a threshold:</p>
+<ol class="simple">
+<li><p>In the modelling pipeline, finding a continuous score model comes first - only after that comes defining a threshold. Usually, one picks the best model in a threshold-independent way. If the application requires them to define a binary output (which is not always the case), then one tries to find a good threshold <em>after</em> the model has been chosen.</p></li>
+<li><p>There is no “best” threshold - it will be found as the result of a calculation including trade-offs (between false positives vs false negatives, for example). This is, usually, very dependent on specific business needs.</p></li>
+</ol>
+<section id="our-sample-data">
+<h2>Our sample data<a class="headerlink" href="#our-sample-data" title="Permalink to this headline">#</a></h2>
+<p>Throughout this section, we will use the following simulated data with 10 features and 5000 data points, out of which only 8 are meaningful:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">sklearn.datasets</span> <span class="kn">import</span> <span class="n">make_classification</span>
+<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">train_test_split</span>
+
+<span class="c1"># create dummy classification problem</span>
+<span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">make_classification</span><span class="p">(</span><span class="n">n_samples</span><span class="o">=</span><span class="mi">5000</span><span class="p">,</span> <span class="n">n_features</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">n_informative</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">n_redundant</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_repeated</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> 
+                           <span class="n">random_state</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span> <span class="c1"># for reproducibility</span>
+
+<span class="c1"># split train test</span>
+<span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="the-base-ingredient-confusion-matrices">
+<h2>The base ingredient: confusion matrices<a class="headerlink" href="#the-base-ingredient-confusion-matrices" title="Permalink to this headline">#</a></h2>
+<p>All metrics will be build from a single fundamental element: the confusion matrix.</p>
+<p>Basically, assume for a second you have an estimator <span class="math notranslate nohighlight">\(\hat y(x)\)</span>. This supposes you have created a score function and chosen a threshold, so that <span class="math notranslate nohighlight">\(\hat y(x)\)</span> will give 1’s and 0’s.</p>
+<p>Now, given an observation <span class="math notranslate nohighlight">\((x, y)\)</span> (with <span class="math notranslate nohighlight">\(y\)</span> equal to 0 or 1) there are <strong>four possible outcomes</strong> when we compare the real <span class="math notranslate nohighlight">\(y\)</span> to the prediction <span class="math notranslate nohighlight">\(\hat y(x)\)</span>:</p>
+<ol class="simple">
+<li><p><span class="math notranslate nohighlight">\(y=0\)</span> and <span class="math notranslate nohighlight">\(\hat y = 0\)</span>: right prediction. This is called a <strong>true negative (TN)</strong> (since we also call the class 0 the “negative class”)</p></li>
+<li><p><span class="math notranslate nohighlight">\(y=0\)</span> and <span class="math notranslate nohighlight">\(\hat y = 1\)</span>: wrong prediction. This is called a <strong>false positive (FP)</strong> (since we falsely predicted the class 1, also known as the positive class)</p></li>
+<li><p><span class="math notranslate nohighlight">\(y=1\)</span> and <span class="math notranslate nohighlight">\(\hat y = 0\)</span>: wrong prediction. This is called a <strong>false negative (FN)</strong>.</p></li>
+<li><p><span class="math notranslate nohighlight">\(y=1\)</span> and <span class="math notranslate nohighlight">\(\hat y = 1\)</span>: right prediction. This is called a <strong>true positive (TP)</strong>.</p></li>
+</ol>
+<p>These 4 possibilities can be stored in a 2x2 matrix called the <strong>confusion matrix</strong>. We illustrate below how to build one in <code class="docutils literal notranslate"><span class="pre">scikit-learn</span></code>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">confusion_matrix</span><span class="p">,</span> <span class="n">ConfusionMatrixDisplay</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pylab</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="c1"># assume we have a series of observed and predicted labels</span>
+<span class="n">y_real</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">y_pred</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>
+
+<span class="c1"># first we build a confusion matrix object...</span>
+<span class="n">matrix</span> <span class="o">=</span> <span class="n">confusion_matrix</span><span class="p">(</span><span class="n">y_real</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)</span>
+
+<span class="c1">#... which we then plot</span>
+<span class="n">ConfusionMatrixDisplay</span><span class="p">(</span><span class="n">matrix</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/Metrics 1 - Intro &amp; ROC AUC_8_0.png" src="../_images/Metrics 1 - Intro &amp; ROC AUC_8_0.png" />
+</div>
+</div>
+<section id="a-quick-disclaimer-predict-vs-predict-proba">
+<h3>A quick disclaimer: <code class="docutils literal notranslate"><span class="pre">predict</span></code> vs. <code class="docutils literal notranslate"><span class="pre">predict_proba</span></code><a class="headerlink" href="#a-quick-disclaimer-predict-vs-predict-proba" title="Permalink to this headline">#</a></h3>
+<p>In <code class="docutils literal notranslate"><span class="pre">scikit-learn</span></code> (and <code class="docutils literal notranslate"><span class="pre">scikit-learn</span></code>-friendly libraries such as XGBoost and LightGBM) all classifiers contain at last two methods: <code class="docutils literal notranslate"><span class="pre">predict</span></code> and <code class="docutils literal notranslate"><span class="pre">predict_proba</span></code>.</p>
+<p>Their difference is straightforward: <code class="docutils literal notranslate"><span class="pre">predict</span></code> returns the predicted classes (0 or 1 in the binary case) whereas <code class="docutils literal notranslate"><span class="pre">predict_proba</span></code> returns a float between 0 and 1, with the score.</p>
+<blockquote>
+<div><p>For most models, the output of <code class="docutils literal notranslate"><span class="pre">predict_proba</span></code> is <strong>not</strong> a probability, but simply a score. We will discuss this better in the calibration section.</p>
+</div></blockquote>
+<p>To exemplify this, let’s use a simple logistic regression model and see how it works.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.linear_model</span> <span class="kn">import</span> <span class="n">LogisticRegression</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">LogisticRegression</span><span class="p">()</span>
+<span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>LogisticRegression()
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">X_train</span><span class="p">[</span><span class="mi">25</span><span class="p">,:]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># take one training sample for us to predict</span>
+<span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([1])
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([[0.12682433, 0.87317567]])
+</pre></div>
+</div>
+</div>
+</div>
+<p>What <code class="docutils literal notranslate"><span class="pre">predict_proba</span></code> does is output two values: the probability that the <span class="math notranslate nohighlight">\(y=0\)</span> given <span class="math notranslate nohighlight">\(x\)</span> (12.7% here), and the probability of <span class="math notranslate nohighlight">\(y=1\)</span> given <span class="math notranslate nohighlight">\(x\)</span> (87.3%). In other words, it outputs <span class="math notranslate nohighlight">\((1-\mbox{score}, \mbox{score})\)</span>.</p>
+<blockquote>
+<div><p>Since we are in a binary case, we can just extract the last component via <code class="docutils literal notranslate"><span class="pre">model.predict_proba(x)[:,1]</span></code>, since the 0th component will be fully determined by it. In the multiclass case (with more than two classes) then it is important to have all components given.</p>
+</div></blockquote>
+<p>What <code class="docutils literal notranslate"><span class="pre">predict</span></code> does is to take the result of <code class="docutils literal notranslate"><span class="pre">predict_proba</span></code> and binarize it - essentially by just <strong>applying a threshold of 0.5</strong>! In order to keep things within our control, we recommend to simply use the predicted score via <code class="docutils literal notranslate"><span class="pre">predict_proba</span></code> and then feed it to different metrics.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">y_train_pred</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">X_train</span><span class="p">)[:,</span><span class="mi">1</span><span class="p">]</span>
+<span class="n">y_test_pred</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">X_test</span><span class="p">)[:,</span><span class="mi">1</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="how-well-did-our-model-do">
+<h3>How well did our model do?<a class="headerlink" href="#how-well-did-our-model-do" title="Permalink to this headline">#</a></h3>
+<p>Looking into the documentation, you might be tempted to use the model’s <code class="docutils literal notranslate"><span class="pre">.score</span></code> function:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;&gt;&gt; Don&#39;t use this function&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Train score: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Test score: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span><span class="p">)))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&gt;&gt; Don&#39;t use this function
+Train score: 0.6762857142857143
+Test score: 0.668
+</pre></div>
+</div>
+</div>
+</div>
+<p>But we recommend you to never use the <code class="docutils literal notranslate"><span class="pre">score</span></code> function - since under the hood it calculates accuracies with the <code class="docutils literal notranslate"><span class="pre">predict</span></code> function, which we don’t recommend.</p>
+<p>Instead, we will present you with three useful threshold-independent metrics in what follows: the ROC AUC, average precision, and lift/delinquency curves.</p>
+<blockquote>
+<div><p>We recommend you always use them all for your model assessments.</p>
+</div></blockquote>
+</section>
+<section id="ratios-of-the-confusion-matrix">
+<h3>Ratios of the confusion matrix<a class="headerlink" href="#ratios-of-the-confusion-matrix" title="Permalink to this headline">#</a></h3>
+<p>For now, fix a confusion matrix (this amounts to fixing an estimator <span class="math notranslate nohighlight">\(\hat y(x)\)</span>, or equivalently, to training a score function <span class="math notranslate nohighlight">\(p(x)\)</span> and fixing a threshold). One could ask questions such as: out of all the real positives, how many did we get right? Or, out of all the positives that we predicted, how many were actually positive?</p>
+<p>In most references, you will see these <em>rates</em> defined in terms of elements of the confusion matrix. Here, in order to keep up with the probabilistic language we have been using, we will define them a bit differently.</p>
+<p>[<strong>True positive rate / sensitivity / TPR</strong>] The TPR of an estimator is $<span class="math notranslate nohighlight">\(\mathbb{P}(\hat y(x) = 1 | Y = 1),\)</span>$ that is, the probability that we predict a positive if that was indeed an element of the positive class.</p>
+<p>[<strong>False positive rate, FPR</strong>] The FPR of an estimator is $<span class="math notranslate nohighlight">\(\mathbb{P}(\hat y(x) = 1 | Y = 0),\)</span>$ that is, the probability that we predict a positive for a member of the negative class.</p>
+<p>Similar definitions can be made for the true negative rate and false negative rate, although these tend to be less commonly used.</p>
+<p>[<strong>Calculating TPR from the confusion matrix</strong>] TPR can be approximated from the confusion matrix via</p>
+<div class="math notranslate nohighlight">
+\[\widehat{\mathrm{TPR}} = \frac{\mathrm{\widehat{TP}}}{\mathrm{\widehat{TP}+\widehat{FN}}}\]</div>
+<blockquote>
+<div><p>Proof: from the definition of conditional probability,
+$<span class="math notranslate nohighlight">\(\mathrm{TPR} = \mathbb{P}(\hat y(x) = 1 | y = 1) = \frac{\mathbb{P}(\hat y(x) = 1 \cap y = 1)}{\mathbb{P}(y=1)}.\)</span><span class="math notranslate nohighlight">\( We can break the denominator into \)</span><span class="math notranslate nohighlight">\(\mathbb{P}(y=1) = \mathbb{P}(\hat y(x) = 1 \cap y =1) + \mathbb{P}(\hat y(x)=0 \cap y=1).\)</span><span class="math notranslate nohighlight">\( (see note below on why) Then \)</span><span class="math notranslate nohighlight">\(\mathrm{TPR} = \mathbb{P}(\hat y(x) = 1 | y = 1) = \frac{\mathbb{P}(\hat y(x) = 1 \cap y = 1)}{\mathbb{P}(\hat y(x) = 1 \cap y =1) + \mathbb{P}(\hat y(x)=0 \cap y=1)} = \mathrm{\frac{TP}{TP+FN}}.\)</span><span class="math notranslate nohighlight">\( But we have seen before that \)</span>\mathrm{\widehat{TP}}/N<span class="math notranslate nohighlight">\( is an unbiased estimator for \)</span>\mathbb{P}(\hat y(x) = 1 \cap y = 1)$, and similarly for false negatives, so “plugging hats” on all estimators on the right-hand side yields the final result.</p>
+</div></blockquote>
+<blockquote>
+<div><p>Note: this comes from the general identity <span class="math notranslate nohighlight">\(\mathbb{P}(A) = \sum_i \mathbb{P}(A \cap B_i)\)</span> where each <span class="math notranslate nohighlight">\(B_i\)</span> is independent of the others, and together “reconstruct” <span class="math notranslate nohighlight">\(A\)</span> in the sense that <span class="math notranslate nohighlight">\(A = \cup_i (A \cap B_i)\)</span>. Convince yourself of that drawing a few Venn diagrams</p>
+</div></blockquote>
+<p>[<strong>Calculating FPR from the confusion matrix</strong>] Similar to TPR, one can calculate</p>
+<div class="math notranslate nohighlight">
+\[\mathrm{\widehat{FPR} = \frac{\widehat{FP}}{\widehat{FP} + \widehat{TN}}}\]</div>
+</section>
+</section>
+<section id="the-roc-curve-and-the-roc-auc">
+<h2>The ROC curve and the ROC AUC<a class="headerlink" href="#the-roc-curve-and-the-roc-auc" title="Permalink to this headline">#</a></h2>
+<p>The area under the ROC curve (ROC AUC) is, perhaps surprisingly, both the most used and the least understood metric in machine learning. In what follows we give a mathematically sound treatment of it. The main results will be highlighted, in case you want to skip the heavy math.</p>
+<p><code class="docutils literal notranslate"><span class="pre">scikit-learn</span></code> makes everything seem like it is easy. It is literally just one line in order to calculate the ROC AUC of our model:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">roc_auc_score</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Train ROC AUC: </span><span class="si">{0:.4f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">roc_auc_score</span><span class="p">(</span><span class="n">y_train</span><span class="p">,</span> <span class="n">y_train_pred</span><span class="p">)))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Test ROC AUC: </span><span class="si">{0:.4f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">roc_auc_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_test_pred</span><span class="p">)))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Train ROC AUC: 0.7614
+Test ROC AUC: 0.7458
+</pre></div>
+</div>
+</div>
+</div>
+<p>But it is another thing to understand what is going on under the hood. We explain this below.</p>
+<section id="constructing-the-roc-curve">
+<h3>Constructing the ROC curve<a class="headerlink" href="#constructing-the-roc-curve" title="Permalink to this headline">#</a></h3>
+<p>From now on, we drop the hats on <span class="math notranslate nohighlight">\(\widehat{\mathrm{FPR}}, \widehat{\mathrm{TPR}}\)</span> etc.</p>
+<p>Notice that the whole discussion so far has considered a fixed estimator <span class="math notranslate nohighlight">\(\hat y\)</span>, which in turn means we have a fixed threshold <span class="math notranslate nohighlight">\(\lambda\)</span> such that <span class="math notranslate nohighlight">\(\hat y(x)=1\)</span> if <span class="math notranslate nohighlight">\(f(x) \geq \lambda\)</span> and 0 otherwise.</p>
+<p>Now, we <strong>let <span class="math notranslate nohighlight">\(\lambda\)</span> vary from low to high</strong>, and consider what happens to the <span class="math notranslate nohighlight">\((x=\mathrm{FPR}, y=\mathrm{TPR})\)</span> plane as <span class="math notranslate nohighlight">\(\lambda\)</span> changes.</p>
+<p>[<strong>Definition</strong>] Let <span class="math notranslate nohighlight">\(\mathrm{FPR}(\lambda)\)</span>, <span class="math notranslate nohighlight">\(\mathrm{TPR}(\lambda)\)</span> denote the false &amp; true positive rates at threshold <span class="math notranslate nohighlight">\(\lambda\)</span>. Then, the curve <span class="math notranslate nohighlight">\(\lambda \mapsto (\mathrm{FPR}(\lambda), \mathrm{TPR}(\lambda))\)</span> obtained when <span class="math notranslate nohighlight">\(\lambda\)</span> varies between <span class="math notranslate nohighlight">\(]-\infty, \infty[\)</span> is called the <strong>receiver operating characteristic (ROC) curve</strong>.</p>
+<p>Before we use <code class="docutils literal notranslate"><span class="pre">scikit-learn</span></code> to plot it, let us intuitively understand what behaviors to expect from this curve. Consider the expression</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\hat{y}(x) = \begin{cases}
+1 &amp; \mbox{if } f(x) \geq \lambda \\
+0 &amp; \mbox{if } f(x) &lt; \lambda
+\end{cases}
+\end{split}\]</div>
+<p>When <span class="math notranslate nohighlight">\(\lambda = - \infty\)</span> (or just super small), there is no way that <span class="math notranslate nohighlight">\(f(x) &lt; \lambda\)</span>, and so we never predict 0’s. In other words, our estimator is just <span class="math notranslate nohighlight">\(\hat y(x) \equiv 1\)</span> for all <span class="math notranslate nohighlight">\(x\)</span>. This estimator:</p>
+<ul class="simple">
+<li><p>Gets all members of the positive class <span class="math notranslate nohighlight">\((y=1)\)</span> correctly, so the true positive rate is maximal</p></li>
+<li><p>But it gets all members of the negative class <span class="math notranslate nohighlight">\((y=0)\)</span> wrongly. There are no true negatives nor false negatives.</p></li>
+</ul>
+<p>Hence it is easy to check that <span class="math notranslate nohighlight">\(\mathrm{FPR} = \mathrm{TPR} = 1\)</span>. This marks the point <span class="math notranslate nohighlight">\((1,1)\)</span> in the <span class="math notranslate nohighlight">\(\mathrm{FPR-TPR}\)</span> plane.</p>
+<p>Now go to the other extremum when <span class="math notranslate nohighlight">\(\lambda = +\infty\)</span>. Now the situation is reversed: <span class="math notranslate nohighlight">\(\hat y(x) \equiv 0\)</span> for all <span class="math notranslate nohighlight">\(x\)</span>. Now there are no true nor false positives, so the numerators of both <span class="math notranslate nohighlight">\(\mathrm{TPR, FPR}\)</span> are 0, and we get the point <span class="math notranslate nohighlight">\((0,0)\)</span>. For intermediate values of <span class="math notranslate nohighlight">\(\lambda\)</span>, the curve will live inside the unit square:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">RocCurveDisplay</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">5</span><span class="p">))</span>
+
+<span class="n">RocCurveDisplay</span><span class="o">.</span><span class="n">from_predictions</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_test_pred</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Test ROC&#39;</span><span class="p">)</span>
+<span class="n">RocCurveDisplay</span><span class="o">.</span><span class="n">from_predictions</span><span class="p">(</span><span class="n">y_train</span><span class="p">,</span> <span class="n">y_train_pred</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Train ROC&#39;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/Metrics 1 - Intro &amp; ROC AUC_38_0.png" src="../_images/Metrics 1 - Intro &amp; ROC AUC_38_0.png" />
+</div>
+</div>
+<p>This is the ROC curve. It is a non-decreasing function in the (FPR, TPR) plane, ranging from (0,0) to (1,1). Notice how test and train ROC curves are similar, but different.</p>
+<p>There are <strong>four unique properties satisfied by the ROC curve</strong> which we will discuss going forward:</p>
+<ol class="simple">
+<li><p>Interpretable area under the curve (ROC AUC)</p></li>
+<li><p>Invariance under class imbalance</p></li>
+<li><p>Existence of a universal baseline</p></li>
+<li><p>Convexity</p></li>
+</ol>
+<section id="interpretable-area-under-the-curve-roc-auc">
+<h4>1. Interpretable area under the curve (ROC AUC)<a class="headerlink" href="#interpretable-area-under-the-curve-roc-auc" title="Permalink to this headline">#</a></h4>
+<p>The area under the ROC curve (usually called ROC AUC or just AUC) is the most used metric in machine learning, yet many data scientists don’t know its interpretation. We explain it (and prove why it is so) in what follows.</p>
+<ul class="simple">
+<li><p>Randomly take a point of the positive (<span class="math notranslate nohighlight">\(y=1\)</span>) class, and calculate its score <span class="math notranslate nohighlight">\(f(X_1)\)</span></p></li>
+<li><p>Randomly take a point of the negative (<span class="math notranslate nohighlight">\(y=0\)</span>) class, and calculate its score <span class="math notranslate nohighlight">\(f(X_0)\)</span></p></li>
+</ul>
+<p>Claim: $<span class="math notranslate nohighlight">\(\boxed{\mathrm{ROC\;AUC} = \mathbb{P}(f(X_1) \geq f(X_0))},\)</span>$</p>
+<p>that is: <strong>the ROC AUC measures how likely it is that a point of the positive class scores higher than a point of the negative class</strong>.</p>
+<blockquote>
+<div><p>This result is proven in the Appendix of this chapter.</p>
+</div></blockquote>
+<p>Hence, in our example (where both train &amp; test AUCs are close to 80.3%): there is a probability of 80.3% of a point in the positive class scoring higher than a point in the negative class. This is very good - 4 out of 5 times we will correctly sort them under the score.</p>
+<p><strong>Numerically testing this claim</strong>: let us run a series of samplings to check if we obtain a similar fraction to the ROC AUC we calculated above.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;score&#39;</span><span class="p">:</span> <span class="n">y_test_pred</span><span class="p">,</span> <span class="s1">&#39;label&#39;</span><span class="p">:</span> <span class="n">y_test</span><span class="p">})</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">to_string</span><span class="p">())</span>
+
+<span class="n">n_samples</span> <span class="o">=</span> <span class="mi">10000</span>
+
+<span class="c1"># randomly sample scores from class 1 and 0</span>
+<span class="n">class_1_score_samples</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">]</span><span class="o">==</span><span class="mi">1</span><span class="p">][</span><span class="s1">&#39;score&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">n_samples</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">class_0_score_samples</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">]</span><span class="o">==</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;score&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">n_samples</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="c1"># check how many times class 1 score higher</span>
+<span class="n">total</span> <span class="o">=</span> <span class="p">(</span><span class="n">class_1_score_samples</span><span class="o">.</span><span class="n">values</span> <span class="o">&gt;=</span> <span class="n">class_0_score_samples</span><span class="o">.</span><span class="n">values</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-&gt; Percentage of times score for class 1 was higher than class 0: </span><span class="si">{0:.1f}</span><span class="s2">%&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="mi">100</span><span class="o">*</span> <span class="n">total</span><span class="o">/</span><span class="n">n_samples</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   score  label
+0  0.059      0
+1  0.214      0
+2  0.750      1
+3  0.636      1
+4  0.253      0
+-&gt; Percentage of times score for class 1 was higher than class 0: 74.5%
+</pre></div>
+</div>
+</div>
+</div>
+<p>As we can see, this works - the percentage of times was very close to the 75.6% ROC AUC we got!</p>
+<p><strong>Properties</strong>:</p>
+<ul class="simple">
+<li><p>This characterization of the ROC AUC allows one to extract interesting insights on how the AUC will behave under some transformations. For example: given the ROC AUC of a classifier <span class="math notranslate nohighlight">\(f(x)\)</span>, how will it change if we change the classifier to <span class="math notranslate nohighlight">\(10 f(x)\)</span>? Or <span class="math notranslate nohighlight">\(f(x)^2\)</span>?</p></li>
+</ul>
+<blockquote>
+<div><p>Answer: it will stay the same. Since <span class="math notranslate nohighlight">\(\mathrm{ROC\,AUC} = \mathbb{P}(Z_1 \geq Z_0)\)</span>, any function <span class="math notranslate nohighlight">\(\phi\)</span> applied to both sides of the inequality which does not change it will keep ROC AUC constant: $<span class="math notranslate nohighlight">\((Z_1 \geq Z_0)\,=\,(\phi(Z_1) \geq \phi(Z_0)).\)</span><span class="math notranslate nohighlight">\( In particular this is true for functions like \)</span>\phi(Z) = 10Z<span class="math notranslate nohighlight">\( or \)</span>\phi(Z) = Z^2$, which are monotonic functions. We can also see this numerically:</p>
+</div></blockquote>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Original test ROC AUC: </span><span class="si">{0:.4f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">roc_auc_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_test_pred</span><span class="p">)))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Applying 10x: </span><span class="si">{0:.4f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">roc_auc_score</span><span class="p">(</span><span class="mi">10</span><span class="o">*</span><span class="n">y_test</span><span class="p">,</span> <span class="mi">10</span><span class="o">*</span><span class="n">y_test_pred</span><span class="p">)))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Applying square: </span><span class="si">{0:.4f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">roc_auc_score</span><span class="p">(</span><span class="n">y_test</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">y_test_pred</span><span class="o">**</span><span class="mi">2</span><span class="p">)))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Original test ROC AUC: 0.7458
+Applying 10x: 0.7458
+Applying square: 0.7458
+</pre></div>
+</div>
+</div>
+</div>
+<ul class="simple">
+<li><p>This also explains why <strong>ROC AUC is the best metric when one is interested in sorting values based on the score</strong>. This is particularly the case in credit scoring, where one usually takes a list of potential individuals, scores them using a classification model, and sorts them (from good scores to bad scores) in order to shortlist those which are creditworthy. Notice that a person’s absolute score does not matter - what matters is how high it scores on the list <em>compared to others</em>. In this sense, <strong>a good model will have high AUC</strong>, because it <strong>ranks</strong> points well.</p></li>
+</ul>
+<ul>
+<li><p><strong>ROC AUC is blind to intra-class score performance</strong>. Suppose we have the following model (based on a real-life buggy model I once built):</p>
+<ul class="simple">
+<li><p>For members of the positive class, it mostly predicts a random score between 70%-100%</p></li>
+<li><p>For members of the negative class, it mostly predicts a score of 0%</p></li>
+</ul>
+<p>This model will have very high AUC, because there is a high chance that a point in the positive class scores higher than one in the negative class. However, this model does a <strong>terrible</strong> job regarding <strong>scoring</strong> within each class, since it is essentially random (for the positive class) and all identical to zero (for the negative class)</p>
+</li>
+</ul>
+</section>
+<section id="invariance-under-class-imbalance">
+<h4>2. Invariance under class imbalance<a class="headerlink" href="#invariance-under-class-imbalance" title="Permalink to this headline">#</a></h4>
+<p>As we discussed in Chapter 1, class imbalance is one of the biggest sources of complexity in classification problems. We claim that the ROC AUC is “invariant under” class imbalance. What does it mean?</p>
+<p>First, let us clarify one thing. Physicists reading this probably feel like invariance under something is a positive thing, but this is not necessarily true in machine learning.</p>
+<p>Invariance under class imbalance means that the ROC AUC (and the ROC curve more generally) do not change if we change the relative proportion of the positive and negative classes. To see this, notice how
+$<span class="math notranslate nohighlight">\(\mathrm{TPR} = \mathbb{P}(\hat y(x)=1|y=1) \approx \frac{\mbox{true positives}}{\mbox{all positives}}\)</span><span class="math notranslate nohighlight">\(
+\)</span><span class="math notranslate nohighlight">\(\mathrm{FPR} = \mathbb{P}(\hat y(x)=1|y=0) \approx \frac{\mbox{false positives}}{\mbox{all negatives}};\)</span><span class="math notranslate nohighlight">\(
+the ratio \)</span>\mbox{all positives/all negatives}$ never appears. FPR and TPR only care about <strong>intra-class ratios, but not inter-class</strong>.</p>
+<ul class="simple">
+<li><p>The good thing about this is that AUC analysis works the same for balanced or imbalanced problems…</p></li>
+<li><p>The bad part is that if you blindly run AUC analysis <em>alone</em>, you are shortsighting yourself to class imbalance issues. You might think that a model is very good, when it actually is not!</p></li>
+</ul>
+<blockquote>
+<div><p>As a spoiler: metrics such as precision do depend on class imbalance, as we will see further down.</p>
+</div></blockquote>
+</section>
+<section id="existence-of-a-universal-baseline">
+<h4>3. Existence of a universal baseline<a class="headerlink" href="#existence-of-a-universal-baseline" title="Permalink to this headline">#</a></h4>
+<p>It is common knowledge that the <strong>diagonal</strong> line in the ROC plane is the baseline corresponding to a random classifier. More formally, consider that <span class="math notranslate nohighlight">\(\hat y\)</span> is a biased coin toss (Bernoulli trial) with parameter <span class="math notranslate nohighlight">\(p\)</span>, which does not depend on <span class="math notranslate nohighlight">\(x\)</span>. Then the probability of <span class="math notranslate nohighlight">\(\hat y\)</span> independs on whether <span class="math notranslate nohighlight">\(y=1\)</span> or <span class="math notranslate nohighlight">\(0\)</span>, and we have</p>
+<div class="math notranslate nohighlight">
+\[\mathrm{TPR} = \mathbb{P}(\hat y(x)=1 | y=1) = \mathbb{P}(\hat y = 1) = p\]</div>
+<div class="math notranslate nohighlight">
+\[\mathrm{FPR} = \mathbb{P}(\hat y(x)=1 | y=0) = \mathbb{P}(\hat y = 1) = p\]</div>
+<p>Thus this random classifier corresponds to the point <span class="math notranslate nohighlight">\((p,p)\)</span> in the plane. If we consider all possible <span class="math notranslate nohighlight">\(p\)</span>’s between 0 and 1, we get the 45 degree diagonal line.</p>
+<blockquote>
+<div><p>In practice, this will happen in the case of infinitely large sample size. Below we show the test ROC for the Logistic Regression model; a random classifier; and the theoretical random classifier. Notice how the “real” random classifier is noisy.</p>
+</div></blockquote>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">5</span><span class="p">))</span>
+
+<span class="c1"># completely random classifier, generating random scores between [0,1]</span>
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">123</span><span class="p">)</span>
+<span class="n">y_pred_random</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="o">*</span><span class="n">y_test_pred</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+
+<span class="c1"># theoretical random classifier</span>
+<span class="n">p</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="n">RocCurveDisplay</span><span class="o">.</span><span class="n">from_predictions</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_test_pred</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Logistic regression&#39;</span><span class="p">)</span>
+<span class="n">RocCurveDisplay</span><span class="o">.</span><span class="n">from_predictions</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred_random</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Random classifier&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">p</span><span class="p">,</span><span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Theoretical random clf.&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/Metrics 1 - Intro &amp; ROC AUC_58_0.png" src="../_images/Metrics 1 - Intro &amp; ROC AUC_58_0.png" />
+</div>
+</div>
+<p>Because of this baseline, ROC AUC is theoretically bounded between 0.5 (area of the triangle below the 45 degree line) and 1.</p>
+</section>
+<section id="convexity">
+<h4>4. Convexity<a class="headerlink" href="#convexity" title="Permalink to this headline">#</a></h4>
+<p>Convexity is a geometrical property of sets which will allow us to construct new (and better) classifiers based on old ones.</p>
+<p>Suppose we have two estimators A and B, represented in the FPR/TPR plane as below (A in red, B in blue). Recall that an estimator is a function that outputs either 0 or 1.</p>
+<p><strong>Convexity</strong> allows us to build a whole family of estimators in the line segment between A and B (represented in a dotted line).</p>
+<p><img alt="image.png" src="notebooks/attachment:image.png" /></p>
+<p>The procedure on how to do it (which is not as important as knowing we can do it!) follows below:</p>
+<p>[<strong>Theorem</strong>] Let <span class="math notranslate nohighlight">\(c_A, c_B\)</span> be the two binary classifiers (i.e. taking values in <span class="math notranslate nohighlight">\(\{0,1\}\)</span>). Let <span class="math notranslate nohighlight">\((\mathrm{FPR_A, TPR_A})\)</span> and <span class="math notranslate nohighlight">\((\mathrm{FPR_B, TPR_B})\)</span> denote the coordinates of the two classifiers. Consider a point <span class="math notranslate nohighlight">\((\mathrm{FPR_*, TPR_*})\)</span> in the segment between A and B. Let</p>
+<div class="math notranslate nohighlight">
+\[p = \mathrm{\frac{FPR_*-FPR_A}{FPR_B-FPR_A}}.\]</div>
+<p>Then the classifier <span class="math notranslate nohighlight">\(c_*\)</span> defined as</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}c_*(x) = \begin{cases}
+c_A(x) &amp; \mbox{with probability $1-p$}\\
+c_B(x) &amp; \mbox{with probability $p$}
+\end{cases}\end{split}\]</div>
+<p>attains a FPR of <span class="math notranslate nohighlight">\(\mathrm{FPR_*}\)</span> and TPR of <span class="math notranslate nohighlight">\(\mathrm{TPR_*}\)</span>.</p>
+<blockquote>
+<div><p>Proof: we do the calculation for FPR; that of TPR follows analogously. By definition, the FPR of <span class="math notranslate nohighlight">\(c_*\)</span> is
+$<span class="math notranslate nohighlight">\(\begin{align}
+\mathbb P (c_*(x) = 1 | y = 0) &amp;= p\, \mathbb P (c_B(x)=1|y=0) + (1-p) \,\mathbb P(c_A(x)=1|y=0) \\
+&amp;= p \,\mathrm{FPR_B} + (1-p) \,\mathrm{FPR_A} = \mathrm{FPR}_*
+\end{align}\)</span>$as claimed.</p>
+</div></blockquote>
+<p>The importance of this result is that it gives an <strong>optimal boundary</strong> for a set of classifiers. Consider the situation below, where a new classifier <span class="math notranslate nohighlight">\(C\)</span> (orange) lies in the region below the segment AB. <span class="math notranslate nohighlight">\(C\)</span> is, <em>in any sense</em>, worse then the projection <span class="math notranslate nohighlight">\(C'\)</span> (black) of C onto segment AB, since it has a higher TPR for the “cost” of the same FPR.</p>
+<p><img alt="image.png" src="notebooks/attachment:image.png" /></p>
+<p>Because of this, when given a classifier <span class="math notranslate nohighlight">\(f(x)\)</span>, one is allowed to take the <strong>convex hull</strong> of the ROC curve (think of it as “laying a rubber band” on top of the your points:</p>
+<p><img alt="image.png" src="notebooks/attachment:image.png" /></p>
+<p>We can build a function which creates the convex hull and also computs its AUC as below:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">hull_roc_auc</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_score</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Computes coordinates (TPR, FPR) and ROC AUC for the convex hull </span>
+<span class="sd">    of a ROC curve built from a ground truth y_true (0s and 1s) and </span>
+<span class="sd">    a vector of scores y_score</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">roc_curve</span><span class="p">,</span> <span class="n">auc</span>
+    <span class="kn">from</span> <span class="nn">scipy.spatial</span> <span class="kn">import</span> <span class="n">ConvexHull</span>
+
+    <span class="n">fpr</span><span class="p">,</span> <span class="n">tpr</span><span class="p">,</span> <span class="n">thresholds</span> <span class="o">=</span> <span class="n">roc_curve</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_score</span><span class="p">)</span>
+
+    <span class="c1"># add artificial vertex at (1,0)</span>
+    <span class="n">fpr</span><span class="p">,</span> <span class="n">tpr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fpr</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tpr</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+    <span class="n">points</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">fpr</span><span class="p">,</span> <span class="n">tpr</span><span class="p">])</span><span class="o">.</span><span class="n">T</span>
+    <span class="n">hull</span> <span class="o">=</span> <span class="n">ConvexHull</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
+
+    <span class="c1"># get vertices and remove artificial vertex</span>
+    <span class="n">vertices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">points</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">hull</span><span class="o">.</span><span class="n">vertices</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">points</span><span class="p">[</span><span class="n">v</span><span class="p">],</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">]))])</span>
+    <span class="n">fpr_hull</span><span class="p">,</span> <span class="n">tpr_hull</span> <span class="o">=</span> <span class="n">vertices</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span> <span class="n">vertices</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="c1"># hull AUC</span>
+    <span class="n">hull_auc</span> <span class="o">=</span> <span class="n">auc</span><span class="p">(</span><span class="n">fpr_hull</span><span class="p">,</span> <span class="n">tpr_hull</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">hull_auc</span><span class="p">,</span> <span class="n">fpr_hull</span><span class="p">,</span> <span class="n">tpr_hull</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Calculate variables for hull - train/test</span>
+<span class="n">hull_auc_train</span><span class="p">,</span> <span class="n">fpr_hull_train</span><span class="p">,</span> <span class="n">tpr_hull_train</span> <span class="o">=</span> <span class="n">hull_roc_auc</span><span class="p">(</span><span class="n">y_train</span><span class="p">,</span> <span class="n">y_train_pred</span><span class="p">)</span>
+<span class="n">hull_auc_test</span><span class="p">,</span> <span class="n">fpr_hull_test</span><span class="p">,</span> <span class="n">tpr_hull_test</span> <span class="o">=</span> <span class="n">hull_roc_auc</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_test_pred</span><span class="p">)</span>
+
+<span class="c1">## Plot</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">5</span><span class="p">),</span> <span class="n">ncols</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="c1"># original ROC</span>
+<span class="n">original_auc_train</span> <span class="o">=</span> <span class="n">roc_auc_score</span><span class="p">(</span><span class="n">y_train</span><span class="p">,</span> <span class="n">y_train_pred</span><span class="p">)</span>
+<span class="n">RocCurveDisplay</span><span class="o">.</span><span class="n">from_predictions</span><span class="p">(</span><span class="n">y_train</span><span class="p">,</span> <span class="n">y_train_pred</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> 
+                                 <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;Log. Reg (AUC = </span><span class="si">{</span><span class="nb">round</span><span class="p">(</span><span class="n">original_auc_train</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">)</span>
+
+<span class="n">original_auc_test</span> <span class="o">=</span> <span class="n">roc_auc_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_test_pred</span><span class="p">)</span>
+<span class="n">RocCurveDisplay</span><span class="o">.</span><span class="n">from_predictions</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_test_pred</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> 
+                                 <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;Log. Reg (AUC = </span><span class="si">{</span><span class="nb">round</span><span class="p">(</span><span class="n">original_auc_test</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">)</span>
+
+<span class="c1"># convex hull</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">fpr_hull_train</span><span class="p">,</span> <span class="n">tpr_hull_train</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Hull ROC (AUC = </span><span class="si">{</span><span class="nb">round</span><span class="p">(</span><span class="n">hull_auc_train</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">fpr_hull_test</span><span class="p">,</span> <span class="n">tpr_hull_test</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Hull ROC (AUC = </span><span class="si">{</span><span class="nb">round</span><span class="p">(</span><span class="n">hull_auc_test</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">)</span>
+
+<span class="c1"># legends/labels</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">();</span> <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Train&quot;</span><span class="p">);</span> <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Test&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/Metrics 1 - Intro &amp; ROC AUC_72_0.png" src="../_images/Metrics 1 - Intro &amp; ROC AUC_72_0.png" />
+</div>
+</div>
+</section>
+</section>
+<section id="is-this-cheating">
+<h3>Is this cheating?<a class="headerlink" href="#is-this-cheating" title="Permalink to this headline">#</a></h3>
+<p>No. It is a remarkable property of the “ROC space” (FPR vs TPR) that linear interpolation between classifiers yields a new classifier. Since we do not have access to the “true” distribution of <span class="math notranslate nohighlight">\(f(X)|Y\)</span>, the best we can do is use its empirical distribution and build the best possible ROC curve out of it.</p>
+</section>
+<section id="takeaways">
+<h3>Takeaways<a class="headerlink" href="#takeaways" title="Permalink to this headline">#</a></h3>
+<ul class="simple">
+<li><p>The ROC curve represents a machine learning classifier in the TPR / FPR plane</p></li>
+<li><p>If it is not convex, it can be made convex by connecting points via line segments. This is equivalent to building new classifiers as probabilistic samplings of the endpoint classifiers</p></li>
+<li><p>The area under the ROC curve (ROC AUC) represents the likelihood that a point of the positive class scores higher than one in the negative class. It is bound between 0.5 and 1.0</p></li>
+<li><p>The ROC curve (and thus the ROC AUC) are invariant under rebalancing of the positive / negative classes. This is both good and bad</p></li>
+</ul>
+</section>
+</section>
+</section>
+<hr class="docutils" />
+<section class="tex2jax_ignore mathjax_ignore" id="appendix">
+<h1>Appendix:<a class="headerlink" href="#appendix" title="Permalink to this headline">#</a></h1>
+<section id="proof-of-probabilistic-interpretation-of-the-roc-auc">
+<h2>Proof of probabilistic interpretation of the ROC AUC<a class="headerlink" href="#proof-of-probabilistic-interpretation-of-the-roc-auc" title="Permalink to this headline">#</a></h2>
+<p>Here, we prove the claim that, if <span class="math notranslate nohighlight">\(f\)</span> is a trained binary classification model,</p>
+<div class="math notranslate nohighlight">
+\[\mathrm{ROC\;AUC} = \mathbb{P}(f(X_1) \geq f(X_0) | Y_1 = 1, Y_0 = 0),\]</div>
+<p><strong>Proof</strong>: by definition,</p>
+<div class="math notranslate nohighlight">
+\[\mathrm{ROC\;AUC} = \int_{\mathrm{FPR}=0}^{\mathrm{FPR}=1} \mathrm{TPR}\, d\mathrm{FPR}.\]</div>
+<p>It is natural to parameterize FPR and TPR via the threshold <span class="math notranslate nohighlight">\(\lambda\)</span> since <span class="math notranslate nohighlight">\(\mathrm{TPR} = \mathbb{P}(f(X)\geq \lambda | Y=1)\)</span> and <span class="math notranslate nohighlight">\(\mathrm{FPR} = \mathbb{P}(f(X) \geq \lambda | Y=0)\)</span>. This motivates us to define the <em>independent</em> random variables</p>
+<div class="math notranslate nohighlight">
+\[Z_1 = (f(X)|Y=1),\qquad Z_0 = (f(X)|Y=0),\]</div>
+<p>for which <span class="math notranslate nohighlight">\(\mathrm{TPR}(\lambda) = \mathbb{P}(Z_1 \geq \lambda)\)</span> for instance. This can be written as</p>
+<div class="math notranslate nohighlight">
+\[\mathrm{TPR}(\lambda) = \int_\lambda^\infty g_1(z) dz,\qquad \mathrm{FPR}(\lambda) = \int_\lambda^\infty g_0(z) dz\]</div>
+<p>where <span class="math notranslate nohighlight">\(g_0, g_1\)</span> are the PDFs of <span class="math notranslate nohighlight">\(Z_0\)</span> and <span class="math notranslate nohighlight">\(Z_1\)</span> respectively.</p>
+<p>Plugging these back into the definition of ROC AUC gives</p>
+<p>\begin{align*}
+\mathrm{ROC,AUC} &amp;= \int_{\mathrm{FPR}=0}^{\mathrm{FPR}=1} \mathrm{TPR}, d\mathrm{FPR} \
+&amp;= \int_{\lambda=\infty}^{\lambda=-\infty} \mathrm{TPR}(\lambda) \frac{ d \mathrm{FPR}(\lambda)}{d\lambda} d\lambda \
+&amp;= \int_\infty^{-\infty} d\lambda \int_\lambda^\infty dz, g_1(z) (-g_0(\lambda)),
+\end{align*}</p>
+<p>where we have used the fundamental theorem of calculus in the last equality. Now one can equivalently write these iterated integrals as</p>
+<div class="math notranslate nohighlight">
+\[\int_{-\infty}^\infty \int_{-\infty}^\infty \mathbf{1}_{z \geq \lambda} g_0(\lambda) g_1(z)\, dz d\lambda = \mathbb{E}[\mathbf{1}_{Z_1 \geq Z_0}] = \mathbb{P}(Z_1 \geq Z_0),\]</div>
+<p>where we identify <span class="math notranslate nohighlight">\(g_0(\lambda)g_1(z)\)</span> as the PDF for <span class="math notranslate nohighlight">\((Z_0, Z_1)\)</span> since these are independent variables.</p>
+</section>
+<section id="further-properties-of-the-roc-curve">
+<h2>Further properties of the ROC curve<a class="headerlink" href="#further-properties-of-the-roc-curve" title="Permalink to this headline">#</a></h2>
+<p>There is an interesting characterization of the ROC curve based on the cumulative distribution functions (CDFs) of the variables</p>
+<div class="math notranslate nohighlight">
+\[Z_0 = (f(X)|Y=0),\qquad Z_1 = (f(X)|Y=1)\]</div>
+<p>Let <span class="math notranslate nohighlight">\(F_i(t) := \mathbb{P}(Z_i &lt; t)\)</span>, for <span class="math notranslate nohighlight">\(i \in \{0, 1\}\)</span>, denote the CDFs. We want to write the false &amp; true positive rates with respect to these CDFs. Notice that, as functions of the threshold <span class="math notranslate nohighlight">\(\lambda\)</span>,</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{align}
+\mathrm{TPR}(\lambda) &amp;= \mathbb P(\hat y_\lambda(X) = 1 | Y = 1)\\
+&amp;= \mathbb P (f(X) \geq \lambda | Y = 1)\\
+&amp;= 1- \mathbb P (f(X) &lt; \lambda | Y=1) = 1 - \mathbb P (Z_1 &lt; \lambda)\\
+&amp;= 1 - F_1(\lambda)
+\end{align}\end{split}\]</div>
+<p>Similarly,
+$<span class="math notranslate nohighlight">\(\mathrm{FPR}(\lambda) = 1 - F_0(\lambda)\)</span>$</p>
+<p>We can explicitly write <span class="math notranslate nohighlight">\(\mathrm{TPR}\)</span> as a function of <span class="math notranslate nohighlight">\(\mathrm{FPR}\)</span> if we invert the last expression for <span class="math notranslate nohighlight">\(\lambda\)</span>, obtaining <span class="math notranslate nohighlight">\(\lambda = F_0^{-1}(1-\mathrm{FPR})\)</span>; then
+$<span class="math notranslate nohighlight">\(\boxed{\mathrm{TPR} = 1 - F_1(F_0^{-1}(1-\mathrm{FPR}))}\)</span>$</p>
+<p>To simplify notation, call <span class="math notranslate nohighlight">\(x \equiv \mathrm{FPR}\)</span> and <span class="math notranslate nohighlight">\(y \equiv \mathrm{TPR}\)</span> (don’t confuse with variables <span class="math notranslate nohighlight">\(X\)</span> and <span class="math notranslate nohighlight">\(Y\)</span>; this is just a notation which reminds who goes in the vertical and horizontal axes). We can equivalently write</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{cases}
+x &amp;= 1 - F_0(\lambda)\\
+y &amp;= 1 - F_1(\lambda)
+\end{cases} \qquad \mbox{or}\qquad y = 1 - F_1(F_0^{-1}(1-x))\end{split}\]</div>
+<p>From either expression, one can take the derivative and see that (calling <span class="math notranslate nohighlight">\(f_i(t) \equiv F_i'(t)\)</span> the PDFs)</p>
+<div class="math notranslate nohighlight">
+\[\frac{dy}{dx} = \frac{f_1(F_0^{-1}(1-x))}{f_0(F_0^{-1}(1-x))} \geq 0\]</div>
+<p>since the PDFs are always non-negative, and so is their ratio. So we see that the ROC curve is necessarily non-decreasing.</p>
+<p>It has, however, no obligation of being <strong>concave</strong> (= curved face-down), even if that is how we usually draw it. Taking a second derivative of the expression above yields</p>
+<div class="math notranslate nohighlight">
+\[\frac{d^2y}{dx^2} = - \frac{f_1'}{f_0^2} + \frac{f_1 f_0'}{f_0^3}\]</div>
+<p>where all quantities are calculated at <span class="math notranslate nohighlight">\(F_0^{-1}(1-x)\)</span>. Since derivatives of both <span class="math notranslate nohighlight">\(f_1\)</span> and <span class="math notranslate nohighlight">\(f_0\)</span> appear, and they can take any sign, there is no obvious sign for the expression above.</p>
+</section>
+<section id="references">
+<h2>References:<a class="headerlink" href="#references" title="Permalink to this headline">#</a></h2>
+<p>Peter Flach, Meelis Kull, <em>Precision-Recall-Gain Curves: PR Analysis Done Right</em>, NIPS 2015</p>
+</section>
+<section id="further-reading">
+<h2>Further reading:<a class="headerlink" href="#further-reading" title="Permalink to this headline">#</a></h2>
+<p><a class="reference external" href="https://arxiv.org/pdf/1809.04808.pdf">https://arxiv.org/pdf/1809.04808.pdf</a> on the concavity of ROC curves</p>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            kernelName: "python3",
+            path: "./notebooks"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+              </div>
+              
+            </main>
+            <footer class="footer-article noprint">
+                
+    <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+    <a class='left-prev' id="prev-link" href="Loss%20functions.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">Loss functions</p>
+        </div>
+    </a>
+    <a class='right-next' id="next-link" href="Metrics%202%20-%20Lift%20curve.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">A complement to the ROC: the lift curve (aka CAP curve)</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
+</div>
+            </footer>
+        </div>
+    </div>
+    <div class="footer-content row">
+        <footer class="col footer"><p>
+  
+    By Experian LatAm DataLab<br/>
+  
+      &copy; Copyright 2022.<br/>
+</p>
+        </footer>
+    </div>
+    
+</div>
+
+
+      </div>
+    </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+
+
+  </body>
+</html>

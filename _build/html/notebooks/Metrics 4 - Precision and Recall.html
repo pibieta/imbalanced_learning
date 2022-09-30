@@ -1,0 +1,1540 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Precision, recall, and \(F\)-scores &#8212; The Practical Man&#39;s Guide to Binary Imbalanced Classification</title>
+    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
+    
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Choosing a baseline model" href="pablo-baseline-experiment.html" />
+    <link rel="prev" title="The KS score and Youden’s J" href="Metrics%203%20-%20KS%20score.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+<!-- Checkboxes to toggle the left sidebar -->
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
+<label class="overlay overlay-navbar" for="__navigation">
+    <div class="visually-hidden">Toggle navigation sidebar</div>
+</label>
+<!-- Checkboxes to toggle the in-page toc -->
+<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
+<label class="overlay overlay-pagetoc" for="__page-toc">
+    <div class="visually-hidden">Toggle in-page Table of Contents</div>
+</label>
+<!-- Headers at the top -->
+<div class="announcement header-item noprint"></div>
+<div class="header header-item noprint"></div>
+
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<!-- Sidebar -->
+<div class="bd-sidebar noprint" id="site-navigation">
+    <div class="bd-sidebar__content">
+        <div class="bd-sidebar__top"><div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="../index.html">
+      
+        <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
+        
+      
+      
+      <img src="../_static/DataLab-logo-white.png" class="logo" alt="logo">
+      
+      
+      <h1 class="site-logo" id="site-title">The Practical Man's Guide to Binary Imbalanced Classification</h1>
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="Introduction.html">
+                    Introduction
+                </a>
+            </li>
+        </ul>
+        <ul class="current nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="Loss%20functions.html">
+   Loss functions
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="Metrics%201%20-%20Intro%20%26%20ROC%20AUC.html">
+   Classification metrics
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="Metrics%202%20-%20Lift%20curve.html">
+   A complement to the ROC: the lift curve (aka CAP curve)
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="Metrics%203%20-%20KS%20score.html">
+   The KS score and Youden’s J
+  </a>
+ </li>
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   Precision, recall, and
+   <span class="math notranslate nohighlight">
+    \(F\)
+   </span>
+   -scores
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="pablo-baseline-experiment.html">
+   Choosing a baseline model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="Feature%20selection%20methods.html">
+   Feature selection via the Boruta algorithm
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="Interpretability.html">
+   How imbalanced learning affects the interpretability of a model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="Calibration.html">
+   Model calibration part I - reliability assessment
+  </a>
+ </li>
+</ul>
+
+    </div>
+</nav></div>
+        <div class="bd-sidebar__bottom">
+             <!-- To handle the deprecated key -->
+            
+            <div class="navbar_extra_footer">
+            Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+            </div>
+            
+        </div>
+    </div>
+    <div id="rtd-footer-container"></div>
+</div>
+
+
+          
+
+
+          
+<!-- A tiny helper pixel to detect if we've scrolled -->
+<div class="sbt-scroll-pixel-helper"></div>
+<!-- Main content -->
+<div class="col py-0 content-container">
+    
+    <div class="header-article row sticky-top noprint">
+        
+
+
+
+<div class="col py-1 d-flex header-article-main">
+    <div class="header-article__left">
+        
+        <label for="__navigation"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="right"
+title="Toggle navigation"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-bars"></i>
+  </span>
+
+</label>
+
+        
+    </div>
+    <div class="header-article__right">
+<div class="menu-dropdown menu-dropdown-launch-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Launch interactive content">
+      <i class="fas fa-rocket"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="https://mybinder.org/v2/gh/executablebooks/jupyter-book/master?urlpath=tree/notebooks/Metrics 4 - Precision and Recall.ipynb"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Launch on Binder"
+>
+  
+
+<span class="headerbtn__icon-container">
+  
+    <img src="../_static/images/logo_binder.svg">
+  </span>
+<span class="headerbtn__text-container">Binder</span>
+</a>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+
+<button onclick="toggleFullScreen()"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="bottom"
+title="Fullscreen mode"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+<div class="menu-dropdown menu-dropdown-download-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Download this page">
+      <i class="fas fa-download"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="../_sources/notebooks/Metrics 4 - Precision and Recall.ipynb"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Download source file"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="headerbtn__text-container">.ipynb</span>
+</a>
+
+      </li>
+      
+      <li>
+        
+<button onclick="printPdf(this)"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="left"
+title="Print to PDF"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="headerbtn__text-container">.pdf</span>
+</button>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+<label for="__page-toc"
+  class="headerbtn headerbtn-page-toc"
+  
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-list"></i>
+  </span>
+
+</label>
+
+    </div>
+</div>
+
+<!-- Table of contents -->
+<div class="col-md-3 bd-toc show noprint">
+    <div class="tocsection onthispage pt-5 pb-3">
+        <i class="fas fa-list"></i> Contents
+    </div>
+    <nav id="bd-toc-nav" aria-label="Page">
+        <ul class="visible nav section-nav flex-column">
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#">
+   Precision, recall, and
+   <span class="math notranslate nohighlight">
+    \(F\)
+   </span>
+   -scores
+  </a>
+  <ul class="visible nav section-nav flex-column">
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#motivation-a-covid-test">
+     Motivation: a Covid test
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#precision-and-recall">
+     Precision and recall
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#the-precision-recall-pr-curve">
+     The precision &amp; recall (PR) curve
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#the-f-scores-joining-precision-and-recall">
+     The
+     <span class="math notranslate nohighlight">
+      \(F\)
+     </span>
+     -scores: joining precision and recall
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h3 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#why-do-we-use-a-harmonic-mean-for-the-f-score">
+       Why do we use a
+       <em>
+        harmonic
+       </em>
+       mean for the F-score?
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#should-i-prioritize-precision-or-recall-which-matters-most">
+     Should I prioritize precision or recall? Which matters most?
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#average-precision-ap-very-used-but-questionable-metric">
+     Average Precision (AP): very used but questionable metric
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#pr-is-not-good-under-imbalance">
+     PR is not good under imbalance
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h3 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#why-is-the-curve-not-invariant-under-imbalance">
+       <strong>
+        Why is the curve not invariant under imbalance?
+       </strong>
+      </a>
+     </li>
+     <li class="toc-h3 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#visual-proof-of-non-convexity-in-pr-space">
+       Visual proof of non-convexity in PR space
+      </a>
+     </li>
+    </ul>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#advanced-topic-harmonic-precision-and-recall">
+   Advanced topic: harmonic precision and recall
+  </a>
+  <ul class="visible nav section-nav flex-column">
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#what-is-a-baseline-to-compare-models">
+     What is a baseline to compare models?
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#how-can-we-fix-the-imbalance-problem">
+     How can we fix the imbalance problem?
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h3 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#baseline-for-the-harmonic-pr-plane">
+       Baseline for the harmonic PR plane
+      </a>
+     </li>
+     <li class="toc-h3 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#harmonic-f-beta-the-area-under-the-harmonic-pr-curve">
+       Harmonic
+       <span class="math notranslate nohighlight">
+        \(F_\beta\)
+       </span>
+       &amp; the area under the harmonic PR curve
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#takeaways">
+     Takeaways
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#appendix">
+   Appendix
+  </a>
+  <ul class="visible nav section-nav flex-column">
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#references">
+     References
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+    </nav>
+</div>
+    </div>
+    <div class="article row">
+        <div class="col pl-md-3 pl-lg-5 content-container">
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>Precision, recall, and F-scores</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#">
+   Precision, recall, and
+   <span class="math notranslate nohighlight">
+    \(F\)
+   </span>
+   -scores
+  </a>
+  <ul class="visible nav section-nav flex-column">
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#motivation-a-covid-test">
+     Motivation: a Covid test
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#precision-and-recall">
+     Precision and recall
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#the-precision-recall-pr-curve">
+     The precision &amp; recall (PR) curve
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#the-f-scores-joining-precision-and-recall">
+     The
+     <span class="math notranslate nohighlight">
+      \(F\)
+     </span>
+     -scores: joining precision and recall
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h3 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#why-do-we-use-a-harmonic-mean-for-the-f-score">
+       Why do we use a
+       <em>
+        harmonic
+       </em>
+       mean for the F-score?
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#should-i-prioritize-precision-or-recall-which-matters-most">
+     Should I prioritize precision or recall? Which matters most?
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#average-precision-ap-very-used-but-questionable-metric">
+     Average Precision (AP): very used but questionable metric
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#pr-is-not-good-under-imbalance">
+     PR is not good under imbalance
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h3 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#why-is-the-curve-not-invariant-under-imbalance">
+       <strong>
+        Why is the curve not invariant under imbalance?
+       </strong>
+      </a>
+     </li>
+     <li class="toc-h3 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#visual-proof-of-non-convexity-in-pr-space">
+       Visual proof of non-convexity in PR space
+      </a>
+     </li>
+    </ul>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#advanced-topic-harmonic-precision-and-recall">
+   Advanced topic: harmonic precision and recall
+  </a>
+  <ul class="visible nav section-nav flex-column">
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#what-is-a-baseline-to-compare-models">
+     What is a baseline to compare models?
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#how-can-we-fix-the-imbalance-problem">
+     How can we fix the imbalance problem?
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h3 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#baseline-for-the-harmonic-pr-plane">
+       Baseline for the harmonic PR plane
+      </a>
+     </li>
+     <li class="toc-h3 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#harmonic-f-beta-the-area-under-the-harmonic-pr-curve">
+       Harmonic
+       <span class="math notranslate nohighlight">
+        \(F_\beta\)
+       </span>
+       &amp; the area under the harmonic PR curve
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#takeaways">
+     Takeaways
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#appendix">
+   Appendix
+  </a>
+  <ul class="visible nav section-nav flex-column">
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#references">
+     References
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            <main id="main-content" role="main">
+                
+              <div>
+                
+  <section class="tex2jax_ignore mathjax_ignore" id="precision-recall-and-f-scores">
+<h1>Precision, recall, and <span class="math notranslate nohighlight">\(F\)</span>-scores<a class="headerlink" href="#precision-recall-and-f-scores" title="Permalink to this headline">#</a></h1>
+<section id="motivation-a-covid-test">
+<h2>Motivation: a Covid test<a class="headerlink" href="#motivation-a-covid-test" title="Permalink to this headline">#</a></h2>
+<p>What is the difference between</p>
+<div class="math notranslate nohighlight">
+\[\mathbb P (\hat y = 1|y=1) \qquad \mbox{and}\qquad \mathbb P(y=1|\hat y=1)?\]</div>
+<p>The first one measures, <em>out of all points in the positive class</em>, how many we got right. The second one measures, <em>out of all points predicted to be in the positive class</em>, how many were actually positives.</p>
+<p>These quantities are not the same. Writing them like this makes this fact obvious, but it is surprising how many times we can mix them up in conversation. For instance:</p>
+<blockquote>
+<div><p>I just got a positive in my Covid test. They say that it is right 99% of the time when you are infected, so I am probably infected.</p>
+</div></blockquote>
+<p>The conclusion above is a falacy, because we do not have enough data. Does the person mean</p>
+<div class="math notranslate nohighlight">
+\[\mathbb P (\mbox{test gives positive | you have Covid}) = 99\%\]</div>
+<p>or
+$<span class="math notranslate nohighlight">\(\mathbb P (\mbox{ you have Covid | test gives positive}) = 99\%?\)</span>$</p>
+<p>These two cases are completely different, as we show below.</p>
+<blockquote>
+<div><p><strong>(Review: Bayes’ rule</strong>). We are entering the domain where Bayes’ theorem becomes important. It is the rewriting of the definition of conditional probability as follows:
+$<span class="math notranslate nohighlight">\(\mathbb P(A|B) = \frac{\mathbb P(A\cap B)}{\mathbb P(B)} = \frac{\mathbb P(B|A) \mathbb P(A)}{\mathbb P (B)}\)</span><span class="math notranslate nohighlight">\(
+where one sometimes writes the denominator as a sum over all possible dependencies of \)</span>B<span class="math notranslate nohighlight">\(: 
+\)</span><span class="math notranslate nohighlight">\(\mathbb P (B) = \sum_{A'} \mathbb P(B|A') \mathbb P(A')\)</span>$</p>
+</div></blockquote>
+<p>For instance, in the case above, let <span class="math notranslate nohighlight">\(y=1\)</span> denote if someone has Covid, and <span class="math notranslate nohighlight">\(\hat y = 1\)</span> denote that they tested positive.</p>
+<p>Let us assume that</p>
+<div class="math notranslate nohighlight">
+\[\mathbb P (\hat y=1 | y=1) = 99\%\]</div>
+<p>We can write, using Bayes’ theorem,</p>
+<div class="math notranslate nohighlight">
+\[\mathbb P(y=1|\hat y=1) = \frac{\mathbb P (\hat y=1 | y=1) \mathbb P(y=1)}{\mathbb P (\hat y=1)}\]</div>
+<p>or, expanding the denominator,</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{align}
+\mathbb P(y=1|\hat y=1) &amp;= \frac{\mathbb P (\hat y=1 | y=1) \mathbb P(y=1)}{\mathbb P (\hat y=1|y=0) \mathbb P(y=0) + \mathbb P(\hat y = 1|y=1) \mathbb P(y=1)}\\
+&amp;= \frac{1}{\displaystyle1 + \frac{\mathbb P(\hat y=1 | y=0) \mathbb P(y=0)}{\mathbb P(\hat y=1|y=1) \mathbb P(y=1)}}
+\end{align}\end{split}\]</div>
+<p>Assume that:</p>
+<ul class="simple">
+<li><p>1% of the population is infected, ie. <span class="math notranslate nohighlight">\(\mathbb P(y=1) = 0.01\)</span> and <span class="math notranslate nohighlight">\(\mathbb P(y=0) = 0.99\)</span></p></li>
+<li><p>If you are infected, there is a 99% chance the test will come back positive: <span class="math notranslate nohighlight">\(\mathbb P(\hat y=1|y=1) = 0.99\)</span></p></li>
+<li><p>If you are not infected, there is a 5% chance the test will come back as a (false) positive: <span class="math notranslate nohighlight">\(\mathbb P(\hat y=1|y=0) = 0.05\)</span></p></li>
+</ul>
+<p>Then, from the expression above we get
+$<span class="math notranslate nohighlight">\(\mathbb P(y=1|\hat y=1) = \frac{1}{\displaystyle 1 + \frac{0.05 \times 0.99}{0.99 \times 0.01}} = \frac 16 \approx  16.7\%\)</span>$</p>
+<p>that is, if your test comes back positive, there is only a 16.7% chance that you actually have Covid.</p>
+<p>This is a <em>significantly</em> smaller number than the 99% we started with (and also shows why a “test with 99% confidence” does not mean much by itself). This is why <span class="math notranslate nohighlight">\(\mathbb P (\hat y = 1|y=1)\)</span> and <span class="math notranslate nohighlight">\(\mathbb P(y=1|\hat y=1)\)</span> are <em>very</em> different things.</p>
+<blockquote>
+<div><p>One might argue that the test is bad. It is not. To see why, think about it this way. Without having taken a test, your prior chance of being infected was 1%. Now that you have taken the test, this chance grows by <strong>almost 17 times</strong>. This is a huge growth! It is just not a definitive answer. Indeed, one could <strong>take the test again</strong> and see how much the probability changes.</p>
+</div></blockquote>
+<blockquote>
+<div><p>(<strong>Problem</strong>) Suppose we test again, and again we get a positive. Convince yourself that we can calculate the new probability of being infected by formally starting out from the exact same formula above but changing the prior probability of being infected to <span class="math notranslate nohighlight">\(\mathbb P (y=1) = 1/6\)</span> (which implies <span class="math notranslate nohighlight">\(\mathbb P(y=0) = 5/6\)</span>), yielding
+$<span class="math notranslate nohighlight">\(\mathbb P(y=1|\hat y_1=1, \hat y_2 = 1) = \frac{1}{\displaystyle 1 + \frac{0.05\times 5/6}{0.99 \times 1/6}} \approx 80\%,\)</span>$which is now much higher. If we further test again this number increases to 99%, and so on.</p>
+</div></blockquote>
+</section>
+<section id="precision-and-recall">
+<h2>Precision and recall<a class="headerlink" href="#precision-and-recall" title="Permalink to this headline">#</a></h2>
+<div class="math notranslate nohighlight">
+\[
+\boxed{\mathrm{Recall} = \mathbb P (\hat y = 1|y=1)}\]</div>
+<div class="math notranslate nohighlight">
+\[\boxed{\mathrm{Precision} = \mathbb P(y=1|\hat y=1)}\]</div>
+<p>For the Covid test above, it had a recall of 99% and a precision of 16.7% for the positive class.</p>
+<blockquote>
+<div><p>For multiclass models (which generalize the binary case we see here), one calculates precision/recall for each class. For instance, if you have an image classification model which classifies an image into <span class="math notranslate nohighlight">\(\{\mathrm{dog, cat, horse, penguin}\}\)</span> then you should calculate precision/recall for each class: $<span class="math notranslate nohighlight">\(\mathrm{Recall_{dog}} = \mathbb P (\hat y = \mathrm{dog} | y = \mathrm{dog}),\quad \mathrm{Recall_{cat}} = \mathbb P (\hat y = \mathrm{cat} | y = \mathrm{cat})\)</span>$ and so on.</p>
+</div></blockquote>
+</section>
+<section id="the-precision-recall-pr-curve">
+<h2>The precision &amp; recall (PR) curve<a class="headerlink" href="#the-precision-recall-pr-curve" title="Permalink to this headline">#</a></h2>
+<p>Similar to what we did to the ROC curve, we can consider the curve obtained by building a score <span class="math notranslate nohighlight">\(f\)</span> and a classifier <span class="math notranslate nohighlight">\(\hat y(x) = 1\)</span> if <span class="math notranslate nohighlight">\(f(x) \geq \lambda\)</span> and 0 otherwise, and see how precision and recall change as we do that.</p>
+<p>For the sample model we have been using so far, the curve can be seen in the curve below.</p>
+<blockquote>
+<div><p>We build a custom function which also plots the <strong>percentage of the positive class against the whole dataset</strong>, ie. <span class="math notranslate nohighlight">\(\mathbb P(y=1)\)</span>. This is an important quantity, and so we make it explicit here.</p>
+</div></blockquote>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">plot_precision_recall</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">,</span> <span class="n">ax</span><span class="p">):</span>
+    
+    <span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">PrecisionRecallDisplay</span>
+
+    <span class="n">PrecisionRecallDisplay</span><span class="o">.</span><span class="n">from_predictions</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="o">-</span><span class="mf">.05</span><span class="p">,</span><span class="mf">1.05</span><span class="p">)</span>
+    
+    <span class="c1"># prevalence of positive class</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">y_true</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">y_true</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;Prevalence (</span><span class="si">{</span><span class="nb">round</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">5</span><span class="p">))</span>
+<span class="n">plot_precision_recall</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_test_pred</span><span class="p">,</span> <span class="n">ax</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;PR curve&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/Metrics 4 - Precision and Recall_21_0.png" src="../_images/Metrics 4 - Precision and Recall_21_0.png" />
+</div>
+</div>
+<p>(this function gives the average precision (AP) metric as well - we shall discuss it later)</p>
+<p>Notes:</p>
+<ul class="simple">
+<li><p>For a very small threshold <span class="math notranslate nohighlight">\(\lambda = -\infty\)</span>, we have $<span class="math notranslate nohighlight">\(\mathrm{Recall}(-\infty) = 1,\quad \mathrm{Precision}(-\infty) = \pi_1\)</span><span class="math notranslate nohighlight">\( where \)</span>\pi_1 = \mathbb P(y=1)$ is the prevalence of the positive class (can you see why?);</p></li>
+<li><p>The curve is indeed bounded below by the prevalence <span class="math notranslate nohighlight">\(\pi_1\)</span>;</p></li>
+<li><p>As we increase the threshold, the curve increases in precision and reduces in recall</p></li>
+<li><p>For <span class="math notranslate nohighlight">\(\lambda = \infty\)</span>, we should have $<span class="math notranslate nohighlight">\(\mathrm{Recall}(\infty) = 0,\quad \mathrm{Precision}(\infty) = 1\)</span>$ (can you see why?)</p></li>
+</ul>
+<p>This curve has more interesting properties that we shall see later, after we better understand the geometry of the PR plane.</p>
+</section>
+<section id="the-f-scores-joining-precision-and-recall">
+<h2>The <span class="math notranslate nohighlight">\(F\)</span>-scores: joining precision and recall<a class="headerlink" href="#the-f-scores-joining-precision-and-recall" title="Permalink to this headline">#</a></h2>
+<p>Recall that, given two numbers <span class="math notranslate nohighlight">\(a, b\)</span>, their <strong>harmonic mean</strong> is the number <span class="math notranslate nohighlight">\(c\)</span> defined via</p>
+<div class="math notranslate nohighlight">
+\[\frac 1c = \frac 12 \left( \frac 1a + \frac 1b \right),\]</div>
+<p>or explicitly</p>
+<div class="math notranslate nohighlight">
+\[c = \frac{2}{1/a + 1/b} = \frac{2ab}{a+b}\]</div>
+<p>(if any of the numbers is 0, the harmonic mean is undefined; if any of them is infinite, the harmonic mean will be the finite one left, as can be seen by taking the limit in the first definition)</p>
+<p>We define the <strong><span class="math notranslate nohighlight">\(F_1\)</span> score</strong> as the harmonic mean of precision and recall:</p>
+<div class="math notranslate nohighlight">
+\[\boxed{\frac{1}{F_1} = \frac 12 \frac{1}{\mathrm{Precision}} + \frac 12 \frac{1}{\mathrm{Recall}}}\]</div>
+<p>More generally, we define the <strong><span class="math notranslate nohighlight">\(F_\beta\)</span> score</strong> as a weighted harmonic mean between precision and recall:</p>
+<div class="math notranslate nohighlight">
+\[\boxed{\frac{1}{F_\beta} = \frac{1}{1+\beta^2} \frac{1}{\mathrm{Precision}} + \frac{\beta^2}{1+\beta^2}\frac{1}{\mathrm{Recall}}}\]</div>
+<p>or the straighforward version</p>
+<div class="math notranslate nohighlight">
+\[F_\beta = \frac{(1+\beta^2) \mathrm{Recall\, Precision}}{\beta^2 \mathrm{Precision + Recall}}\]</div>
+<p>For <span class="math notranslate nohighlight">\(\beta = 1\)</span> we retrieve <span class="math notranslate nohighlight">\(F_1\)</span>, which weighs precision and recall equally; for <span class="math notranslate nohighlight">\(\beta &gt; 1\)</span> we give a higher importance to recall, whereas for <span class="math notranslate nohighlight">\(\beta &lt; 1\)</span> we place more importance on precision.</p>
+<section id="why-do-we-use-a-harmonic-mean-for-the-f-score">
+<h3>Why do we use a <em>harmonic</em> mean for the F-score?<a class="headerlink" href="#why-do-we-use-a-harmonic-mean-for-the-f-score" title="Permalink to this headline">#</a></h3>
+<p>One could argue that there is no need to use a harmonic mean of recall and precision to estimate their (weighted) average. It would be enough to calculate a (weighted) simple average <span class="math notranslate nohighlight">\((\mathrm{precision+recall})/2\)</span>, which still captures the trade-off between precision and recall.</p>
+<p>The advantage of using the harmonic mean comes when considering extremes. A simple average <span class="math notranslate nohighlight">\((x+y)/2\)</span> is forgiving if either <span class="math notranslate nohighlight">\(x\)</span> or <span class="math notranslate nohighlight">\(y\)</span> become 0 (see the figure below, top-left: there are non-zero simple averages at both the <span class="math notranslate nohighlight">\(x=0\)</span> and <span class="math notranslate nohighlight">\(y=0\)</span> axes). Harmonic means are not so forgiving: if <span class="math notranslate nohighlight">\(x\)</span> or <span class="math notranslate nohighlight">\(y\)</span> tend to zero, then their harmonic mean will also go to zero.</p>
+<blockquote>
+<div><p>Notice that there is always <strong>one choice</strong> of precision and recall that will maximize the simple average: $<span class="math notranslate nohighlight">\(\mathrm{Recall} = 0,\quad \mathrm{Precision} =1\)</span><span class="math notranslate nohighlight">\(, which corresponds to the trivial \)</span>\lambda=\infty$ model which labels every point as 0. Thus, if we tried to maximize the simple average, we would just obtain this trivial model.</p>
+</div></blockquote>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">## Plotting simple and (weighted) harmonic averages of precision and recall</span>
+
+<span class="n">prec</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.001</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+<span class="n">rec</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.001</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+
+<span class="n">rec</span><span class="p">,</span> <span class="n">prec</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">rec</span><span class="p">,</span> <span class="n">prec</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">f_beta</span><span class="p">(</span><span class="n">precision</span><span class="p">,</span> <span class="n">recall</span><span class="p">,</span> <span class="n">beta</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">beta</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="n">precision</span><span class="o">*</span><span class="n">recall</span><span class="o">/</span><span class="p">(</span><span class="n">beta</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">precision</span> <span class="o">+</span> <span class="n">recall</span><span class="p">)</span>
+
+<span class="c1"># simple mean</span>
+<span class="n">simp</span> <span class="o">=</span> <span class="p">(</span><span class="n">rec</span><span class="o">+</span><span class="n">prec</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">),</span> <span class="n">ncols</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">nrows</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+
+<span class="c1"># simple mean</span>
+<span class="n">heatmap</span> <span class="o">=</span> <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">contourf</span><span class="p">(</span><span class="n">rec</span><span class="p">,</span> <span class="n">prec</span><span class="p">,</span> <span class="n">simp</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Recall&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Precision&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Simple mean of precision / recall&quot;</span><span class="p">)</span>
+<span class="n">cbar</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">heatmap</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+<span class="n">recall_line</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">beta</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mf">0.33</span><span class="p">]):</span>
+    <span class="n">k</span><span class="o">=</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span>
+    <span class="n">ax</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">contourf</span><span class="p">(</span><span class="n">rec</span><span class="p">,</span> <span class="n">prec</span><span class="p">,</span> <span class="n">f_beta</span><span class="p">(</span><span class="n">prec</span><span class="p">,</span> <span class="n">rec</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="n">beta</span><span class="p">))</span>
+    <span class="n">ax</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Recall&quot;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Precision&quot;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;F-</span><span class="si">{</span><span class="n">beta</span><span class="si">}</span><span class="s2"> score&quot;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/Metrics 4 - Precision and Recall_36_0.png" src="../_images/Metrics 4 - Precision and Recall_36_0.png" />
+</div>
+</div>
+</section>
+</section>
+<section id="should-i-prioritize-precision-or-recall-which-matters-most">
+<h2>Should I prioritize precision or recall? Which matters most?<a class="headerlink" href="#should-i-prioritize-precision-or-recall-which-matters-most" title="Permalink to this headline">#</a></h2>
+<p>A rule-of-thumb to keep in mind is:</p>
+<div class="math notranslate nohighlight">
+\[\mathrm{Precision \sim } \quad \mbox{focus on minimizing false positives}\]</div>
+<div class="math notranslate nohighlight">
+\[\mathrm{Recall \sim } \quad \mbox{ focus on minimizing false negatives}\]</div>
+<p>False positives and false negatives are never what we wish for, but there is always a trade-off on which is worse for the problem at hand. Consider the situations below:</p>
+<p><strong>Treatment for a disease.</strong>
+You work in medical research, and you are developing a test for a specific colon disease. This disease is lethal - if a person has it and is not treated there is a high chance they will die.</p>
+<p>There already exists a very accurate test to diagnose this disease, but it is time-consuming and very uncomfortable for the patient. Your company wants to create a cheaper and less uncomfortable test, which can be done quickly at a doctor’s office, but will also be less accurate. The idea here is that, if a patient tests positive under this quicker test, only then will they take the more time-consuming and uncomfortable one, as a means of validation.</p>
+<blockquote>
+<div><p><strong>Question</strong>: which do you prioritize, precision or recall?</p>
+</div></blockquote>
+<blockquote>
+<div><p>Solution: consider what happens if you have a false negative (=the patient is sick, but your test returns negative). Since the disease is lethal, this means this patient might die. Now consider a false positive (=patient is not sick, but your test returns positive). Then they will need to go through an uncomfortable test, but they will not die. In this case, <strong>false negatives are much worse than false positives</strong>. Because of this, our focus is on high recall.</p>
+</div></blockquote>
+<p><strong>Product recommendation</strong>. You work in an e-commerce company, and are developing a product recommendation model. Basically, when the user enters your homepage, you want to recommend products to them based on their profile, previous purchases etc which will maximize the chances they will buy again. The product recommendations will be displayed, 5 at a time, in a “Recommended for you” tab.</p>
+<p>Usually, product recommendation models are not just binary classifiers, but for the sake of simplicity let’s assume they are. Then, our model is a classification model which outputs a score: high scores indicate a user is likely to purchase something, and low scores mean the opposite.</p>
+<blockquote>
+<div><p><strong>Question</strong>: which do you prioritize, precision or recall?</p>
+</div></blockquote>
+<blockquote>
+<div><p>Solution: a false positive here means a product which you recommend, but the user is not really likely to buy. A false negative is a product they would have liked, but you don’t recommend. If you want to maximize the likelihood a user will buy a product, you want to make sure you only show them the top 5 products they will like: few false positives. It is OK, however, to have products that they would like but you don’t end up recommending. What you want to avoid is that they enter the page, don’t find anything they like, and leave. <strong>False positives are worse than false negatives here</strong>, so the focus is on high precision.</p>
+</div></blockquote>
+</section>
+<section id="average-precision-ap-very-used-but-questionable-metric">
+<h2>Average Precision (AP): very used but questionable metric<a class="headerlink" href="#average-precision-ap-very-used-but-questionable-metric" title="Permalink to this headline">#</a></h2>
+<p>The so-called <em>average precision</em> is the <strong>area under the PR curve</strong>:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">auc</span><span class="p">,</span> <span class="n">average_precision_score</span><span class="p">,</span> <span class="n">precision_recall_curve</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Directly using the sklearn implementation</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Avg. Precision: </span><span class="si">{0:.3f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">average_precision_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_test_pred</span><span class="p">)))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Avg. Precision: 0.714
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># calculating the curve and using numeric integration</span>
+<span class="n">prec</span><span class="p">,</span> <span class="n">rec</span><span class="p">,</span> <span class="n">thresh</span> <span class="o">=</span> <span class="n">precision_recall_curve</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_test_pred</span><span class="p">)</span>
+
+<span class="c1"># Directly using the sklearn implementation</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Avg. Precision: </span><span class="si">{0:.3f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">auc</span><span class="p">(</span><span class="n">rec</span><span class="p">,</span> <span class="n">prec</span><span class="p">)))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Avg. Precision: 0.714
+</pre></div>
+</div>
+</div>
+</div>
+<p>The reasoning behind using this metric is that, since the endpoints of the PR curve are fixed, higher area means a better classifier.</p>
+<p>This is true in general. However, it might be problematic to use for several reasons:</p>
+<ul class="simple">
+<li><p>If you look at how jagged the PR curve is, it makes you want to “smoothen it out” in the same way we do for the ROC curve: by taking its convex hull. However, this is not possible - the PR plane has no convexity properties. Hence the area under the curve would be an integral of a pretty jagged function</p></li>
+<li><p>Even if you calculate the area well, you have an issue: there is no interpretation for the Average Precision</p></li>
+<li><p>The PR curve is bound below by <span class="math notranslate nohighlight">\(\mathrm{Precision} = \pi_1\)</span>, the prevalence of the minority class. That means that it has an area of at least <span class="math notranslate nohighlight">\(1\times \pi_1 = \pi_1\)</span>. This is an issue: suppose you want to consider a model that you trained on two different customer segments, A and B. Even if <span class="math notranslate nohighlight">\(\mathrm{AP}_A \geq \mathrm{AP}_B\)</span>, this doesn’t mean the model works better on A than B, since the prevalence might be different between the classes. If A has higher prevalence, then the area will naturally tend to be greater.</p></li>
+</ul>
+</section>
+<section id="pr-is-not-good-under-imbalance">
+<h2>PR is not good under imbalance<a class="headerlink" href="#pr-is-not-good-under-imbalance" title="Permalink to this headline">#</a></h2>
+<p><strong>For this section, assume that we want to find the model with the best <span class="math notranslate nohighlight">\(F_1\)</span> score</strong></p>
+<p>A common question among data scientists is - which should I use to assess my model, the ROC curve or the PR curve?</p>
+<p>The answer is of course to use both, since they tell different stories. Mathematically, however, the ROC is definitely “nicer”:</p>
+<table class="colwidths-auto table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Features of the ROC</p></th>
+<th class="head"><p>Feature of PR</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Interpretable area under the curve ROC AUC = <span class="math notranslate nohighlight">\(\mathbb P (Z_1 \geq Z_0)\)</span></p></td>
+<td><p><strong>AUC PR</strong> not interpretable</p></td>
+</tr>
+<tr class="row-odd"><td><p>Invariant under class imbalance</p></td>
+<td><p>The whole curve shifts when the imbalance ratio shifts</p></td>
+</tr>
+<tr class="row-even"><td><p>Universal baseline: 45 degree line</p></td>
+<td><p>No universal baseline</p></td>
+</tr>
+<tr class="row-odd"><td><p>Meaningful convex hull</p></td>
+<td><p>Not linear - cannot take convex hull</p></td>
+</tr>
+</tbody>
+</table>
+<section id="why-is-the-curve-not-invariant-under-imbalance">
+<h3><strong>Why is the curve not invariant under imbalance?</strong><a class="headerlink" href="#why-is-the-curve-not-invariant-under-imbalance" title="Permalink to this headline">#</a></h3>
+<p>Recall from our discussion of the ROC curve that its <span class="math notranslate nohighlight">\(x\)</span> and <span class="math notranslate nohighlight">\(y\)</span> axes (FPR and TPR, respectively) do not change, mathematically speaking, if the ratio</p>
+<div class="math notranslate nohighlight">
+\[r = \mbox{total positives / total negatives} = \mathbb P (Y=1)/\mathbb P(Y=0)\]</div>
+<p>changes. <em>This will not be the case for precision and recall</em>. To see this, let</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\mathrm{ROC}:\quad \begin{align}
+\mathbf x &amp;= \mbox{FPR} = \mathbb P (\hat y = 1|y = 0)\\
+\mathbf y &amp;= \mbox{TPR} = \mathbb P(\hat y =1|y=1)
+\end{align}\end{split}\]</div>
+<p>be the coordinates of the ROC curve, and let</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\mathrm{PR}:\quad \begin{align}
+\mathbf x' &amp;= \mathrm{Recall} = \mathbb P(\hat y =1|y=1)\\
+\mathbf y' &amp;= \mathrm{Precision} = \mathbb P(y =1|\hat y=1)
+\end{align}\end{split}\]</div>
+<p>be those of the PR curve.</p>
+<p>Here, <span class="math notranslate nohighlight">\(\mathbf x\)</span> and <span class="math notranslate nohighlight">\(\mathbf y\)</span> are invariant under changes. Our goal is to express the primed coordinates in terms of the unprimed ones.</p>
+<p><strong>Claim:</strong> the precision and recall curve can be expressed as a <em>change of coordinates</em> of the ROC curve via</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\boxed{\begin{align}
+\mathbf x' &amp;= \mathbf y\\
+\mathbf y'&amp;= \frac{\mathbf y}{\mathbf y+ \mathbf x/r}
+\end{align}}\end{split}\]</div>
+<p>Then: all else being equal, recall is invariant under shifts in <span class="math notranslate nohighlight">\(r\)</span>, but <strong>precision decreases</strong>.</p>
+<blockquote>
+<div><p>Proof: there is nothing to prove regarding recall <span class="math notranslate nohighlight">\(\mathbf x'\)</span>. For precision, we use Bayes’ rule:
+$<span class="math notranslate nohighlight">\(\begin{align}
+\mathbf y'&amp;= \mathbb P(y =1|\hat y=1)\\
+&amp;= \frac{\mathbb P(\hat y =1| y=1) \mathbb P (y=1)}{\mathbb P(\hat y =1| y=1) \mathbb P (y=1)+\mathbb P(\hat y =1| y=0) \mathbb P (y=0)}\\
+&amp;= \frac{\mathbf y \mathbb P (y=1)}{\mathbf{y} \mathbb P (y=1)+ \mathbf x \mathbb P (y=0)}\\
+&amp;= \frac{\mathbf y }{\displaystyle \mathbf{y} + \mathbf x  \frac{\mathbb P (y=0)}{\mathbb P (y=1)}}\\
+&amp;= \frac{\mathbf y }{\displaystyle \mathbf{y} + \frac{\mathbf x}{r}}
+\end{align}\)</span>$</p>
+</div></blockquote>
+<p>Therefore, if <span class="math notranslate nohighlight">\(r\)</span> shifts,</p>
+<ul class="simple">
+<li><p>The precision curve naturally goes down</p></li>
+<li><p>The area under the precision curve also goes down</p></li>
+<li><p>Since (prove it)
+$<span class="math notranslate nohighlight">\(F_\beta = \frac{(1+\beta^2) \mathbf{y}}{\displaystyle \mathbf{y} + \frac{\mathbf x}{r} +\beta^2}\)</span><span class="math notranslate nohighlight">\(
+then \)</span>F$-scores suffer from the same problem as precision.</p></li>
+</ul>
+</section>
+<section id="visual-proof-of-non-convexity-in-pr-space">
+<h3>Visual proof of non-convexity in PR space<a class="headerlink" href="#visual-proof-of-non-convexity-in-pr-space" title="Permalink to this headline">#</a></h3>
+<p>We have claimed above that a convex hull makes no sense in the PR space. We show this intuitively now.</p>
+<p>We have previously created a function to calculate the convex hull of the ROC curve:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">roc_curve</span>
+
+<span class="n">_</span><span class="p">,</span> <span class="n">fpr_hull</span><span class="p">,</span> <span class="n">tpr_hull</span> <span class="o">=</span> <span class="n">hull_roc_auc</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_test_pred</span><span class="p">)</span>
+<span class="n">fpr</span><span class="p">,</span> <span class="n">tpr</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">roc_curve</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_test_pred</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>We use the transformation derived above to plot these points on the PR plane. Technically speaking, we only have the vertices of the hull, so we need to create a linear interpolation to have more points to plot.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">scipy.interpolate</span> <span class="kn">import</span> <span class="n">interp1d</span>  <span class="c1"># for 1d interpolation</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pr_interp</span> <span class="o">=</span> <span class="n">interp1d</span><span class="p">(</span><span class="n">fpr_hull</span><span class="p">,</span> <span class="n">tpr_hull</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">x_hull</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="n">num</span><span class="o">=</span><span class="mi">500</span><span class="p">)</span>
+<span class="n">y_hull</span> <span class="o">=</span> <span class="n">pr_interp</span><span class="p">(</span><span class="n">x_hull</span><span class="p">)</span> 
+</pre></div>
+</div>
+</div>
+</div>
+<p>Now we apply the transformation and plot both the original ROC and its hull in the PR planme</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">r</span> <span class="o">=</span> <span class="p">(</span><span class="n">y_test</span><span class="o">==</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">/</span><span class="p">(</span><span class="n">y_test</span><span class="o">==</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">from_roc_to_pr</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">r</span><span class="p">):</span>
+
+    <span class="kn">from</span> <span class="nn">warnings</span> <span class="kn">import</span> <span class="n">catch_warnings</span><span class="p">,</span> <span class="n">simplefilter</span>
+    
+    <span class="k">with</span> <span class="n">catch_warnings</span><span class="p">():</span>
+        <span class="n">simplefilter</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">y</span><span class="p">,</span> <span class="n">y</span><span class="o">/</span><span class="p">(</span><span class="n">y</span><span class="o">+</span><span class="n">x</span><span class="o">/</span><span class="n">r</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rec</span><span class="p">,</span> <span class="n">prec</span> <span class="o">=</span> <span class="n">from_roc_to_pr</span><span class="p">(</span><span class="n">fpr</span><span class="p">,</span> <span class="n">tpr</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span>
+<span class="n">rec_hull</span><span class="p">,</span> <span class="n">prec_hull</span> <span class="o">=</span> <span class="n">from_roc_to_pr</span><span class="p">(</span><span class="n">x_hull</span><span class="p">,</span> <span class="n">y_hull</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span>
+<span class="n">rec_hull_markers</span><span class="p">,</span> <span class="n">prec_hull_markers</span> <span class="o">=</span> <span class="n">from_roc_to_pr</span><span class="p">(</span><span class="n">fpr_hull</span><span class="p">,</span> <span class="n">tpr_hull</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">5</span><span class="p">),</span> <span class="n">ncols</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="kn">import</span> <span class="nn">string</span>
+
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">fpr</span><span class="p">,</span> <span class="n">tpr</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;ROC&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">fpr_hull</span><span class="p">,</span> <span class="n">tpr_hull</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;ROC hull&#39;</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;orange&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;ROC curve and convex hull&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;FPR&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;TPR&quot;</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">letter</span><span class="p">,</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">string</span><span class="o">.</span><span class="n">ascii_uppercase</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">fpr_hull</span><span class="p">))):</span>
+    <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">annotate</span><span class="p">(</span><span class="n">letter</span><span class="p">,</span> <span class="p">(</span><span class="n">fpr_hull</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">*</span><span class="mf">1.02</span><span class="p">,</span> <span class="n">tpr_hull</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">*</span><span class="mf">0.96</span><span class="p">))</span>
+
+
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">rec</span><span class="p">,</span> <span class="n">prec</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Original&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">rec_hull</span><span class="p">,</span> <span class="n">prec_hull</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;PR hull&#39;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;orange&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">rec_hull_markers</span><span class="p">,</span> <span class="n">prec_hull_markers</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;orange&#39;</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">letter</span><span class="p">,</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">string</span><span class="o">.</span><span class="n">ascii_uppercase</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">rec_hull_markers</span><span class="p">))):</span>
+    <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">annotate</span><span class="p">(</span><span class="n">letter</span><span class="p">,</span> <span class="p">(</span><span class="n">rec_hull_markers</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">*</span><span class="mf">1.02</span><span class="p">,</span> <span class="n">prec_hull_markers</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
+    
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Same model curves, PR plane&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Recall&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Precision&quot;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/Metrics 4 - Precision and Recall_74_0.png" src="../_images/Metrics 4 - Precision and Recall_74_0.png" />
+</div>
+</div>
+<p>As you can see, the hull is mapped to a very non-convex shape; the part between points M and N shows clearly that the hull becomes curved in this new space. Therefore, starting out from the PR curve, there is no simple linear structure as the one we had in the ROC plane.</p>
+<blockquote>
+<div><p>Indeed, since the mapping is <span class="math notranslate nohighlight">\(x'= y\)</span> and <span class="math notranslate nohighlight">\(y'= y/(y+x/r)\)</span>, any straight line <span class="math notranslate nohighlight">\(y = ax+ b\)</span> becomes, in primed variables,
+$<span class="math notranslate nohighlight">\(y'= \frac{x'}{\displaystyle x'+ \frac 1r (\frac ya - b)} =  \frac{1}{\displaystyle 1+ \frac 1{ra} - \frac{b}{rx'}}\)</span>$</p>
+</div></blockquote>
+<p>The imbalance issue is partially fixed in the next section.</p>
+</section>
+</section>
+</section>
+<hr class="docutils" />
+<section class="tex2jax_ignore mathjax_ignore" id="advanced-topic-harmonic-precision-and-recall">
+<h1>Advanced topic: harmonic precision and recall<a class="headerlink" href="#advanced-topic-harmonic-precision-and-recall" title="Permalink to this headline">#</a></h1>
+<section id="what-is-a-baseline-to-compare-models">
+<h2>What is a baseline to compare models?<a class="headerlink" href="#what-is-a-baseline-to-compare-models" title="Permalink to this headline">#</a></h2>
+<p>In the ROC case, the family of random classifiers corresponds to the 45 degree line and it is a universal baseline.</p>
+<p>In the PR case, we don’t have that. Instead, we know the “worst” classifier is the one in the bottom right-hand corner of the PR plane, namely the “all-positives” model predicting <span class="math notranslate nohighlight">\(\hat y=1\)</span> for all <span class="math notranslate nohighlight">\(x\)</span>, which has recall equal to 1 and precision equal to <span class="math notranslate nohighlight">\(\pi_1 = \mathbb P(Y=1)\)</span>. This model has an <span class="math notranslate nohighlight">\(F_1\)</span> score of</p>
+<div class="math notranslate nohighlight">
+\[(F_1)_\mathrm{baseline} = \frac{2\pi_1}{1+\pi_1}\]</div>
+<p><strong>If the metric we care the most about is <span class="math notranslate nohighlight">\(F_1\)</span></strong>, (as is the assumption in this section), then there is no point in choosing a model with <span class="math notranslate nohighlight">\(F_1 &lt; (F_1)_\mathrm{baseline}\)</span>. This constraint actually splits the PR plane into two components, separated by</p>
+<div class="math notranslate nohighlight">
+\[F_1 = (F_1)_\mathrm{baseline}\quad \Rightarrow\quad \frac{1}{\mathrm{Precision}} + \frac{1}{\mathrm{Recall}} = 1 + \frac{1}{\pi_1}\]</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">5</span><span class="p">))</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">rec</span><span class="p">,</span> <span class="n">prec</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Test PR&#39;</span><span class="p">)</span>
+
+<span class="c1"># build baseline model</span>
+<span class="n">pi</span> <span class="o">=</span> <span class="n">y_test</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+
+<span class="n">baseline_rec</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">pi</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">baseline_prec</span> <span class="o">=</span>  <span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="mi">1</span><span class="o">/</span><span class="n">pi</span> <span class="o">-</span> <span class="mi">1</span><span class="o">/</span><span class="n">baseline_rec</span><span class="p">)</span>
+
+<span class="c1"># for plotting purposes</span>
+<span class="n">xaxis</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">frontier</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">xaxis</span> <span class="o">&lt;</span> <span class="n">pi</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="mi">1</span><span class="o">/</span><span class="n">pi</span> <span class="o">-</span> <span class="mi">1</span><span class="o">/</span><span class="n">xaxis</span><span class="p">))</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span><span class="n">xaxis</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">frontier</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;green&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;High F1&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span><span class="n">xaxis</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">frontier</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Low F1&#39;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">baseline_rec</span><span class="p">,</span> <span class="n">baseline_prec</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Iso-F1 frontier&#39;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s1">&#39;lower left&#39;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Recall&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Precision&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;ipython-input-55-e47806ebc338&gt;:13: RuntimeWarning: divide by zero encountered in true_divide
+  frontier = np.where(xaxis &lt; pi,1, 1/(1 + 1/pi - 1/xaxis))
+</pre></div>
+</div>
+<img alt="../_images/Metrics 4 - Precision and Recall_82_1.png" src="../_images/Metrics 4 - Precision and Recall_82_1.png" />
+</div>
+</div>
+<p>In this sense, all classifiers lying in the red zone are worse than the all-positive one. We want to find models which somehow maximize our “presence” in the green region.</p>
+<blockquote>
+<div><p>This discussion assumes we want to maximize <span class="math notranslate nohighlight">\(F_1\)</span>. One could define analogous Iso-<span class="math notranslate nohighlight">\(F_\beta\)</span> curves for other use cases.</p>
+</div></blockquote>
+<blockquote>
+<div><p>By symmetry of the hyperbola, we see that models with <span class="math notranslate nohighlight">\(\mathrm{Recall} &lt; \pi_1\)</span> are completely excluded, because all of them have <span class="math notranslate nohighlight">\(F_1\)</span> smaller than the baseline one.</p>
+</div></blockquote>
+</section>
+<section id="how-can-we-fix-the-imbalance-problem">
+<h2>How can we fix the imbalance problem?<a class="headerlink" href="#how-can-we-fix-the-imbalance-problem" title="Permalink to this headline">#</a></h2>
+<p>The main issue that PR has is imbalance. Somehow we want to create a universal baseline which allows us to compare eg. areas under the curve across datasets in a meaningful way. It turns out we can do this with a proper <strong>rescaling</strong> of the precision and recall metrics.</p>
+<p><strong>Def [harmonic rescaling]</strong>. Let <span class="math notranslate nohighlight">\(a, b\)</span> with <span class="math notranslate nohighlight">\(b&gt;a&gt;0\)</span> be two real paramters. The harmonic rescaling of a number <span class="math notranslate nohighlight">\(x \neq 0\)</span> betweeen <span class="math notranslate nohighlight">\(a\)</span> and <span class="math notranslate nohighlight">\(b\)</span> is</p>
+<div class="math notranslate nohighlight">
+\[\mathrm{hScale}(x; a, b) = \frac{1/x-1/a}{1/b-1/a}\]</div>
+<p>Notice that this is different from a linear rescaling <span class="math notranslate nohighlight">\((x-a)/(b-a)\)</span> (in fact, the harmonically scaled variable is larger than its linear counterpart) but both make it so that the variable takes the value 0 at <span class="math notranslate nohighlight">\(x=a\)</span> and 1 at <span class="math notranslate nohighlight">\(x=b\)</span>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">12</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="n">x</span><span class="o">-</span><span class="n">a</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">b</span><span class="o">-</span><span class="n">a</span><span class="p">),</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Linar rescaling&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">x</span><span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="n">a</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">b</span><span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="n">a</span><span class="p">),</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Harmonic rescaling&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/Metrics 4 - Precision and Recall_90_0.png" src="../_images/Metrics 4 - Precision and Recall_90_0.png" />
+</div>
+</div>
+<p><strong>Def [harmonic precision &amp; recall]</strong> Let <span class="math notranslate nohighlight">\(\pi_1 = \mathbb P (y=1)\)</span> be the prevalence of class 1. The harmonic precision and recall are defined as</p>
+<div class="math notranslate nohighlight">
+\[\boxed{\mathrm{hPrecision} := \mathrm{hScale}(\mathrm{Precision}; a=\pi_1, b=1)}\]</div>
+<div class="math notranslate nohighlight">
+\[\boxed{\mathrm{hRecall} := \mathrm{hScale}(\mathrm{Recall}; a=\pi_1, b=1)}\]</div>
+<p>Notice that this will map precision from <span class="math notranslate nohighlight">\([\pi_1,1]\)</span> into <span class="math notranslate nohighlight">\([0,1]\)</span> perfectly. For recall, there are two domains: the part with recall in <span class="math notranslate nohighlight">\([0, \pi_1]\)</span> will be mapped to negative harmonic recall, whereas the region <span class="math notranslate nohighlight">\([\pi_1, 1]\)</span> will be mapped to positive harmonic recalls.</p>
+<blockquote>
+<div><p>Again, in the situation where <span class="math notranslate nohighlight">\(F_1\)</span> is our reference metric, it is OK to ignore the negative harmonic recall region, since all models in this region perform worse than the baseline model.</p>
+</div></blockquote>
+<p>Because of that, the <span class="math notranslate nohighlight">\(y\)</span>-axis intercept (ie. the point where <span class="math notranslate nohighlight">\(\mathrm{hRecall}=0\)</span>) happens not at <span class="math notranslate nohighlight">\(\mathrm{hPrecision} = 1\)</span>, but at some point between 0 and 1.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">harm_scale</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+
+    <span class="kn">from</span> <span class="nn">warnings</span> <span class="kn">import</span> <span class="n">catch_warnings</span><span class="p">,</span> <span class="n">simplefilter</span>
+    
+    <span class="k">with</span> <span class="n">catch_warnings</span><span class="p">():</span>
+        <span class="n">simplefilter</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">)</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span><span class="o">-</span><span class="n">a</span><span class="p">)</span><span class="o">*</span><span class="n">b</span><span class="o">/</span><span class="p">(</span><span class="n">x</span><span class="o">*</span> <span class="p">(</span><span class="n">b</span><span class="o">-</span><span class="n">a</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">res</span>
+
+<span class="k">def</span> <span class="nf">from_pr_to_harmonic_pr</span><span class="p">(</span><span class="n">rec</span><span class="p">,</span> <span class="n">prec</span><span class="p">,</span> <span class="n">r</span><span class="p">):</span>
+    
+    <span class="n">pi1</span> <span class="o">=</span> <span class="n">r</span><span class="o">/</span><span class="p">(</span><span class="n">r</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">hprec</span> <span class="o">=</span> <span class="n">harm_scale</span><span class="p">(</span><span class="n">prec</span><span class="p">,</span> <span class="n">pi1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">hrec</span>  <span class="o">=</span> <span class="n">harm_scale</span><span class="p">(</span><span class="n">rec</span><span class="p">,</span> <span class="n">pi1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    
+    <span class="c1"># restrict to [0,1]</span>
+    <span class="n">restriction</span> <span class="o">=</span> <span class="n">hrec</span> <span class="o">&gt;=</span> <span class="mi">0</span>
+    <span class="n">hrec</span><span class="p">,</span> <span class="n">hprec</span> <span class="o">=</span> <span class="n">hrec</span><span class="p">[</span><span class="n">restriction</span><span class="p">],</span> <span class="n">hprec</span><span class="p">[</span><span class="n">restriction</span><span class="p">]</span>
+    
+    <span class="k">return</span> <span class="n">hrec</span><span class="p">,</span> <span class="n">hprec</span>
+
+
+<span class="k">def</span> <span class="nf">from_roc_to_harmonic_pr</span><span class="p">(</span><span class="n">fpr</span><span class="p">,</span> <span class="n">tpr</span><span class="p">,</span> <span class="n">r</span><span class="p">):</span>
+    
+    <span class="n">rec</span><span class="p">,</span> <span class="n">prec</span> <span class="o">=</span> <span class="n">from_roc_to_pr</span><span class="p">(</span><span class="n">fpr</span><span class="p">,</span> <span class="n">tpr</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">from_pr_to_harmonic_pr</span><span class="p">(</span><span class="n">rec</span><span class="p">,</span> <span class="n">prec</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">harmonic_precision_recall</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">):</span>
+    
+    <span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">roc_curve</span><span class="p">,</span> <span class="n">precision_recall_curve</span>
+    
+    <span class="n">prec</span><span class="p">,</span> <span class="n">rec</span><span class="p">,</span> <span class="n">thresh</span> <span class="o">=</span> <span class="n">precision_recall_curve</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)</span>
+
+    <span class="n">r</span> <span class="o">=</span> <span class="p">(</span><span class="n">y_true</span><span class="o">==</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">/</span><span class="p">(</span><span class="n">y_true</span><span class="o">==</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+    <span class="n">pi1</span> <span class="o">=</span> <span class="n">r</span><span class="o">/</span><span class="p">(</span><span class="n">r</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+    
+    <span class="n">hprec</span> <span class="o">=</span> <span class="n">harm_scale</span><span class="p">(</span><span class="n">prec</span><span class="p">,</span> <span class="n">pi1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">hrec</span>  <span class="o">=</span> <span class="n">harm_scale</span><span class="p">(</span><span class="n">rec</span><span class="p">,</span> <span class="n">pi1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    
+    <span class="c1"># restrict to [0,1]</span>
+    <span class="n">restriction</span> <span class="o">=</span> <span class="n">hrec</span> <span class="o">&gt;=</span> <span class="mi">0</span>
+    <span class="n">hrec</span><span class="p">,</span> <span class="n">hprec</span><span class="p">,</span> <span class="n">thresh</span> <span class="o">=</span> <span class="n">hrec</span><span class="p">[</span><span class="n">restriction</span><span class="p">],</span> <span class="n">hprec</span><span class="p">[</span><span class="n">restriction</span><span class="p">],</span> <span class="n">thresh</span><span class="p">[</span><span class="n">restriction</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
+    
+    <span class="k">return</span> <span class="n">hprec</span><span class="p">,</span> <span class="n">hrec</span><span class="p">,</span> <span class="n">thresh</span>
+
+<span class="k">def</span> <span class="nf">plot_harmonic_precision_recall</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">,</span> <span class="n">ax</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    
+    <span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">auc</span>
+    
+    <span class="n">hprec</span><span class="p">,</span> <span class="n">hrec</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">harmonic_precision_recall</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)</span>
+    <span class="n">area</span> <span class="o">=</span> <span class="n">auc</span><span class="p">(</span><span class="n">hrec</span><span class="p">,</span> <span class="n">hprec</span><span class="p">)</span>
+    
+    <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">hrec</span><span class="p">,</span><span class="n">hprec</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;hPR (area=</span><span class="si">{0:.2f}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">area</span><span class="p">))</span>
+    
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">label</span><span class="p">:</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="mi">1</span><span class="o">-</span><span class="n">x</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span> <span class="s1">&#39;gray&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;All-positive&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="mi">1</span><span class="o">-</span><span class="n">x</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span> <span class="s1">&#39;gray&#39;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="o">-</span><span class="mf">0.05</span><span class="p">,</span><span class="mf">1.05</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">5</span><span class="p">))</span>
+
+<span class="c1"># calculate harmonic PR</span>
+<span class="n">hrec</span><span class="p">,</span> <span class="n">hprec</span> <span class="o">=</span> <span class="n">from_roc_to_harmonic_pr</span><span class="p">(</span><span class="n">fpr</span><span class="p">,</span> <span class="n">tpr</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span>
+<span class="n">hrec_hull</span><span class="p">,</span> <span class="n">hprec_hull</span> <span class="o">=</span> <span class="n">from_roc_to_harmonic_pr</span><span class="p">(</span><span class="n">fpr_hull</span><span class="p">,</span> <span class="n">tpr_hull</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span>
+<span class="n">hrec_hull_interp</span><span class="p">,</span> <span class="n">hprec_hull_interp</span> <span class="o">=</span> <span class="n">from_roc_to_harmonic_pr</span><span class="p">(</span><span class="n">x_hull</span><span class="p">,</span> <span class="n">y_hull</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">hrec</span><span class="p">,</span> <span class="n">hprec</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Original&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">hrec_hull</span><span class="p">,</span> <span class="n">hprec_hull</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;orange&#39;</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">hrec_hull_interp</span><span class="p">,</span> <span class="n">hprec_hull_interp</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;orange&#39;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;PR hull&#39;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Harmonic recall&#39;</span><span class="p">);</span> <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Harmonic precision&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Harmonic PR curve&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/Metrics 4 - Precision and Recall_96_0.png" src="../_images/Metrics 4 - Precision and Recall_96_0.png" />
+</div>
+</div>
+<p>We find a very interesting fact: in this plane, <strong>the (ROC) convex hull is mapped to the (harmonic PR) convex hull!</strong> This is a consequence of the more general fact that <strong>straight lines in the ROC plane are straight lines in the harmonic PR plane</strong>.</p>
+<p>We prove this in the Theorem below:</p>
+<p><strong>[Theorem]</strong> Consider two classifiers <span class="math notranslate nohighlight">\(c_A\)</span> and <span class="math notranslate nohighlight">\(c_B\)</span> with coordinates <span class="math notranslate nohighlight">\((\mathrm{hRecall_A, hPrecision_A})\)</span> and <span class="math notranslate nohighlight">\((\mathrm{hRecall_B, hPrecision_B})\)</span> in the harmonic PR plane. Then, for any point in the segment between <span class="math notranslate nohighlight">\(c_A\)</span> and <span class="math notranslate nohighlight">\(c_B\)</span>, with coordinates <span class="math notranslate nohighlight">\((\mathrm{hRecall_*, hPrecision_*})\)</span>, there is a classifier <span class="math notranslate nohighlight">\(c_*\)</span> which can be obtained as follows.</p>
+<p>First, let</p>
+<div class="math notranslate nohighlight">
+\[\displaystyle \mu = \mathrm{\frac{hRecall_*-hRecall_B}{hRecall_A - hRecall_B}} = \mathrm{\frac{hPrecision_*-hPrecision_B}{hPrecision_A - hPrecision_B}}\]</div>
+<p>(so that <span class="math notranslate nohighlight">\(c_*\)</span> is at a normalized distance <span class="math notranslate nohighlight">\(\mu\)</span> from <span class="math notranslate nohighlight">\(c_B\)</span> and <span class="math notranslate nohighlight">\(1-\mu\)</span> from <span class="math notranslate nohighlight">\(c_A\)</span>). Also let</p>
+<div class="math notranslate nohighlight">
+\[\lambda = \frac{\mu \mathrm{TPR_B}}{\mu \mathrm{TPR_B} + (1-\mu) \mathrm{TPR_A}}\]</div>
+<p>Then, the classifier given by</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}c_*(x) = \begin{cases}
+c_A(x) &amp; \mbox{with probability}\; \lambda\\
+c_B(x) &amp; \mbox{with probability}\;1-\lambda
+\end{cases}\end{split}\]</div>
+<p>has the desired values for <span class="math notranslate nohighlight">\(\mathrm{hRecall, hPrecision}\)</span>. As we saw in the ROC session, the classifier above is one in the straight line segment between <span class="math notranslate nohighlight">\(c_A\)</span> and <span class="math notranslate nohighlight">\(c_B\)</span> in the ROC plane.</p>
+<blockquote>
+<div><p>Proof: we start by noticing that $<span class="math notranslate nohighlight">\(\mathrm{hPrecision = 1 - \frac{FPR}{TPR}},\)</span><span class="math notranslate nohighlight">\( which is easy to prove by using the fact that
+\)</span><span class="math notranslate nohighlight">\(\mathrm{Precision} = \frac{\mathrm{TPR}}{\mathrm{TPR}+\mathrm{FPR}/r}\)</span><span class="math notranslate nohighlight">\(
+(where \)</span>r = \mathbb P(Y=1)/\mathbb P(Y=0) = \pi/(1-\pi)<span class="math notranslate nohighlight">\( is the imbalance ratio and  \)</span>\pi = \mathbb P(Y=1)<span class="math notranslate nohighlight">\( is the prevalence).
+Now, from our discussion on the ROC curve, we know the classifier \)</span>c_<em><span class="math notranslate nohighlight">\( built above has a false positive rate of \)</span><span class="math notranslate nohighlight">\(\mathrm{FPR}[c_*] = \lambda \mathrm{FPR_A} + (1-\lambda) \mathrm{ FPR_B},\)</span><span class="math notranslate nohighlight">\( and analogously for the true positive rate. Then, its harmonic precision equals (we will only do the derivation for precision; that of recall follows analogously)
+\)</span><span class="math notranslate nohighlight">\(\begin{align}
+\mathrm{hPrecision}[c_*] &amp;= 1 - \frac{\mathrm{TPR}[c_*]}{\mathrm{FPR}[c_*]}\\
+&amp;= 1 - \frac{\lambda \mathrm{FPR_A} + (1-\lambda) \mathrm{FPR_B}}{\lambda \mathrm{TPR_A} + (1-\lambda) \mathrm{TPR_B}}\\
+&amp;=\frac{\lambda \mathrm{TPR_A} + (1-\lambda) \mathrm{TPR_B} -\lambda \mathrm{FPR_A} - (1-\lambda) \mathrm{FPR_B}}{\lambda \mathrm{TPR_A} + (1-\lambda) \mathrm{TPR_B}}\\
+&amp;= \frac{1}{\lambda \mathrm{TPR_A} + (1-\lambda) \mathrm{TPR_B}} \left[ \lambda \mathrm{TPR_A} \left( 1 - \mathrm{\frac{TPR_A}{FPR_A}} \right) + (1-\lambda) \mathrm{TPR_B} \left( 1 - \mathrm{\frac{TPR_B}{FPR_B}} \right) \right]\\
+&amp;= \frac{\lambda \mathrm{TPR_A}}{\lambda \mathrm{TPR_A} + (1-\lambda) \mathrm{TPR_B}} \mathrm{hPrecision_A} + \frac{(1-\lambda) \mathrm{TPR_B}}{\lambda \mathrm{TPR_A} + (1-\lambda) \mathrm{TPR_B}} \mathrm{hPrecision_B}\\
+&amp;= \mu \, \mathrm{hPrecision_A} + (1-\mu) \, \mathrm{hPrecision_B}
+\end{align}\)</span><span class="math notranslate nohighlight">\(
+where we have inverted the definition of \)</span>\lambda<span class="math notranslate nohighlight">\( to give 
+\)</span><span class="math notranslate nohighlight">\(\mu = \frac{\lambda \mathrm{TPR_A}}{\lambda \mathrm{TPR_A} + (1-\lambda) \mathrm{TPR_B}}.\)</span><span class="math notranslate nohighlight">\(
+Finally, applying the original definition of \)</span>\mu<span class="math notranslate nohighlight">\(, we find \)</span>\mathrm{hPrecision}[c_</em>] = \mathrm{hPrecision}_*$ as claimed.</p>
+</div></blockquote>
+<p>The cool thing about this is that we can construct hulls in the harmonic PR plane in the exact same way we do for the ROC plane, and they will still be meaningful.</p>
+<blockquote>
+<div><p>Exercise: we showed above that $<span class="math notranslate nohighlight">\(\mathrm{hPrecision} = 1 - \frac{\mathrm{FPR}}{\mathrm{TPR}}.\)</span><span class="math notranslate nohighlight">\( Show analogously that \)</span><span class="math notranslate nohighlight">\(\mathrm{hRecall} = 1 - \frac{\pi}{1-\pi} \mathrm{\frac{FNR}{TPR}}.\)</span><span class="math notranslate nohighlight">\( *Hint*: use that \)</span>\mathrm{FNR + TPR} = 1$. Can you see why?</p>
+</div></blockquote>
+<section id="baseline-for-the-harmonic-pr-plane">
+<h3>Baseline for the harmonic PR plane<a class="headerlink" href="#baseline-for-the-harmonic-pr-plane" title="Permalink to this headline">#</a></h3>
+<p>It becomes clear from the previous discussion that, <strong>in the scenario we want to find classifiers which maximize <span class="math notranslate nohighlight">\(F_1\)</span></strong>, our baseline is the all-positive classifier lying in the bottom right corner of the PR plane, as well as all classifiers in the boundary parabola which share the same <span class="math notranslate nohighlight">\(F_1\)</span> value with it.</p>
+<p>Below, we plot our old friend, the logistic regression model; an improved gradient boosting model; and the baseline.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Train better model for the sake of comparison</span>
+<span class="n">hist_model</span> <span class="o">=</span> <span class="n">HistGradientBoostingClassifier</span><span class="p">()</span>
+<span class="n">hist_model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+<span class="n">y_test_pred_hist</span> <span class="o">=</span> <span class="n">hist_model</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">X_test</span><span class="p">)[:,</span><span class="mi">1</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span><span class="mi">4</span><span class="p">),</span> <span class="n">ncols</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+
+<span class="c1">## ROC plane</span>
+<span class="n">RocCurveDisplay</span><span class="o">.</span><span class="n">from_predictions</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_test_pred</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Log. Reg.&#39;</span><span class="p">)</span>
+<span class="n">RocCurveDisplay</span><span class="o">.</span><span class="n">from_predictions</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_test_pred_hist</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Boosting&#39;</span><span class="p">)</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">x</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Baseline random model&#39;</span> <span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;ROC curve&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+
+<span class="c1">## PR plane</span>
+<span class="c1"># PR curve</span>
+<span class="n">prec</span><span class="p">,</span> <span class="n">rec</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">precision_recall_curve</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_test_pred</span><span class="p">)</span>
+<span class="n">prec_hist</span><span class="p">,</span> <span class="n">rec_hist</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">precision_recall_curve</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_test_pred_hist</span><span class="p">)</span>
+
+<span class="c1"># baseline curve</span>
+<span class="n">pi</span> <span class="o">=</span> <span class="n">y_test</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">pi</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="n">x</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="mi">1</span><span class="o">/</span><span class="n">pi</span><span class="p">))</span>
+
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">rec</span><span class="p">,</span> <span class="n">prec</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Log. Reg.&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">rec_hist</span><span class="p">,</span> <span class="n">prec_hist</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Boosting&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Baseline F1 model&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;PR curve&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Recall&quot;</span><span class="p">);</span> <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Precision&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+
+<span class="c1">## harmonic PR plane</span>
+<span class="n">plot_harmonic_precision_recall</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_test_pred</span><span class="p">,</span> <span class="n">ax</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+<span class="n">plot_harmonic_precision_recall</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_test_pred_hist</span><span class="p">,</span> <span class="n">ax</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Harmonic PR curve&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Harmonic recall&quot;</span><span class="p">);</span> <span class="n">ax</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Harmonic precision&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/Metrics 4 - Precision and Recall_107_0.png" src="../_images/Metrics 4 - Precision and Recall_107_0.png" />
+</div>
+</div>
+<p>Notice how the gradient boosting model is evidently superior to the logistic regression model, and how the analysis is simpler in the harmonic PR plane. In fact, its area is about twice as large as that of the logistic regression - which leads us to our next discussion, the interpretation of this area.</p>
+<blockquote>
+<div><p>Before we finish: we leave a <code class="docutils literal notranslate"><span class="pre">sklearn</span></code>-friendly metric which can be used for model evaluation</p>
+</div></blockquote>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">harmonic_auc</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_probs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Calculates the area under the harmonic PR curve&quot;&quot;&quot;</span>
+    <span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">auc</span>
+    
+    <span class="n">hprec</span><span class="p">,</span> <span class="n">hrec</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">harmonic_precision_recall</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_probs</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">auc</span><span class="p">(</span><span class="n">hrec</span><span class="p">,</span> <span class="n">hprec</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">roc_pr_hpr_report</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_probs</span><span class="p">,</span> <span class="n">ascending_gain</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    
+    <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span><span class="mi">4</span><span class="p">),</span> <span class="n">ncols</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+
+    <span class="c1">## ROC plane (+ gain curve)</span>
+    <span class="n">plot_roc_and_gain</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_probs</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">ascending</span><span class="o">=</span><span class="n">ascending_gain</span><span class="p">)</span>
+    <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;ROC + gain curve&quot;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+
+    <span class="c1">## PR plane</span>
+    <span class="c1"># PR curve</span>
+    <span class="n">prec</span><span class="p">,</span> <span class="n">rec</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">precision_recall_curve</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_probs</span><span class="p">)</span>
+
+    <span class="c1"># baseline curve</span>
+    <span class="n">pi</span> <span class="o">=</span> <span class="n">y_true</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">pi</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="n">x</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="mi">1</span><span class="o">/</span><span class="n">pi</span><span class="p">))</span>
+
+    <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">rec</span><span class="p">,</span> <span class="n">prec</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Model&#39;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Baseline F1 model&#39;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;PR curve&quot;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Recall&quot;</span><span class="p">);</span> <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Precision&quot;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+
+    <span class="c1">## harmonic PR plane</span>
+    <span class="n">plot_harmonic_precision_recall</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_probs</span><span class="p">,</span> <span class="n">ax</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+    <span class="n">ax</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Harmonic PR curve&quot;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Harmonic recall&quot;</span><span class="p">);</span> <span class="n">ax</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Harmonic precision&quot;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+
+    <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="harmonic-f-beta-the-area-under-the-harmonic-pr-curve">
+<h3>Harmonic <span class="math notranslate nohighlight">\(F_\beta\)</span> &amp; the area under the harmonic PR curve<a class="headerlink" href="#harmonic-f-beta-the-area-under-the-harmonic-pr-curve" title="Permalink to this headline">#</a></h3>
+<p>[<strong>Definition</strong>] The harmonic <span class="math notranslate nohighlight">\(F_\beta\)</span> score is the harmonic rescaling of <span class="math notranslate nohighlight">\(F_\beta\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[hF_\beta = \mathrm{hScale}(F_\beta, \pi_1, 1)\]</div>
+<p>[<strong>Lemma</strong>] <span class="math notranslate nohighlight">\(hF_\beta\)</span> is linear as a function of harmonic precision and recall:</p>
+<div class="math notranslate nohighlight">
+\[\boxed{hF_\beta = \frac{1}{1+\beta^2} (\mathrm{hPrecision} + \beta^2 \mathrm{hRecall})}\]</div>
+<blockquote>
+<div><p>Proof is left to the reader! :)</p>
+</div></blockquote>
+<p>With the definition of <span class="math notranslate nohighlight">\(hF_\beta\)</span>, we can prove a very interesting result relating the area under the harmonic PR curve (AUhPR) with the expected <span class="math notranslate nohighlight">\(hF_\beta\)</span>:</p>
+<p>[<strong>Theorem</strong>] Under some technical assumptions, <strong><span class="math notranslate nohighlight">\(\mathbb{E}[hF_\beta]\)</span> is a linear function of AUhPR</strong>, and thus <strong>maximizing AUhPR is a strategy to finding the best model</strong>.</p>
+<p>The proof is technical and left in the Appendix.</p>
+</section>
+</section>
+<section id="takeaways">
+<h2>Takeaways<a class="headerlink" href="#takeaways" title="Permalink to this headline">#</a></h2>
+<p>We have introduced harmonic scalings of precision and recall as new versions of these variables which inherit (partially) some of the good properties of the ROC curve: convexity, existence of a baseline, and probabilistically interpretable area.</p>
+</section>
+</section>
+<hr class="docutils" />
+<section class="tex2jax_ignore mathjax_ignore" id="appendix">
+<h1>Appendix<a class="headerlink" href="#appendix" title="Permalink to this headline">#</a></h1>
+<p>[<strong>Theorem</strong>] Under some technical assumptions, <strong><span class="math notranslate nohighlight">\(\mathbb{E}[hF_\beta]\)</span> is a linear function of AUhPR</strong>, and thus <strong>maximizing AUhPR is a strategy to finding the best model</strong>.</p>
+<p>The proof is split into two parts:</p>
+<ul class="simple">
+<li><p>First we construct a (simplified) probability measure, that facilitates the calculation of the expectation</p></li>
+<li><p>Then, we actually calculate this expectation and show that it equals the area under the harmonic PR curve</p></li>
+</ul>
+<blockquote>
+<div><p><strong>[Review: probability measures]</strong> In probability, one usually considers a cumulative density function (CDF) <span class="math notranslate nohighlight">\(F\)</span> such that $<span class="math notranslate nohighlight">\(\lim_{x\to-\infty} F(x) = 0,\qquad \lim_{x\to\infty} F(x) = 1\)</span><span class="math notranslate nohighlight">\( and is right-continuous. The measure is then \)</span>dF(x) = f(x) dx<span class="math notranslate nohighlight">\( where \)</span>f(x) = F’(x)<span class="math notranslate nohighlight">\(, when it exists, is called the probabiliity density function (PDF). Notice that, if one is given some function \)</span>G<span class="math notranslate nohighlight">\(, it can be made into a measure if it is (1) at least right-continuous (2) monotonically increasing and (3) it is bounded. Under these assumptions, \)</span>G<span class="math notranslate nohighlight">\( converges for \)</span>x \to \pm\infty$ and we can construct a measure from it.</p>
+</div></blockquote>
+<p><em>Proof of part 1 (building a probability measure)</em>
+Let <span class="math notranslate nohighlight">\(\pi = \mathbb P(Y=1)\)</span> and</p>
+<div class="math notranslate nohighlight">
+\[\Delta(\lambda) = \frac{\mathrm{hPrecision}(\lambda)}{1-\pi} - \frac{\mathrm{hRecall}(\lambda)}{\pi}.\]</div>
+<p>This function is bounded: since <span class="math notranslate nohighlight">\(\mathrm{hPrecision} = 0\)</span> and <span class="math notranslate nohighlight">\(\mathrm{hRecall} = 1\)</span> in the bottom-right corner, <span class="math notranslate nohighlight">\(\Delta = -1/\pi\)</span> there; on the other hand, on the upper left corner <span class="math notranslate nohighlight">\(\mathrm{hRecall} = 0\)</span>, and harmonic precision reaches a value we will call <span class="math notranslate nohighlight">\(y_0 \in [\pi, 1]\)</span>, and so at that point <span class="math notranslate nohighlight">\(\Delta = y_0/(1-\pi)\)</span>.</p>
+<p>We shall prove that, as the threshold <span class="math notranslate nohighlight">\(\lambda\)</span> increases, <span class="math notranslate nohighlight">\(\Delta\)</span> grows at every point, namely if <span class="math notranslate nohighlight">\(\lambda'&gt; \lambda\)</span>,</p>
+<p>$<span class="math notranslate nohighlight">\(\Delta(\lambda ')- \Delta(\lambda) \geq 0\)</span>$.</p>
+<p>Using that</p>
+<div class="math notranslate nohighlight">
+\[\mathrm{hPrecision = 1- \frac{FPR}{TPR}},\qquad \mathrm{hRecall} = - \frac{\pi}{1-\pi} \frac{1}{\mathrm{TPR}} - \mathrm{const.}\]</div>
+<p>We obtain</p>
+<div class="math notranslate nohighlight">
+\[\begin{align}
+\Delta(\lambda') - \Delta(\lambda) &amp;=  \frac{1}{1-\pi} \left(\mathrm{ - \frac{FPR'}{TPR'} + \frac{FPR}{TPR}} \right) - \frac{1}{1-\pi} \left(\mathrm{-\frac{1}{TPR'} + \frac{1}{TPR}    }\right)
+\end{align}\]</div>
+<p>Adding and subtracting <span class="math notranslate nohighlight">\(\mathrm{FPR/TPR'}\)</span> to the expression inside the parenthesis, we get</p>
+<div class="math notranslate nohighlight">
+\[\Delta(\lambda') - \Delta(\lambda) =  \frac{1}{1-\pi} \left[ \mathrm{\frac{(1-FPR)(TPR-TPR')}{TPR\, TPR'} + \frac{FPR-FPR'}{TPR}    } \right]\]</div>
+<p>The RHS is positive. To see this, notice we are now in the ROC plane, going from a lower threshold point <span class="math notranslate nohighlight">\(\mathrm{(FPR, TPR)}\)</span> to <span class="math notranslate nohighlight">\(\mathrm{(FPR', TPR')}\)</span> - but the ROC curve runs “from northeast to southwest”, and so <span class="math notranslate nohighlight">\(\mathrm{TPR - TPR'} \geq 0\)</span> and <span class="math notranslate nohighlight">\(\mathrm{FPR - FPR'} \geq 0\)</span>. Also, <span class="math notranslate nohighlight">\(1 - \mathrm{FPR} \geq 0\)</span> since <span class="math notranslate nohighlight">\(\mathrm{FPR} \in [0,1]\)</span>, and all quantities are non-negative. Hence, we have proven that <span class="math notranslate nohighlight">\(\lambda \mapsto \Delta(
+\lambda)\)</span> increases. It is bounded by construction, and continuous, and so can be made into a measure.</p>
+<p><strong>We will assume <span class="math notranslate nohighlight">\(\Delta\)</span> is uniformly distributed over</strong> <span class="math notranslate nohighlight">\([-1/\pi, y_0/(1-\pi)]\)</span>. If we do so, we can build a measure from simple normalization:</p>
+<div class="math notranslate nohighlight">
+\[\frac{d\Delta}{\displaystyle \int_{-1/\pi}^{y_0/(1-\pi)} d\Delta} = \frac{d\Delta}{\displaystyle \frac{y_0}{1-\pi} + \frac{1}{\pi}}\]</div>
+<blockquote>
+<div><p>Recall: a variable <span class="math notranslate nohighlight">\(X\)</span> uniformly distributed on an interval <span class="math notranslate nohighlight">\([a,b]\)</span> (denoted by <span class="math notranslate nohighlight">\(X\sim\mathrm{Uniform}([a,b])\)</span>) has PDF $<span class="math notranslate nohighlight">\(f(x) = \frac{1}{b-a}\)</span><span class="math notranslate nohighlight">\( or, equivalently, our probability measure is \)</span><span class="math notranslate nohighlight">\(dF(x) = \frac{dx}{b-a}\)</span><span class="math notranslate nohighlight">\( with support on \)</span>[a,b]$.</p>
+</div></blockquote>
+<blockquote>
+<div><p>We do we assume this uniformity? Honestly, because it makes our calculations easier; it is also the least informative prior we can put on our knowledge of <span class="math notranslate nohighlight">\(\Delta\)</span>. In principle, we could have chosen a different PDF for it (with a function <span class="math notranslate nohighlight">\(f(\Delta)\)</span> which integrates to 1), but for now it suffices to consider the uniform case.</p>
+</div></blockquote>
+<p><em>Proof of part 2 (calculate expectation)</em>: we can write <span class="math notranslate nohighlight">\(\mathbb E[hF_\beta]\)</span> as</p>
+<div class="math notranslate nohighlight">
+\[\mathbb E[hF_\beta] = \frac{1}{\displaystyle \left(\frac{y_0}{1-\pi} + \frac{1}{\pi} \right)} \int_{-1/\pi}^{y_0/(1-\pi)} hF_\beta d\Delta\]</div>
+<p>Using that <span class="math notranslate nohighlight">\(hF_\beta\)</span> is linear in harmonic PR,</p>
+<div class="math notranslate nohighlight">
+\[hF_\beta = \frac{1}{1+\beta^2} (\mathrm{hPrecision} + \beta^2 \mathrm{hRecall}),\]</div>
+<p>we can plug it in and calculate the integral. To avoid having both <span class="math notranslate nohighlight">\(\mathrm{hPrecision}\, d\Delta\)</span> and <span class="math notranslate nohighlight">\(\mathrm{hRecall}\, d\Delta\)</span> terms, we use a trick to make <span class="math notranslate nohighlight">\(\Delta\)</span> appear: from its definition, write</p>
+<div class="math notranslate nohighlight">
+\[\mathrm{hRecall} = \frac{\pi}{1-\pi} \mathrm{hPrecision} - \pi \Delta\]</div>
+<p>so that we are left with one integral of the form <span class="math notranslate nohighlight">\(\mathrm{hPrecision} \, d\Delta\)</span> and another of <span class="math notranslate nohighlight">\(\Delta \, d\Delta\)</span>, the latter which is trivially integrated to <span class="math notranslate nohighlight">\(\Delta^2/2\)</span>. For the former one, again we use the definition of <span class="math notranslate nohighlight">\(\Delta\)</span> to write</p>
+<div class="math notranslate nohighlight">
+\[d\Delta = \frac{1}{1-\pi} d\mathrm{hPrecision} - \frac{1}{\pi} d\mathrm{hRecall}\]</div>
+<p>and have</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{align}
+\int \mathrm{hPrecision} \, d\Delta &amp;= \frac{1}{1-\pi} \int \mathrm{hPrecision} \, d\mathrm{hPrecision} - \frac{1}{\pi} \int \mathrm{hPrecision} \, d\mathrm{hRecall}\\
+&amp;= \frac{1}{1-\pi} \left[\frac{\mathrm{hPrecision}^2}{2}\right] - \frac{1}{\pi} \mathrm{AUhPR}
+\end{align}\end{split}\]</div>
+<p>where we have obtained the area under the harmonic PR curve in the last integral. Putting everything together through a lot of algebra yields</p>
+<div class="math notranslate nohighlight">
+\[\mathbb E[hF_\beta] = \frac{\displaystyle (1-\pi+\beta^2) \left[\mathrm{AUhPR} + \frac{\pi y_0^2 + \beta^2 - \pi \beta^2}{2(1+\beta^2)} \right]}{(1+\beta^2)(1 - \pi + \pi y_0)}\]</div>
+<p>This is a horrible expression, but it is <strong>linear in AUhPR</strong>, and that is what really matters. For any <span class="math notranslate nohighlight">\(\beta\)</span> we choose, the area under the harmonic PR curve will optimize its expected value.</p>
+<section id="references">
+<h2>References<a class="headerlink" href="#references" title="Permalink to this headline">#</a></h2>
+<p>Peter A. Flach and Meelis Kull, <em>Precision-Recall-Gain Curves: PR Analysis Done Right</em>, NeurIPS 2015. <a class="reference external" href="http://people.cs.bris.ac.uk/~flach/PRGcurves//">http://people.cs.bris.ac.uk/~flach/PRGcurves//</a></p>
+<ul class="simple">
+<li><p>In this original paper (and Supplementary material) the authors present what they call the precision/recall-gain (which we have renamed to harmonic precision/recall). Our chapter here was basically a rewriting, with some additional steps and interpretations.</p></li>
+</ul>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            kernelName: "python3",
+            path: "./notebooks"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+              </div>
+              
+            </main>
+            <footer class="footer-article noprint">
+                
+    <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+    <a class='left-prev' id="prev-link" href="Metrics%203%20-%20KS%20score.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">The KS score and Youden’s J</p>
+        </div>
+    </a>
+    <a class='right-next' id="next-link" href="pablo-baseline-experiment.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Choosing a baseline model</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
+</div>
+            </footer>
+        </div>
+    </div>
+    <div class="footer-content row">
+        <footer class="col footer"><p>
+  
+    By Experian LatAm DataLab<br/>
+  
+      &copy; Copyright 2022.<br/>
+</p>
+        </footer>
+    </div>
+    
+</div>
+
+
+      </div>
+    </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+
+
+  </body>
+</html>

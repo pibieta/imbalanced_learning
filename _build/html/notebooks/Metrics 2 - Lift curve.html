@@ -1,0 +1,1402 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>A complement to the ROC: the lift curve (aka CAP curve) &#8212; The Practical Man&#39;s Guide to Binary Imbalanced Classification</title>
+    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
+    
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="The KS score and Youden’s J" href="Metrics%203%20-%20KS%20score.html" />
+    <link rel="prev" title="Classification metrics" href="Metrics%201%20-%20Intro%20%26%20ROC%20AUC.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+<!-- Checkboxes to toggle the left sidebar -->
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
+<label class="overlay overlay-navbar" for="__navigation">
+    <div class="visually-hidden">Toggle navigation sidebar</div>
+</label>
+<!-- Checkboxes to toggle the in-page toc -->
+<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
+<label class="overlay overlay-pagetoc" for="__page-toc">
+    <div class="visually-hidden">Toggle in-page Table of Contents</div>
+</label>
+<!-- Headers at the top -->
+<div class="announcement header-item noprint"></div>
+<div class="header header-item noprint"></div>
+
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<!-- Sidebar -->
+<div class="bd-sidebar noprint" id="site-navigation">
+    <div class="bd-sidebar__content">
+        <div class="bd-sidebar__top"><div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="../index.html">
+      
+        <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
+        
+      
+      
+      <img src="../_static/DataLab-logo-white.png" class="logo" alt="logo">
+      
+      
+      <h1 class="site-logo" id="site-title">The Practical Man's Guide to Binary Imbalanced Classification</h1>
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="Introduction.html">
+                    Introduction
+                </a>
+            </li>
+        </ul>
+        <ul class="current nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="Loss%20functions.html">
+   Loss functions
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="Metrics%201%20-%20Intro%20%26%20ROC%20AUC.html">
+   Classification metrics
+  </a>
+ </li>
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   A complement to the ROC: the lift curve (aka CAP curve)
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="Metrics%203%20-%20KS%20score.html">
+   The KS score and Youden’s J
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="Metrics%204%20-%20Precision%20and%20Recall.html">
+   Precision, recall, and
+   <span class="math notranslate nohighlight">
+    \(F\)
+   </span>
+   -scores
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="pablo-baseline-experiment.html">
+   Choosing a baseline model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="Feature%20selection%20methods.html">
+   Feature selection via the Boruta algorithm
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="Interpretability.html">
+   How imbalanced learning affects the interpretability of a model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="Calibration.html">
+   Model calibration part I - reliability assessment
+  </a>
+ </li>
+</ul>
+
+    </div>
+</nav></div>
+        <div class="bd-sidebar__bottom">
+             <!-- To handle the deprecated key -->
+            
+            <div class="navbar_extra_footer">
+            Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+            </div>
+            
+        </div>
+    </div>
+    <div id="rtd-footer-container"></div>
+</div>
+
+
+          
+
+
+          
+<!-- A tiny helper pixel to detect if we've scrolled -->
+<div class="sbt-scroll-pixel-helper"></div>
+<!-- Main content -->
+<div class="col py-0 content-container">
+    
+    <div class="header-article row sticky-top noprint">
+        
+
+
+
+<div class="col py-1 d-flex header-article-main">
+    <div class="header-article__left">
+        
+        <label for="__navigation"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="right"
+title="Toggle navigation"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-bars"></i>
+  </span>
+
+</label>
+
+        
+    </div>
+    <div class="header-article__right">
+<div class="menu-dropdown menu-dropdown-launch-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Launch interactive content">
+      <i class="fas fa-rocket"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="https://mybinder.org/v2/gh/executablebooks/jupyter-book/master?urlpath=tree/notebooks/Metrics 2 - Lift curve.ipynb"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Launch on Binder"
+>
+  
+
+<span class="headerbtn__icon-container">
+  
+    <img src="../_static/images/logo_binder.svg">
+  </span>
+<span class="headerbtn__text-container">Binder</span>
+</a>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+
+<button onclick="toggleFullScreen()"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="bottom"
+title="Fullscreen mode"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+<div class="menu-dropdown menu-dropdown-download-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Download this page">
+      <i class="fas fa-download"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="../_sources/notebooks/Metrics 2 - Lift curve.ipynb"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Download source file"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="headerbtn__text-container">.ipynb</span>
+</a>
+
+      </li>
+      
+      <li>
+        
+<button onclick="printPdf(this)"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="left"
+title="Print to PDF"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="headerbtn__text-container">.pdf</span>
+</button>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+<label for="__page-toc"
+  class="headerbtn headerbtn-page-toc"
+  
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-list"></i>
+  </span>
+
+</label>
+
+    </div>
+</div>
+
+<!-- Table of contents -->
+<div class="col-md-3 bd-toc show noprint">
+    <div class="tocsection onthispage pt-5 pb-3">
+        <i class="fas fa-list"></i> Contents
+    </div>
+    <nav id="bd-toc-nav" aria-label="Page">
+        <ul class="visible nav section-nav flex-column">
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#">
+   A complement to the ROC: the lift curve (aka CAP curve)
+  </a>
+  <ul class="visible nav section-nav flex-column">
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#problem-setup-credit-scoring">
+     Problem setup: credit scoring
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h3 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#the-key-question-to-answer-before-proceeding">
+       The key question to answer before proceeding
+      </a>
+     </li>
+     <li class="toc-h3 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#lift-curve-i-when-low-scores-are-better-sorting-from-low-to-high-scores">
+       Lift curve I: when low scores are better (sorting from low to high scores)
+      </a>
+      <ul class="nav section-nav flex-column">
+       <li class="toc-h4 nav-item toc-entry">
+        <a class="reference internal nav-link" href="#how-would-a-perfect-lift-curve-be-here">
+         How would a perfect lift curve be here?
+        </a>
+       </li>
+       <li class="toc-h4 nav-item toc-entry">
+        <a class="reference internal nav-link" href="#what-about-a-random-classifier">
+         What about a random classifier?
+        </a>
+       </li>
+      </ul>
+     </li>
+     <li class="toc-h3 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#lift-curve-ii-when-high-scores-are-better-sorting-from-high-to-low-scores">
+       Lift curve II: when high scores are better (sorting from high to low scores)
+      </a>
+     </li>
+     <li class="toc-h3 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#area-under-the-lift-curve-its-relation-to-roc-auc">
+       Area under the lift curve &amp; its relation to ROC AUC
+      </a>
+      <ul class="nav section-nav flex-column">
+       <li class="toc-h4 nav-item toc-entry">
+        <a class="reference internal nav-link" href="#numerically-checking-this">
+         Numerically checking this
+        </a>
+       </li>
+      </ul>
+     </li>
+    </ul>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#the-gini-coefficient">
+     The Gini coefficient
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#references">
+     References
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#appendix">
+   Appendix
+  </a>
+ </li>
+</ul>
+
+    </nav>
+</div>
+    </div>
+    <div class="article row">
+        <div class="col pl-md-3 pl-lg-5 content-container">
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>A complement to the ROC: the lift curve (aka CAP curve)</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#">
+   A complement to the ROC: the lift curve (aka CAP curve)
+  </a>
+  <ul class="visible nav section-nav flex-column">
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#problem-setup-credit-scoring">
+     Problem setup: credit scoring
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h3 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#the-key-question-to-answer-before-proceeding">
+       The key question to answer before proceeding
+      </a>
+     </li>
+     <li class="toc-h3 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#lift-curve-i-when-low-scores-are-better-sorting-from-low-to-high-scores">
+       Lift curve I: when low scores are better (sorting from low to high scores)
+      </a>
+      <ul class="nav section-nav flex-column">
+       <li class="toc-h4 nav-item toc-entry">
+        <a class="reference internal nav-link" href="#how-would-a-perfect-lift-curve-be-here">
+         How would a perfect lift curve be here?
+        </a>
+       </li>
+       <li class="toc-h4 nav-item toc-entry">
+        <a class="reference internal nav-link" href="#what-about-a-random-classifier">
+         What about a random classifier?
+        </a>
+       </li>
+      </ul>
+     </li>
+     <li class="toc-h3 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#lift-curve-ii-when-high-scores-are-better-sorting-from-high-to-low-scores">
+       Lift curve II: when high scores are better (sorting from high to low scores)
+      </a>
+     </li>
+     <li class="toc-h3 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#area-under-the-lift-curve-its-relation-to-roc-auc">
+       Area under the lift curve &amp; its relation to ROC AUC
+      </a>
+      <ul class="nav section-nav flex-column">
+       <li class="toc-h4 nav-item toc-entry">
+        <a class="reference internal nav-link" href="#numerically-checking-this">
+         Numerically checking this
+        </a>
+       </li>
+      </ul>
+     </li>
+    </ul>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#the-gini-coefficient">
+     The Gini coefficient
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#references">
+     References
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#appendix">
+   Appendix
+  </a>
+ </li>
+</ul>
+
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            <main id="main-content" role="main">
+                
+              <div>
+                
+  <section class="tex2jax_ignore mathjax_ignore" id="a-complement-to-the-roc-the-lift-curve-aka-cap-curve">
+<h1>A complement to the ROC: the lift curve (aka CAP curve)<a class="headerlink" href="#a-complement-to-the-roc-the-lift-curve-aka-cap-curve" title="Permalink to this headline">#</a></h1>
+<p>Despite the ROC AUC having a clear interpretation, it is often hard to interpret the ROC curve itself.
+In this section we introduce the <strong>lift curve</strong>, which is much easier to interpret and has a clear deterministic relation to the ROC.</p>
+<section id="problem-setup-credit-scoring">
+<h2>Problem setup: credit scoring<a class="headerlink" href="#problem-setup-credit-scoring" title="Permalink to this headline">#</a></h2>
+<p>Suppose you are a bank which has 1 million dollars to lend, in batches of $1000, to 1000 borrowers. These people must pay you that money back after one year.</p>
+<p>You have, however, 5000 people asking you for money, and you must decide which 1000 to give the money to.</p>
+<p>The main risk here is that you lend money to someone who, for any reasons, does not pay it back (that is, <em>defaults on the payment</em>) after one year. There can be several reasons for a person to default: during that year, they lost their job and could not get the necessary money to pay you back; they work with agriculture, and their crops this year were lower than average due to bad weather, so they could not raise the capital to pay you back; they fled the country; etc.</p>
+<p>Your job as a bank is to somehow <strong>score the possible borrowers</strong> and only lend money to those individuals who are less likely to default. This is the standard problem in <strong>credit scoring</strong>. You ask the data scientists in your Credit team to build a classification model to help you make the best decision.</p>
+<p>Your data scientists get back to you with a model after one month. Their report says:</p>
+<blockquote>
+<div><p>“We have developed a LightGBM model for binary classification. To train this model, we have used our internal database of past loans, over the past 5 years. The target of the model is whether a person has defaulted (<span class="math notranslate nohighlight">\(y=1\)</span>) on a payment to us during that period or not (<span class="math notranslate nohighlight">\(y=0\)</span>). There were 38 features employed, which can be split into 3 groups: (1) income &amp; job related (2) previous year financial behavior (on-time payment of credit card bills and other loans) and (3) general personal information. The AUC of the model is 0.77 on the train test and 0.76 on the test set. Our recommendation is to <strong>use the model’s output score, sort it from lowest to highest (ie. lowest probability of default to highest probability) and give credit to the 1000 people with lowest score</strong>.”</p>
+</div></blockquote>
+<p>What they recommend is for you to build the following ordered table, and give credit to the top 1000 entries. Call it <code class="docutils literal notranslate"><span class="pre">df</span></code>, a Pandas DataFrame:</p>
+<table class="colwidths-auto table">
+<thead>
+<tr class="row-odd"><th class="head"><p>index</p></th>
+<th class="head"><p>person_id</p></th>
+<th class="head"><p>name</p></th>
+<th class="head"><p>prob_default</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>0</p></td>
+<td><p>0123</p></td>
+<td><p>brad pitt</p></td>
+<td><p>0.010</p></td>
+</tr>
+<tr class="row-odd"><td><p>1</p></td>
+<td><p>2056</p></td>
+<td><p>john williams</p></td>
+<td><p>0.020</p></td>
+</tr>
+<tr class="row-even"><td><p>2</p></td>
+<td><p>0091</p></td>
+<td><p>jackie chan</p></td>
+<td><p>0.025</p></td>
+</tr>
+<tr class="row-odd"><td><p>…</p></td>
+<td><p>…</p></td>
+<td><p>…</p></td>
+<td><p>…</p></td>
+</tr>
+<tr class="row-even"><td><p>4998</p></td>
+<td><p>9001</p></td>
+<td><p>bob junior</p></td>
+<td><p>0.975</p></td>
+</tr>
+<tr class="row-odd"><td><p>4999</p></td>
+<td><p>0918</p></td>
+<td><p>alice mann</p></td>
+<td><p>0.982</p></td>
+</tr>
+</tbody>
+</table>
+<p>The model looks promising. However, it does not answer all your questions. You write an email back to the Credit team with one question:</p>
+<blockquote>
+<div><p>Thanks for the good work. If I sort the way you said and only give credit to the first 100 people, how many will I get wrong (defaulted on)? What about the first 500? 1000? Tks</p>
+</div></blockquote>
+<p>In other words: we want to know how many false negatives (people who will default [<span class="math notranslate nohighlight">\(y=1\)</span>] which we are wrongly saying are likely to not default [<span class="math notranslate nohighlight">\(\hat y =0\)</span>]) on the first <span class="math notranslate nohighlight">\(n\)</span> people, or equivalently, the percentage of mistakes we will make.</p>
+<p>The simplest way to answer this is with a curve.</p>
+<section id="the-key-question-to-answer-before-proceeding">
+<h3>The key question to answer before proceeding<a class="headerlink" href="#the-key-question-to-answer-before-proceeding" title="Permalink to this headline">#</a></h3>
+<p>In any problem you work on, you must answer the following question to yourself:</p>
+<blockquote>
+<div><p>Which of my entries [people, clients, products…] are “good”, and which are “bad”?</p>
+</div></blockquote>
+<p>In our case, <span class="math notranslate nohighlight">\(y=0\)</span> is <em>good</em>: no defaults is better than having a default. <strong>This is why we are sorting from low scores (=higher probability of being a 0) to high scores (=higher probability of being a 1)</strong>.</p>
+<p>In your use case, it could be the opposite:</p>
+<blockquote>
+<div><p>You might try to be solve the problem of identifying which of your employees is likely to leave the company over the next 3 months, in order to talk to them and provide an alternative (this is called an attrition problem). If <span class="math notranslate nohighlight">\(y=1\)</span> represents an employee that is likely to leave, then you want to score from high scores to low scores.</p>
+</div></blockquote>
+</section>
+<section id="lift-curve-i-when-low-scores-are-better-sorting-from-low-to-high-scores">
+<h3>Lift curve I: when low scores are better (sorting from low to high scores)<a class="headerlink" href="#lift-curve-i-when-low-scores-are-better-sorting-from-low-to-high-scores" title="Permalink to this headline">#</a></h3>
+<p>Use a slight variation of the table above (we will also add more rows to make the example clearer):</p>
+<table class="colwidths-auto table">
+<thead>
+<tr class="row-odd"><th class="head"><p>index</p></th>
+<th class="head"><p>person_id</p></th>
+<th class="head"><p>name</p></th>
+<th class="head"><p>prob_default</p></th>
+<th class="head"><p>y_actual</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>0</p></td>
+<td><p>0123</p></td>
+<td><p>brad pitt</p></td>
+<td><p>0.010</p></td>
+<td><p>0</p></td>
+</tr>
+<tr class="row-odd"><td><p>1</p></td>
+<td><p>2056</p></td>
+<td><p>john williams</p></td>
+<td><p>0.020</p></td>
+<td><p>0</p></td>
+</tr>
+<tr class="row-even"><td><p>2</p></td>
+<td><p>0091</p></td>
+<td><p>jackie chan</p></td>
+<td><p>0.025</p></td>
+<td><p>1</p></td>
+</tr>
+<tr class="row-odd"><td><p>3</p></td>
+<td><p>2221</p></td>
+<td><p>eddie fung</p></td>
+<td><p>0.029</p></td>
+<td><p>0</p></td>
+</tr>
+<tr class="row-even"><td><p>4</p></td>
+<td><p>9301</p></td>
+<td><p>mark hamill</p></td>
+<td><p>0.050</p></td>
+<td><p>1</p></td>
+</tr>
+<tr class="row-odd"><td><p>5</p></td>
+<td><p>8913</p></td>
+<td><p>lucy liu</p></td>
+<td><p>0.060</p></td>
+<td><p>0</p></td>
+</tr>
+<tr class="row-even"><td><p>…</p></td>
+<td><p>…</p></td>
+<td><p>…</p></td>
+<td><p>…</p></td>
+<td><p>…</p></td>
+</tr>
+<tr class="row-odd"><td><p>4998</p></td>
+<td><p>9001</p></td>
+<td><p>bob junior</p></td>
+<td><p>0.975</p></td>
+<td><p>1</p></td>
+</tr>
+<tr class="row-even"><td><p>4999</p></td>
+<td><p>0918</p></td>
+<td><p>alice mann</p></td>
+<td><p>0.982</p></td>
+<td><p>1</p></td>
+</tr>
+</tbody>
+</table>
+<p>Alift, recall that this table is ordered by <code class="docutils literal notranslate"><span class="pre">prob_default</span></code> (in ascending order). Notice that we’ve made two mistakes: for <code class="docutils literal notranslate"><span class="pre">jackie</span> <span class="pre">chan</span></code> and <code class="docutils literal notranslate"><span class="pre">mark</span> <span class="pre">hamill</span></code>, we are classifying them as “good payers” (=low probability of default), but their actual target was a 1, ie. a default. They are false negatives, which is exactly what we wanted to avoid.</p>
+<p>To account for that mistake, we can build a new columns, called <code class="docutils literal notranslate"><span class="pre">cumulative_default</span></code>, which will simply count the number of defaults acumulated until that row:</p>
+<p><code class="docutils literal notranslate"><span class="pre">df['cumulative_default']</span> <span class="pre">=</span> <span class="pre">df['y_actual'].cumsum()</span></code></p>
+<table class="colwidths-auto table">
+<thead>
+<tr class="row-odd"><th class="head"><p>index</p></th>
+<th class="head"><p>person_id</p></th>
+<th class="head"><p>name</p></th>
+<th class="head"><p>prob_default</p></th>
+<th class="head"><p>y_actual</p></th>
+<th class="head"><p>cumulative_default</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>0</p></td>
+<td><p>0123</p></td>
+<td><p>brad pitt</p></td>
+<td><p>0.010</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+</tr>
+<tr class="row-odd"><td><p>1</p></td>
+<td><p>2056</p></td>
+<td><p>john williams</p></td>
+<td><p>0.020</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+</tr>
+<tr class="row-even"><td><p>2</p></td>
+<td><p>0091</p></td>
+<td><p>jackie chan</p></td>
+<td><p>0.025</p></td>
+<td><p>1</p></td>
+<td><p>1</p></td>
+</tr>
+<tr class="row-odd"><td><p>3</p></td>
+<td><p>2221</p></td>
+<td><p>eddie fung</p></td>
+<td><p>0.029</p></td>
+<td><p>0</p></td>
+<td><p>1</p></td>
+</tr>
+<tr class="row-even"><td><p>4</p></td>
+<td><p>9301</p></td>
+<td><p>mark hamill</p></td>
+<td><p>0.050</p></td>
+<td><p>1</p></td>
+<td><p>2</p></td>
+</tr>
+<tr class="row-odd"><td><p>5</p></td>
+<td><p>8913</p></td>
+<td><p>lucy liu</p></td>
+<td><p>0.060</p></td>
+<td><p>0</p></td>
+<td><p>2</p></td>
+</tr>
+<tr class="row-even"><td><p>…</p></td>
+<td><p>…</p></td>
+<td><p>…</p></td>
+<td><p>…</p></td>
+<td><p>…</p></td>
+<td><p>…</p></td>
+</tr>
+<tr class="row-odd"><td><p>4998</p></td>
+<td><p>9001</p></td>
+<td><p>bob junior</p></td>
+<td><p>0.975</p></td>
+<td><p>1</p></td>
+<td><p>150</p></td>
+</tr>
+<tr class="row-even"><td><p>4999</p></td>
+<td><p>0918</p></td>
+<td><p>alice mann</p></td>
+<td><p>0.982</p></td>
+<td><p>1</p></td>
+<td><p>151</p></td>
+</tr>
+</tbody>
+</table>
+<p>Notice that the <code class="docutils literal notranslate"><span class="pre">cumulative_default</span></code> column is non-decreasing.</p>
+<p>Notice that there are 151 defaults. We can obtain this number from <code class="docutils literal notranslate"><span class="pre">df['cumulative_default'].iloc[-1]</span></code> directly, or (in a more inefficient, but more robust way) from <code class="docutils literal notranslate"><span class="pre">df['y_actual'].sum()</span></code>. In either case, we can divide the <code class="docutils literal notranslate"><span class="pre">cumulative_default</span></code> by this number to obtain a <code class="docutils literal notranslate"><span class="pre">lift</span></code> column:
+<code class="docutils literal notranslate"><span class="pre">df['lift']</span> <span class="pre">=</span> <span class="pre">df['cumulative_default']/df['y_actual'].sum()</span></code></p>
+<table class="colwidths-auto table">
+<thead>
+<tr class="row-odd"><th class="head"><p>index</p></th>
+<th class="head"><p>person_id</p></th>
+<th class="head"><p>name</p></th>
+<th class="head"><p>prob_default</p></th>
+<th class="head"><p>y_actual</p></th>
+<th class="head"><p>cumulative_default</p></th>
+<th class="head"><p>lift</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>0</p></td>
+<td><p>0123</p></td>
+<td><p>brad pitt</p></td>
+<td><p>0.010</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+</tr>
+<tr class="row-odd"><td><p>1</p></td>
+<td><p>2056</p></td>
+<td><p>john williams</p></td>
+<td><p>0.020</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+</tr>
+<tr class="row-even"><td><p>2</p></td>
+<td><p>0091</p></td>
+<td><p>jackie chan</p></td>
+<td><p>0.025</p></td>
+<td><p>1</p></td>
+<td><p>1</p></td>
+<td><p>0.0066</p></td>
+</tr>
+<tr class="row-odd"><td><p>3</p></td>
+<td><p>2221</p></td>
+<td><p>eddie fung</p></td>
+<td><p>0.029</p></td>
+<td><p>0</p></td>
+<td><p>1</p></td>
+<td><p>0.0066</p></td>
+</tr>
+<tr class="row-even"><td><p>4</p></td>
+<td><p>9301</p></td>
+<td><p>mark hamill</p></td>
+<td><p>0.050</p></td>
+<td><p>1</p></td>
+<td><p>2</p></td>
+<td><p>0.0132</p></td>
+</tr>
+<tr class="row-odd"><td><p>5</p></td>
+<td><p>8913</p></td>
+<td><p>lucy liu</p></td>
+<td><p>0.060</p></td>
+<td><p>0</p></td>
+<td><p>2</p></td>
+<td><p>0.0132</p></td>
+</tr>
+<tr class="row-even"><td><p>…</p></td>
+<td><p>…</p></td>
+<td><p>…</p></td>
+<td><p>…</p></td>
+<td><p>…</p></td>
+<td><p>…</p></td>
+<td><p>…</p></td>
+</tr>
+<tr class="row-odd"><td><p>4998</p></td>
+<td><p>9001</p></td>
+<td><p>bob junior</p></td>
+<td><p>0.975</p></td>
+<td><p>1</p></td>
+<td><p>150</p></td>
+<td><p>0.9934</p></td>
+</tr>
+<tr class="row-even"><td><p>4999</p></td>
+<td><p>0918</p></td>
+<td><p>alice mann</p></td>
+<td><p>0.982</p></td>
+<td><p>1</p></td>
+<td><p>151</p></td>
+<td><p>1.0000</p></td>
+</tr>
+</tbody>
+</table>
+<p>We can also normalize the <code class="docutils literal notranslate"><span class="pre">index</span></code> column (simply dividing each index by the total, 5000) and plot the normalized index vs. the <code class="docutils literal notranslate"><span class="pre">lift</span></code> column on the unit square.</p>
+<p><strong>Visualizing</strong>: we can use <code class="docutils literal notranslate"><span class="pre">y_test</span></code> and <code class="docutils literal notranslate"><span class="pre">y_test_pred</span></code> from before in order to visualize this curve. Let’s pretend this is a credit scoring problem.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">build_lift_curve</span><span class="p">(</span><span class="n">y_actual</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">,</span> 
+                     <span class="n">ascending</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                     <span class="n">return_ideal_curve</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns the lift curve from actual (0 or 1) data and</span>
+<span class="sd">    predicted scores.</span>
+<span class="sd">    </span>
+<span class="sd">    Also returns what the ideal lift curve for this problem </span>
+<span class="sd">    would be, if return_ideal_curve = True</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;y_actual&#39;</span><span class="p">:</span> <span class="n">y_actual</span><span class="p">,</span>
+                   <span class="s1">&#39;prob_default&#39;</span><span class="p">:</span> <span class="n">y_pred</span><span class="p">})</span>
+
+    <span class="c1"># sort from low to high scores</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s1">&#39;prob_default&#39;</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="n">ascending</span><span class="p">)</span>
+    
+    <span class="c1"># build cumulative_default</span>
+    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;cumulative_default&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;y_actual&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">cumsum</span><span class="p">()</span>
+    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;lift&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;cumulative_default&#39;</span><span class="p">]</span><span class="o">/</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;y_actual&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+
+    <span class="c1"># create index starting from 0 and normalize</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;index&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;index&#39;</span><span class="p">]</span><span class="o">/</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;index&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">)</span>
+    
+    <span class="k">if</span> <span class="n">return_ideal_curve</span><span class="p">:</span>
+        <span class="n">df_perfect</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s1">&#39;y_actual&#39;</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="n">ascending</span><span class="p">)</span>
+        <span class="n">df_perfect</span><span class="p">[</span><span class="s1">&#39;cumulative_default&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_perfect</span><span class="p">[</span><span class="s1">&#39;y_actual&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">cumsum</span><span class="p">()</span>
+        <span class="n">df_perfect</span><span class="p">[</span><span class="s1">&#39;lift&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_perfect</span><span class="p">[</span><span class="s1">&#39;cumulative_default&#39;</span><span class="p">]</span><span class="o">/</span><span class="n">df_perfect</span><span class="p">[</span><span class="s1">&#39;cumulative_default&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">df_perfect</span> <span class="o">=</span> <span class="n">df_perfect</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+        <span class="n">df_perfect</span><span class="p">[</span><span class="s1">&#39;index&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_perfect</span><span class="p">[</span><span class="s1">&#39;index&#39;</span><span class="p">]</span><span class="o">/</span><span class="p">(</span><span class="n">df_perfect</span><span class="p">[</span><span class="s1">&#39;index&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">df_perfect</span> <span class="o">=</span> <span class="n">df_perfect</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;lift&#39;</span><span class="p">],</span> <span class="n">df_perfect</span><span class="p">[</span><span class="s1">&#39;lift&#39;</span><span class="p">]</span>
+    
+    <span class="k">return</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;lift&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">## SAME CODE AS PREVIOUS SECTION</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">sklearn.datasets</span> <span class="kn">import</span> <span class="n">make_classification</span>
+<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">train_test_split</span>
+<span class="kn">from</span> <span class="nn">sklearn.linear_model</span> <span class="kn">import</span> <span class="n">LogisticRegression</span>
+
+<span class="c1"># create dummy classification problem</span>
+<span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">make_classification</span><span class="p">(</span><span class="n">n_samples</span><span class="o">=</span><span class="mi">5000</span><span class="p">,</span> <span class="n">n_features</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">n_informative</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">n_redundant</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_repeated</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> 
+                           <span class="n">random_state</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span> <span class="c1"># for reproducibility</span>
+
+<span class="c1"># split train test</span>
+<span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">LogisticRegression</span><span class="p">()</span>
+<span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+
+<span class="n">y_train_pred</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">X_train</span><span class="p">)[:,</span><span class="mi">1</span><span class="p">]</span>
+<span class="n">y_test_pred</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">X_test</span><span class="p">)[:,</span><span class="mi">1</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">lift</span><span class="p">,</span> <span class="n">ideal_lift</span> <span class="o">=</span> <span class="n">build_lift_curve</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_test_pred</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">return_ideal_curve</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>This is the final table:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">lift</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>lift</th>
+    </tr>
+    <tr>
+      <th>index</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0.000000</th>
+      <td>0.000000</td>
+    </tr>
+    <tr>
+      <th>0.000667</th>
+      <td>0.000000</td>
+    </tr>
+    <tr>
+      <th>0.001334</th>
+      <td>0.000000</td>
+    </tr>
+    <tr>
+      <th>0.002001</th>
+      <td>0.000000</td>
+    </tr>
+    <tr>
+      <th>0.002668</th>
+      <td>0.000000</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>0.997332</th>
+      <td>0.994616</td>
+    </tr>
+    <tr>
+      <th>0.997999</th>
+      <td>0.995962</td>
+    </tr>
+    <tr>
+      <th>0.998666</th>
+      <td>0.997308</td>
+    </tr>
+    <tr>
+      <th>0.999333</th>
+      <td>0.998654</td>
+    </tr>
+    <tr>
+      <th>1.000000</th>
+      <td>1.000000</td>
+    </tr>
+  </tbody>
+</table>
+<p>1500 rows × 1 columns</p>
+</div></div></div>
+</div>
+<section id="how-would-a-perfect-lift-curve-be-here">
+<h4>How would a perfect lift curve be here?<a class="headerlink" href="#how-would-a-perfect-lift-curve-be-here" title="Permalink to this headline">#</a></h4>
+<p>Just before we plot: let us understand how a perfect lift curve would compare to ours. In a perfect lift curve, we would make no mistakes: the accumulated default column would be 0 until we reach the first person with <span class="math notranslate nohighlight">\(y=1\)</span>, and then grow linearly from there.</p>
+</section>
+<section id="what-about-a-random-classifier">
+<h4>What about a random classifier?<a class="headerlink" href="#what-about-a-random-classifier" title="Permalink to this headline">#</a></h4>
+<p>A random classifier, on the other hand, would linearly go from (0,0) to (1,1) (can you see why?)</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">5</span><span class="p">))</span>
+
+<span class="c1"># lift curve from the model</span>
+<span class="n">lift</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Logistic regression&#39;</span><span class="p">)</span>
+
+<span class="c1"># perfect lift</span>
+<span class="n">ideal_lift</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Index (sorted from lower to higher score)&#39;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;Accumulated defaults&#39;</span><span class="p">,</span> 
+                       <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Perfect lift curve&#39;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;lightblue&#39;</span><span class="p">)</span>
+
+<span class="c1"># random lift</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">x</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Random classifier&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/Metrics 2 - Lift curve_28_0.png" src="../_images/Metrics 2 - Lift curve_28_0.png" />
+</div>
+</div>
+<p><strong>Interpretation</strong>:</p>
+<p>Notice that the best possible curve is the lowest, whereas the worst one is the 45 degree diagonal. Our model is intermediate, not too low nor too high. The lift curve is monotonic by construction.</p>
+<ul class="simple">
+<li><p>Our model is good for <em>low scores</em>: the curve starts out flat but quickly starts to grow, meaning our model is making mistakes.</p></li>
+<li><p>It is worst for <em>medium scores</em>, where the curve grows almost parallel to the random classifier one</p></li>
+<li><p>For high scores, where the ideal curve is slanted, the model performs well - it tends to grow very fast in that area.</p></li>
+</ul>
+<p><strong>The lift curve is useful because it allows us to see how the model behaves across the whole data</strong>. It gives us an interpretable curve which tells us how well we perform for entries with low/medium/high scores.</p>
+</section>
+</section>
+<section id="lift-curve-ii-when-high-scores-are-better-sorting-from-high-to-low-scores">
+<h3>Lift curve II: when high scores are better (sorting from high to low scores)<a class="headerlink" href="#lift-curve-ii-when-high-scores-are-better-sorting-from-high-to-low-scores" title="Permalink to this headline">#</a></h3>
+<p>This case is exactly the opposite from the previous one.</p>
+<blockquote>
+<div><p>A possible use case is in <strong>product recommendation</strong>. Suppose we have a model for whether a customer will be interested (<span class="math notranslate nohighlight">\(y=1\)</span>) or not (<span class="math notranslate nohighlight">\(y=0\)</span>) in a product, which will be recommended to them in our company’s homepage. Then, we want to recommend the product to the clients with highest propensity to like the product, ie. those with higher score.</p>
+</div></blockquote>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">lift</span><span class="p">,</span> <span class="n">ideal_lift</span> <span class="o">=</span> <span class="n">build_lift_curve</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_test_pred</span><span class="p">,</span>
+                                    <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="c1"># the only change is here</span>
+                                    <span class="n">return_ideal_curve</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">5</span><span class="p">))</span>
+
+<span class="c1"># lift curve from the model</span>
+<span class="n">lift</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Logistic regression&#39;</span><span class="p">)</span>
+
+<span class="c1"># perfect lift</span>
+<span class="n">ideal_lift</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Index (sorted from higher to lower score)&#39;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;Accumulated defaults&#39;</span><span class="p">,</span> 
+                       <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Perfect lift curve&#39;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;lightblue&#39;</span><span class="p">)</span>
+
+<span class="c1"># random lift</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">x</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Random classifier&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/Metrics 2 - Lift curve_33_0.png" src="../_images/Metrics 2 - Lift curve_33_0.png" />
+</div>
+</div>
+<p><strong>Interpretation</strong>: of course, since we are using the exact same data as before, the conclusions must be the same. This curve is exactly the previous one, upside down.</p>
+</section>
+<section id="area-under-the-lift-curve-its-relation-to-roc-auc">
+<h3>Area under the lift curve &amp; its relation to ROC AUC<a class="headerlink" href="#area-under-the-lift-curve-its-relation-to-roc-auc" title="Permalink to this headline">#</a></h3>
+<p><strong>The lift curves must be analyzed together with the ROC AUC</strong>. It turns out they are both complementary and interpretable, providing a full picture of what is happening.</p>
+<p>We now state (and prove in the Appendix below) a very interesting result relating it to the ROC AUC: <strong>one of them uniquely defines the other</strong>, so the area under the lift curve doesn’t really matter. We can use the ROC AUC instead.</p>
+<div class="math notranslate nohighlight">
+\[\boxed{\binom{\mbox{area under}}{\mbox{lift curve}} = \mathrm{constant}_1+ \mathrm{constant}_2 \times \mathrm{AUC}}\qquad \mbox{(high to low scores)}\]</div>
+<p>The constants are calculated as follows. Let <span class="math notranslate nohighlight">\(\pi\)</span> denote the proportion of the minority class to the total amount of points. Then</p>
+<div class="math notranslate nohighlight">
+\[\mathrm{constant}_1 = \frac \pi 2\]</div>
+<div class="math notranslate nohighlight">
+\[\mathrm{constant}_2 = 1 - \pi\]</div>
+<section id="numerically-checking-this">
+<h4>Numerically checking this<a class="headerlink" href="#numerically-checking-this" title="Permalink to this headline">#</a></h4>
+<p>Let us us the DataFrame defined above (which has the lift with scores from high to low):</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>V1</th>
+      <th>V2</th>
+      <th>V3</th>
+      <th>V4</th>
+      <th>V5</th>
+      <th>V6</th>
+      <th>V7</th>
+      <th>V8</th>
+      <th>V9</th>
+      <th>V10</th>
+      <th>...</th>
+      <th>V20</th>
+      <th>V21</th>
+      <th>V22</th>
+      <th>V23</th>
+      <th>V24</th>
+      <th>V25</th>
+      <th>V26</th>
+      <th>V27</th>
+      <th>V28</th>
+      <th>Class</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>185723</th>
+      <td>-2.132915</td>
+      <td>-1.435724</td>
+      <td>-0.167875</td>
+      <td>-0.613622</td>
+      <td>-1.523509</td>
+      <td>0.702004</td>
+      <td>3.318497</td>
+      <td>-0.407880</td>
+      <td>-0.036720</td>
+      <td>-1.293947</td>
+      <td>...</td>
+      <td>-0.068133</td>
+      <td>-0.402366</td>
+      <td>-1.273932</td>
+      <td>0.686603</td>
+      <td>-0.426971</td>
+      <td>-0.304671</td>
+      <td>-0.970158</td>
+      <td>0.268611</td>
+      <td>0.097632</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>39757</th>
+      <td>0.254733</td>
+      <td>1.270708</td>
+      <td>-0.909430</td>
+      <td>1.916788</td>
+      <td>2.456681</td>
+      <td>4.305723</td>
+      <td>-1.164007</td>
+      <td>-1.813797</td>
+      <td>-1.951456</td>
+      <td>0.401035</td>
+      <td>...</td>
+      <td>0.843244</td>
+      <td>-1.634035</td>
+      <td>-0.876942</td>
+      <td>0.130014</td>
+      <td>0.950920</td>
+      <td>0.542166</td>
+      <td>-0.022867</td>
+      <td>0.100057</td>
+      <td>0.256621</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>189045</th>
+      <td>2.124338</td>
+      <td>-0.679729</td>
+      <td>-1.153490</td>
+      <td>-0.739702</td>
+      <td>-0.639216</td>
+      <td>-0.527015</td>
+      <td>-0.997817</td>
+      <td>0.006910</td>
+      <td>-0.206940</td>
+      <td>0.241344</td>
+      <td>...</td>
+      <td>0.044019</td>
+      <td>0.273254</td>
+      <td>0.884667</td>
+      <td>0.061971</td>
+      <td>-0.487875</td>
+      <td>-0.141140</td>
+      <td>-0.081836</td>
+      <td>0.030883</td>
+      <td>-0.026193</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>82443</th>
+      <td>-0.593932</td>
+      <td>1.237201</td>
+      <td>1.228652</td>
+      <td>1.720319</td>
+      <td>1.370083</td>
+      <td>1.082608</td>
+      <td>0.892225</td>
+      <td>0.375500</td>
+      <td>-1.667653</td>
+      <td>0.113343</td>
+      <td>...</td>
+      <td>-0.260720</td>
+      <td>0.240098</td>
+      <td>0.777437</td>
+      <td>-0.058924</td>
+      <td>-0.644662</td>
+      <td>-0.378534</td>
+      <td>0.091938</td>
+      <td>0.156481</td>
+      <td>0.122518</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>274069</th>
+      <td>-2.357838</td>
+      <td>1.374659</td>
+      <td>0.194077</td>
+      <td>-0.620863</td>
+      <td>-0.799228</td>
+      <td>0.004177</td>
+      <td>-0.873491</td>
+      <td>1.684539</td>
+      <td>-0.046760</td>
+      <td>-0.508703</td>
+      <td>...</td>
+      <td>-0.064811</td>
+      <td>-0.096609</td>
+      <td>-0.522473</td>
+      <td>0.121794</td>
+      <td>0.655800</td>
+      <td>-0.250214</td>
+      <td>-0.015225</td>
+      <td>0.218985</td>
+      <td>0.025066</td>
+      <td>0</td>
+    </tr>
+  </tbody>
+</table>
+<p>5 rows × 29 columns</p>
+</div></div></div>
+</div>
+<p>We want to compare the area under the lift curve (which has no unique name; let us call it <span class="math notranslate nohighlight">\(\mathrm{AUL}\)</span> for now) with the expression <span class="math notranslate nohighlight">\(\pi_1/2 +(1-\pi_1) \mathrm{AUC}\)</span>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">auc</span>  <span class="c1"># this is not roc_auc_score; it is just a function for numerical integration</span>
+<span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">roc_auc_score</span>
+
+<span class="n">pi1</span> <span class="o">=</span> <span class="n">y_test</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">y_test</span><span class="p">)</span> <span class="c1"># proportion of 1&#39;s in the test dataset</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Proportion of positive class (pi1): </span><span class="si">{0:.3f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">pi1</span><span class="p">))</span>
+<span class="n">AUL</span> <span class="o">=</span> <span class="n">auc</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">lift</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">lift</span><span class="p">)</span>
+<span class="n">auc_</span> <span class="o">=</span> <span class="n">roc_auc_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_test_pred</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Raw metrics:</span><span class="se">\n</span><span class="s2"> &gt; AUL = </span><span class="si">{0:.3f}</span><span class="se">\n</span><span class="s2"> &gt; AUC = </span><span class="si">{1:.3f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">AUL</span><span class="p">,</span> <span class="n">auc_</span><span class="p">))</span>
+
+<span class="n">AUL_calc</span> <span class="o">=</span> <span class="n">pi1</span><span class="o">/</span><span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">pi1</span><span class="p">)</span> <span class="o">*</span> <span class="n">auc_</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Calculated AUL: </span><span class="si">{0:.3f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">AUL_calc</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot; &gt; Difference between AUL and calculated version: </span><span class="si">{0:.4f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">AUL</span><span class="o">-</span><span class="n">AUL_calc</span><span class="p">)))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Proportion of positive class (pi1): 0.495
+
+Raw metrics:
+ &gt; AUL = 0.624
+ &gt; AUC = 0.746
+
+Calculated AUL: 0.624
+ &gt; Difference between AUL and calculated version: 0.0004
+</pre></div>
+</div>
+</div>
+</div>
+<p>We can see that indeed both are very close (difference in the fourth decimal place), as expected!</p>
+</section>
+</section>
+</section>
+<section id="the-gini-coefficient">
+<h2>The Gini coefficient<a class="headerlink" href="#the-gini-coefficient" title="Permalink to this headline">#</a></h2>
+<p>A quantity related to both the ROC AUC and the area under the lift curve is the <strong>Gini coefficient</strong>.</p>
+<p><img alt="image-2.png" src="notebooks/attachment:image-2.png" /></p>
+<p>(image modified from <a class="reference external" href="https://www.listendata.com/2019/09/gini-cumulative-accuracy-profile-auc.html">this post</a>)</p>
+<p>One can easily show (using a similar logic to that of the calculations we do in the Appendix) that</p>
+<div class="math notranslate nohighlight">
+\[\boxed{\mathrm{Gini} = 2\mathrm{AUC}-1}\]</div>
+<p>Hence, this is yet another metric which coincides with the ROC AUC.</p>
+</section>
+<section id="references">
+<h2>References<a class="headerlink" href="#references" title="Permalink to this headline">#</a></h2>
+<p>[1] Chris J. Lloyd, <em>A Note on the Area under the Lifts Chart</em>. International Journal of Statistics in Medical Research, 2018, 7, 66-69</p>
+<p>[2] Max Kuhn, Kjell Johnson, <em>Applied Predictive Modeling</em>. Springer, 2016, pp. 265-266</p>
+</section>
+</section>
+<section class="tex2jax_ignore mathjax_ignore" id="appendix">
+<h1>Appendix<a class="headerlink" href="#appendix" title="Permalink to this headline">#</a></h1>
+<p><strong>Proposition [equivalence of AUL and ROC AUC]</strong>. Consider the lift curve II above (which is sorted from high to low scores). Let <span class="math notranslate nohighlight">\(\mathrm{AUL}\)</span> denote the area under the lift curve, and let <span class="math notranslate nohighlight">\(\mathrm{AUC}\)</span> denote the ROC AUC. Let <span class="math notranslate nohighlight">\(\pi_1 = \mathbb{P} (y=1)\)</span> denote the fraction of the positive class. Then</p>
+<div class="math notranslate nohighlight">
+\[\boxed{\mathrm{AUL} = \frac{\pi_1}{2} + (1-\pi_1) \mathrm{AUC}}\qquad \mbox{(high to low scores)}\]</div>
+<p><strong>Proof</strong>: let us translate our construction of the lift curve into the language of probability. The Y axis contains the proportion of points correctly classified as 1, i.e. <span class="math notranslate nohighlight">\(\mathbb P(\hat y = 1|y=1)\)</span> which is just the true positive rate. We have seen in the Appendix for the ROC curve that, for a fixed threshold <span class="math notranslate nohighlight">\(\lambda\)</span>,</p>
+<div class="math notranslate nohighlight">
+\[\mathrm{TPR}(\lambda) = 1 - F_1(\lambda)\]</div>
+<p>where <span class="math notranslate nohighlight">\(F_1(\lambda) = \mathbb P (f(X) \leq \lambda | Y=1)\)</span> is the CDF for the score <span class="math notranslate nohighlight">\(f(X)|Y=1\)</span>. Hence, we let <span class="math notranslate nohighlight">\(y(\lambda) = 1 - F_1(\lambda)\)</span> be our Y axis. For the X axis, it represents the proportion (<span class="math notranslate nohighlight">\(\mathbb P\)</span>) of points with decreasing (<span class="math notranslate nohighlight">\(\geq \lambda\)</span>) score (<span class="math notranslate nohighlight">\(f(X)\)</span>). Hence, <span class="math notranslate nohighlight">\(x = \mathbb P (f(X) \geq \lambda) = 1 - F(\lambda)\)</span> where the CDF <span class="math notranslate nohighlight">\(F(\lambda)\)</span> is that of the unconditional score:</p>
+<div class="math notranslate nohighlight">
+\[F(\lambda) = \mathbb P (f(X) &lt; \lambda),\]</div>
+<p>which can also be written in terms of the conditionals <span class="math notranslate nohighlight">\(F_i\)</span> via</p>
+<p>\begin{align}F(\lambda) &amp;=  \mathbb P (f(X) &lt; \lambda) = \mathbb P (f(X) &lt; \lambda|Y=1) \mathbb{P} (Y=1) + \mathbb P (f(X) &lt; \lambda|Y=0) \mathbb{P}(Y=0)\
+&amp;= \pi_1 F_1(\lambda) + \pi_0 F_0 (\lambda)\end{align}.</p>
+<p>Here <span class="math notranslate nohighlight">\(\pi_1 + \pi_0 = 1\)</span> are the proportions of <span class="math notranslate nohighlight">\(Y=1\)</span> and <span class="math notranslate nohighlight">\(Y=0\)</span>. We have thus written the lift curve as</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{cases}x(\lambda) &amp;=&amp; 1 - F(\lambda) = 1 - \pi_1 F_1(\lambda) - \pi_0 F_0(\lambda)\\
+y(\lambda) &amp;=&amp; 1 - F_1(\lambda)\end{cases}\end{split}\]</div>
+<p>To calculate <span class="math notranslate nohighlight">\(\mathrm{AUL}\)</span>, ideally we would like to write <span class="math notranslate nohighlight">\(y\)</span> as a function of <span class="math notranslate nohighlight">\(x\)</span> and integrate. This is possible if we invert <span class="math notranslate nohighlight">\(\lambda = \lambda(x)\)</span> and plug it into the expression for <span class="math notranslate nohighlight">\(y\)</span>. This is hard since <span class="math notranslate nohighlight">\(\lambda\)</span> appears both as the argument of <span class="math notranslate nohighlight">\(F_0\)</span> and <span class="math notranslate nohighlight">\(F_1\)</span>. Instead, what we can do is to <em>write <span class="math notranslate nohighlight">\(x\)</span> as a function of <span class="math notranslate nohighlight">\(y\)</span> instead</em> and calculate the integral <span class="math notranslate nohighlight">\(\int x dy\)</span> instead of <span class="math notranslate nohighlight">\(\int y dx\)</span>. These integrals are not the same, but they will be related as we show below.</p>
+<p>We have <span class="math notranslate nohighlight">\(\lambda = F_1^{-1}(1-y)\)</span>. Plugging this into the equation for <span class="math notranslate nohighlight">\(x\)</span> yields (calling <span class="math notranslate nohighlight">\(G(x)\)</span> the lift curve and <span class="math notranslate nohighlight">\(G^{-1}(y)\)</span> its inverse:</p>
+<p>\begin{align}
+x \equiv G^{-1}(y) &amp;= 1 - \pi_1 F_1 (F_1^{-1}(1-y)) - \pi_0 F_0 (F_1^{-1}(1-y)) \
+&amp;= 1 - \pi_1(1-y) - \pi_0 F_0(F_1^{-1}(1-y)).
+\end{align}</p>
+<p>In the Appendix for the ROC curve we saw that we could write it as <span class="math notranslate nohighlight">\(y = R(x) = 1 - F_1(F_0^{-1}(1-x))\)</span>. This is almost what we have, but the roles of <span class="math notranslate nohighlight">\(F_1\)</span> and <span class="math notranslate nohighlight">\(F_0\)</span> are shifted. We can actually invert this expression to get</p>
+<div class="math notranslate nohighlight">
+\[x \equiv R^{-1}(y) = 1 - F_0(F_1^{-1}(1-y)),\]</div>
+<p>which matches nicely with the RHS above. Hence</p>
+<p>\begin{align}
+G^{-1}(y) &amp;= 1 - \pi_1 (1-y) - \pi_0 (1 - R^{-1}(y))\
+&amp;=\pi_1 y + \pi_0 R^{-1}(y)\
+\Rightarrow \int_0^1 G^{-1}(y)dy  &amp;= \frac{\pi_1}{2} + \pi_0 \int_0^1R^{-1}(y)dy
+\end{align}</p>
+<p>Now, both the ROC and lift curve live inside the unit square <span class="math notranslate nohighlight">\([0,1]\times[0,1]\)</span>, which has area equal to 1, and have endpoints in <span class="math notranslate nohighlight">\((0,0)\)</span> and <span class="math notranslate nohighlight">\((1,1)\)</span>. For any such function,</p>
+<div class="math notranslate nohighlight">
+\[\int_0^1 f(x) dx + \int_0^1 f^{-1}(y) dy = 1.\]</div>
+<p>We can then rewrite the equality above using <span class="math notranslate nohighlight">\(\mathrm{AUC}\)</span> and <span class="math notranslate nohighlight">\(\mathrm{AUL}\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[(1-\mathrm{AUL}) = \frac{\pi_1}{2} + \pi_0 (1-\mathrm{AUC});\]</div>
+<p>using that <span class="math notranslate nohighlight">\(\pi_0 = 1 - \pi_1\)</span> and simplifying yields</p>
+<div class="math notranslate nohighlight">
+\[\mathrm{AUL} = \frac{\pi_1}{2} + (1-\pi_1) \mathrm{AUC}\]</div>
+<p>as claimed.</p>
+<p><strong>Problem</strong>: using the exact same logic as above (or just good old geometry) prove that for the lift curve I it holds that</p>
+<div class="math notranslate nohighlight">
+\[\boxed{\mathrm{AUL} = 1 - \left[\frac{\pi_1}{2} + (1-\pi_1) \mathrm{AUC}\right]}\qquad \mbox{(low to high scores)}\]</div>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            kernelName: "python3",
+            path: "./notebooks"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+              </div>
+              
+            </main>
+            <footer class="footer-article noprint">
+                
+    <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+    <a class='left-prev' id="prev-link" href="Metrics%201%20-%20Intro%20%26%20ROC%20AUC.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">Classification metrics</p>
+        </div>
+    </a>
+    <a class='right-next' id="next-link" href="Metrics%203%20-%20KS%20score.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">The KS score and Youden’s J</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
+</div>
+            </footer>
+        </div>
+    </div>
+    <div class="footer-content row">
+        <footer class="col footer"><p>
+  
+    By Experian LatAm DataLab<br/>
+  
+      &copy; Copyright 2022.<br/>
+</p>
+        </footer>
+    </div>
+    
+</div>
+
+
+      </div>
+    </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+
+
+  </body>
+</html>
