@@ -9,5 +9,5 @@ chapters:
 - file: notebooks/Metrics 4 - Precision and Recall.ipynb
 - file: notebooks/pablo-baseline-experiment.ipynb
 - file: notebooks/Feature selection methods.ipynb
-- file: notebooks/Interpretability.ipynb
 - file: notebooks/Calibration.ipynb
+- file: notebooks/Interpretability.ipynb
