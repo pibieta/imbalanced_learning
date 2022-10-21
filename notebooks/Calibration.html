@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>Model calibration part I - reliability assessment &#8212; Imbalanced Binary Classification - A survey with code</title>
+    <title>Probability calibration &#8212; Imbalanced Binary Classification - A survey with code</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -54,7 +54,8 @@ const thebe_selector_output = ".output, .cell_output"
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="prev" title="How imbalanced learning affects the interpretability of a model" href="Interpretability.html" />
+    <link rel="next" title="Model interpretability: how is it affected by imbalance?" href="Interpretability.html" />
+    <link rel="prev" title="Feature selection via the Boruta algorithm" href="Feature%20selection%20methods.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
     
@@ -127,7 +128,7 @@ const thebe_selector_output = ".output, .cell_output"
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="Metrics%202%20-%20Lift%20curve.html">
-   A complement to the ROC: the lift curve (aka CAP curve)
+   The lift curve
   </a>
  </li>
  <li class="toctree-l1">
@@ -154,14 +155,14 @@ const thebe_selector_output = ".output, .cell_output"
    Feature selection via the Boruta algorithm
   </a>
  </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="Interpretability.html">
-   How imbalanced learning affects the interpretability of a model
-  </a>
- </li>
  <li class="toctree-l1 current active">
   <a class="current reference internal" href="#">
-   Model calibration part I - reliability assessment
+   Probability calibration
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="Interpretability.html">
+   Model interpretability: how is it affected by imbalance?
   </a>
  </li>
 </ul>
@@ -327,9 +328,14 @@ title="Print to PDF"
         <ul class="visible nav section-nav flex-column">
  <li class="toc-h1 nav-item toc-entry">
   <a class="reference internal nav-link" href="#">
-   Model calibration part I - reliability assessment
+   Probability calibration
   </a>
   <ul class="visible nav section-nav flex-column">
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#part-i-reliability-assessment">
+     Part I: reliability assessment
+    </a>
+   </li>
    <li class="toc-h2 nav-item toc-entry">
     <a class="reference internal nav-link" href="#when-scores-are-not-probabilities">
      When scores are not probabilities
@@ -394,8 +400,8 @@ title="Print to PDF"
   </ul>
  </li>
  <li class="toc-h1 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#model-calibration-part-ii-calibrating-outputs">
-   Model calibration part II - calibrating outputs
+  <a class="reference internal nav-link" href="#part-ii-calibrating-outputs">
+   Part II: calibrating outputs
   </a>
   <ul class="visible nav section-nav flex-column">
    <li class="toc-h2 nav-item toc-entry">
@@ -502,7 +508,7 @@ title="Print to PDF"
         <div class="col pl-md-3 pl-lg-5 content-container">
             <!-- Table of contents that is only displayed when printing the page -->
             <div id="jb-print-docs-body" class="onlyprint">
-                <h1>Model calibration part I - reliability assessment</h1>
+                <h1>Probability calibration</h1>
                 <!-- Table of contents -->
                 <div id="print-main-content">
                     <div id="jb-print-toc">
@@ -514,9 +520,14 @@ title="Print to PDF"
                             <ul class="visible nav section-nav flex-column">
  <li class="toc-h1 nav-item toc-entry">
   <a class="reference internal nav-link" href="#">
-   Model calibration part I - reliability assessment
+   Probability calibration
   </a>
   <ul class="visible nav section-nav flex-column">
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#part-i-reliability-assessment">
+     Part I: reliability assessment
+    </a>
+   </li>
    <li class="toc-h2 nav-item toc-entry">
     <a class="reference internal nav-link" href="#when-scores-are-not-probabilities">
      When scores are not probabilities
@@ -581,8 +592,8 @@ title="Print to PDF"
   </ul>
  </li>
  <li class="toc-h1 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#model-calibration-part-ii-calibrating-outputs">
-   Model calibration part II - calibrating outputs
+  <a class="reference internal nav-link" href="#part-ii-calibrating-outputs">
+   Part II: calibrating outputs
   </a>
   <ul class="visible nav section-nav flex-column">
    <li class="toc-h2 nav-item toc-entry">
@@ -690,10 +701,13 @@ title="Print to PDF"
                 
               <div>
                 
-  <section class="tex2jax_ignore mathjax_ignore" id="model-calibration-part-i-reliability-assessment">
-<h1>Model calibration part I - reliability assessment<a class="headerlink" href="#model-calibration-part-i-reliability-assessment" title="Permalink to this headline">#</a></h1>
-<p>This section is all about estimating the <strong>score function</strong>
-$<span class="math notranslate nohighlight">\(\boxed{f(x) = \mathbb P (Y=1|X=x)}\)</span>$</p>
+  <section class="tex2jax_ignore mathjax_ignore" id="probability-calibration">
+<h1>Probability calibration<a class="headerlink" href="#probability-calibration" title="Permalink to this headline">#</a></h1>
+<section id="part-i-reliability-assessment">
+<h2>Part I: reliability assessment<a class="headerlink" href="#part-i-reliability-assessment" title="Permalink to this headline">#</a></h2>
+<p>This section is all about estimating the <strong>score function</strong></p>
+<div class="math notranslate nohighlight">
+\[\boxed{f(x) = \mathbb P (Y=1|X=x)}\]</div>
 <p>which, as we know, really generates everything in binary classification. This is our main object of interest.</p>
 <p>Recall that one can obtain binary predictions from a score <span class="math notranslate nohighlight">\(f\)</span> by choosing a threshold <span class="math notranslate nohighlight">\(\lambda\)</span>:</p>
 <div class="math notranslate nohighlight">
@@ -715,6 +729,7 @@ $<span class="math notranslate nohighlight">\(\boxed{f(x) = \mathbb P (Y=1|X=x)}
 \end{split}\]</div>
 <p>In fact, <span class="math notranslate nohighlight">\(g\)</span> does not even need to be bound to <span class="math notranslate nohighlight">\([0,1]\)</span> (but we can suppose it is, with no loss of generality; were it not, we would just need to normalize it).</p>
 <p><strong>Is <span class="math notranslate nohighlight">\(g\)</span> a probability?</strong> No, not necessarily. But why?</p>
+</section>
 <section id="when-scores-are-not-probabilities">
 <h2>When scores are not probabilities<a class="headerlink" href="#when-scores-are-not-probabilities" title="Permalink to this headline">#</a></h2>
 <p>For some arbitrary random variable <span class="math notranslate nohighlight">\(Z\)</span>, What does <span class="math notranslate nohighlight">\(\mathbb P (Z&lt;40) = 0.2\)</span> mean?</p>
@@ -827,7 +842,7 @@ $<span class="math notranslate nohighlight">\(\boxed{f(x) = \mathbb P (Y=1|X=x)}
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/Calibration_25_0.png" src="../_images/Calibration_25_0.png" />
+<img alt="../_images/Calibration_26_0.png" src="../_images/Calibration_26_0.png" />
 </div>
 </div>
 <p>We can also just write the results into a table:</p>
@@ -1127,7 +1142,7 @@ $<span class="math notranslate nohighlight">\(\boxed{f(x) = \mathbb P (Y=1|X=x)}
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/Calibration_43_0.png" src="../_images/Calibration_43_0.png" />
+<img alt="../_images/Calibration_44_0.png" src="../_images/Calibration_44_0.png" />
 </div>
 </div>
 <p>We see that the logistic regression model is very well calibrated (at least at the 5-bin scale we are looking at). The curve is relatively close to the 45 degree line.</p>
@@ -1205,7 +1220,7 @@ $<span class="math notranslate nohighlight">\(\boxed{f(x) = \mathbb P (Y=1|X=x)}
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/Calibration_49_0.png" src="../_images/Calibration_49_0.png" />
+<img alt="../_images/Calibration_50_0.png" src="../_images/Calibration_50_0.png" />
 </div>
 </div>
 <p>As we can see, our curves are identical. Scikit-learn uses the same logic to build their curves. We can happily use their library. However, sometimes we will need to access the proportion of points in each bin; for that, we also create the function below:</p>
@@ -1282,7 +1297,7 @@ $<span class="math notranslate nohighlight">\(\boxed{f(x) = \mathbb P (Y=1|X=x)}
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/Calibration_53_0.png" src="../_images/Calibration_53_0.png" />
+<img alt="../_images/Calibration_54_0.png" src="../_images/Calibration_54_0.png" />
 </div>
 </div>
 <p>This plot includes the amount of points in each bin in the marker size.</p>
@@ -1316,7 +1331,7 @@ $<span class="math notranslate nohighlight">\(\boxed{f(x) = \mathbb P (Y=1|X=x)}
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/Calibration_60_0.png" src="../_images/Calibration_60_0.png" />
+<img alt="../_images/Calibration_61_0.png" src="../_images/Calibration_61_0.png" />
 </div>
 </div>
 </section>
@@ -1336,7 +1351,7 @@ $<span class="math notranslate nohighlight">\(\boxed{f(x) = \mathbb P (Y=1|X=x)}
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/Calibration_63_0.png" src="../_images/Calibration_63_0.png" />
+<img alt="../_images/Calibration_64_0.png" src="../_images/Calibration_64_0.png" />
 </div>
 </div>
 <section id="the-brier-skill-score">
@@ -1407,13 +1422,13 @@ HistGradientBoostingClassifier	 79.0%
 <p>A schematic view of this fact is:</p>
 <div class="math notranslate nohighlight">
 \[\boxed{\mathrm{Brier \sim Calibration + Performance}}\]</div>
-<blockquote>
-<div><p>Proof (optional): this decomposition supposes that the scores can only take values on a finite set <span class="math notranslate nohighlight">\(\{S_1,\ldots,S_K\}\)</span>, ie. in bins. We can then write
-$<span class="math notranslate nohighlight">\(\mathrm{BS} = \frac 1N \sum_{i=1}^N(s_i - y_i)^2 = \frac 1N \sum_{k=1}^K \sum_{i: s_i = S_K} (S_k - y_i)^2\)</span><span class="math notranslate nohighlight">\(
-For a fixed value \)</span>k<span class="math notranslate nohighlight">\(, there are \)</span>n_k<span class="math notranslate nohighlight">\( instances, out of which there are \)</span>o_k<span class="math notranslate nohighlight">\( where \)</span>y_i=1<span class="math notranslate nohighlight">\(. We can expand and then complete the square:
-\)</span><span class="math notranslate nohighlight">\(
+<p><em>Proof</em> (optional): this decomposition supposes that the scores can only take values on a finite set <span class="math notranslate nohighlight">\(\{S_1,\ldots,S_K\}\)</span>, ie. in bins. We can then write</p>
+<div class="math notranslate nohighlight">
+\[\mathrm{BS} = \frac 1N \sum_{i=1}^N(s_i - y_i)^2 = \frac 1N \sum_{k=1}^K \sum_{i: s_i = S_K} (S_k - y_i)^2\]</div>
+<p>For a fixed value <span class="math notranslate nohighlight">\(k\)</span>, there are <span class="math notranslate nohighlight">\(n_k\)</span> instances, out of which there are <span class="math notranslate nohighlight">\(o_k\)</span> where <span class="math notranslate nohighlight">\(y_i=1\)</span>. We can expand and then complete the square:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
 \begin{align}
-\\
 \sum_{i: s_i = S_k} (S_k - y_i)^2  &amp;= \sum_{i: s_i = S_k} (S_k^2 - 2 S_k y_i + y_i^2)\\
 &amp;= n_k S_k^2 - 2 S_k \sum_{i: s_i = S_k} y_i + \sum_{i: s_i = S_k} y_i^2\\
 &amp;= n_k S_k^2 - 2 S_k o_k + o_k \\
@@ -1422,11 +1437,11 @@ For a fixed value \)</span>k<span class="math notranslate nohighlight">\(, there
 &amp;= n_k \left(S_k - \frac{o_k}{n_k} \right)^2 + n_k \frac{o_k}{n_k} \left(1- \frac{o_k}{n_k} \right)\\
 &amp;\equiv n_k (S_k - \bar o_k)^2 + n_k \bar o_k (1-\bar o_k)\\
 \end{align}
-\)</span><span class="math notranslate nohighlight">\( 
-where we defined \)</span>\bar o_k = o_k/n_k<span class="math notranslate nohighlight">\( as the bin-wise event frequency. Then, we can write the Brier score as
-\)</span><span class="math notranslate nohighlight">\(\mathrm{BS} = \sum_{k=1}^K \frac{n_k}{N} (S_k - \bar o_k)^2 + \sum_{k=1}^K \frac{n_k}{N} \bar o_k (1-\bar o_k)\)</span><span class="math notranslate nohighlight">\( 
-The first term measures how much the empirical frequency of events \)</span>\bar o_k<span class="math notranslate nohighlight">\( compares to the score bin \)</span>S_k$. For a perfectly calibrated model, they will be equal and the first term is zero - this is the calibration term. The second one is a Gini impurity-like quantity.</p>
-</div></blockquote>
+\end{split}\]</div>
+<p>where we defined <span class="math notranslate nohighlight">\(\bar o_k = o_k/n_k\)</span> as the bin-wise event frequency. Then, we can write the Brier score as</p>
+<div class="math notranslate nohighlight">
+\[\mathrm{BS} = \sum_{k=1}^K \frac{n_k}{N} (S_k - \bar o_k)^2 + \sum_{k=1}^K \frac{n_k}{N} \bar o_k (1-\bar o_k).\]</div>
+<p>The first term measures how much the empirical frequency of events <span class="math notranslate nohighlight">\(\bar o_k\)</span> compares to the score bin <span class="math notranslate nohighlight">\(S_k\)</span>. For a perfectly calibrated model, they will be equal and the first term is zero - this is the calibration term. The second one is a Gini impurity-like quantity. <span class="math notranslate nohighlight">\(\Box\)</span></p>
 <p>Because of this, we need to be carefully with using the Brier score alone to measure calibration. A high ROC AUC will affect this assessment.</p>
 </section>
 </section>
@@ -1515,8 +1530,8 @@ HistGradientBoostingClassifier	 16.7%
 </section>
 </section>
 <hr class="docutils" />
-<section class="tex2jax_ignore mathjax_ignore" id="model-calibration-part-ii-calibrating-outputs">
-<h1>Model calibration part II - calibrating outputs<a class="headerlink" href="#model-calibration-part-ii-calibrating-outputs" title="Permalink to this headline">#</a></h1>
+<section class="tex2jax_ignore mathjax_ignore" id="part-ii-calibrating-outputs">
+<h1>Part II: calibrating outputs<a class="headerlink" href="#part-ii-calibrating-outputs" title="Permalink to this headline">#</a></h1>
 <p>So far, we have studied how to assess and measure reliability in pre-trained models. In this section, we go one step further and discuss how to improve their reliability via a <strong>calibration procedure</strong>.</p>
 <p>There are essentially two ways to calibrate a model:</p>
 <ol class="simple">
@@ -1557,7 +1572,10 @@ HistGradientBoostingClassifier	 16.7%
 <div><p>A function <span class="math notranslate nohighlight">\(f\)</span> is said to be monotonic if it is either non-increasing or non-decreasing. For instance, the function <span class="math notranslate nohighlight">\(f(x) = x^3\)</span> is monotonic over <span class="math notranslate nohighlight">\(\mathbb R\)</span> since it is non-decreasing (being in fact purely increasing: <span class="math notranslate nohighlight">\(y &gt; x \Rightarrow f(y) &gt; f(x)\)</span>.</p>
 </div></blockquote>
 <p>This can be written as a quadratic optimization problem. First, with no loss of generality assume that <span class="math notranslate nohighlight">\(x_i\)</span>’s are ordered, such that <span class="math notranslate nohighlight">\(x_{i+1} \geq x_i\)</span>.</p>
-<p>The problem is then to find <span class="math notranslate nohighlight">\(f\)</span> such that $<span class="math notranslate nohighlight">\(\sum_{i=1}^N (y_i - f(x_i))^2\)</span><span class="math notranslate nohighlight">\( is minimal, subject to \)</span>f(x_{i+1}) \geq f(x_i)<span class="math notranslate nohighlight">\( for all \)</span>i$.</p>
+<p>The problem is then to find <span class="math notranslate nohighlight">\(f\)</span> such that</p>
+<div class="math notranslate nohighlight">
+\[\sum_{i=1}^N (y_i - f(x_i))^2\]</div>
+<p>is minimal, subject to <span class="math notranslate nohighlight">\(f(x_{i+1}) \geq f(x_i)\)</span> for all <span class="math notranslate nohighlight">\(i\)</span>.</p>
 <p>This can be solved via the so-called PAV algorithm. Below, we show an example:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -1592,7 +1610,7 @@ HistGradientBoostingClassifier	 16.7%
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/Calibration_100_0.png" src="../_images/Calibration_100_0.png" />
+<img alt="../_images/Calibration_101_0.png" src="../_images/Calibration_101_0.png" />
 </div>
 </div>
 <p>As you can see, the isotonic regression fits a piecewise monotonic function over the data!</p>
@@ -1709,7 +1727,7 @@ HistGradientBoostingClassifier	 16.7%
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/Calibration_110_0.png" src="../_images/Calibration_110_0.png" />
+<img alt="../_images/Calibration_111_0.png" src="../_images/Calibration_111_0.png" />
 </div>
 </div>
 <p>In all cases except Logistic Regression, the calibrated models performed better in terms of ECE (and even in the logistic case, the ECE values are close).</p>
@@ -1779,7 +1797,7 @@ HistGradientBoostingClassifier	 16.7%
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/Calibration_115_0.png" src="../_images/Calibration_115_0.png" />
+<img alt="../_images/Calibration_116_0.png" src="../_images/Calibration_116_0.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -1789,7 +1807,7 @@ HistGradientBoostingClassifier	 16.7%
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/Calibration_116_0.png" src="../_images/Calibration_116_0.png" />
+<img alt="../_images/Calibration_117_0.png" src="../_images/Calibration_117_0.png" />
 </div>
 </div>
 </section>
@@ -1887,7 +1905,7 @@ HistGradientBoostingClassifier	 16.7%
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/Calibration_137_0.png" src="../_images/Calibration_137_0.png" />
+<img alt="../_images/Calibration_138_0.png" src="../_images/Calibration_138_0.png" />
 </div>
 </div>
 <p>Something is weird. Why are the <strong>ECEs so low</strong> when the curves (both pre and post calibration) look so bad? The answer lies in the definition of ECE. Recall that it is the <em>weighted</em> sum of <span class="math notranslate nohighlight">\(|x-y|\)</span> for each bin. Look at the bubble size: basically all points are thrown to zero! We can see that more clearly via a histogram:</p>
@@ -1910,7 +1928,7 @@ HistGradientBoostingClassifier	 16.7%
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/Calibration_140_0.png" src="../_images/Calibration_140_0.png" />
+<img alt="../_images/Calibration_141_0.png" src="../_images/Calibration_141_0.png" />
 </div>
 </div>
 <p>More than 99% of points have a score between 0 and 10%; that makes sense, since the data is heavily imbalanced, so most points have very little chance of being in the positive class.</p>
@@ -2247,7 +2265,7 @@ HistGradientBoostingClassifier	 16.7%
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/Calibration_159_0.png" src="../_images/Calibration_159_0.png" />
+<img alt="../_images/Calibration_160_0.png" src="../_images/Calibration_160_0.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -2444,7 +2462,7 @@ HistGradientBoostingClassifier	 16.7%
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/Calibration_170_0.png" src="../_images/Calibration_170_0.png" />
+<img alt="../_images/Calibration_171_0.png" src="../_images/Calibration_171_0.png" />
 </div>
 </div>
 <section id="is-the-underbagging-approach-always-the-best">
@@ -2571,6 +2589,7 @@ HistGradientBoostingClassifier	 16.7%
 </ul>
 </section>
 </section>
+<hr class="docutils" />
 <section class="tex2jax_ignore mathjax_ignore" id="appendix">
 <h1>Appendix<a class="headerlink" href="#appendix" title="Permalink to this headline">#</a></h1>
 <section id="roc-auc-and-the-ks-score-are-invariant-under-calibration-average-precision-almost">
@@ -2636,20 +2655,18 @@ AP calibrated model  : 0.785
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/Calibration_187_0.png" src="../_images/Calibration_187_0.png" />
+<img alt="../_images/Calibration_189_0.png" src="../_images/Calibration_189_0.png" />
 </div>
 </div>
 <p>For some reason it looks like we have a ladder function.</p>
 <p>In fact, this is a graphic quirk. What happens is that the process of calibrating a model effectively ends up taking its convex hull into the ROC curve (see [4] for a proof). The convex clasp connects points on the ROC curve with line segments, in order to make it convex.</p>
 <p>Scikit-Learn doesn’t save the whole curve; it just keeps the vertices connected by these line segments. When mapping these points to the PR (Precision/Recall) plane, we only have a few points, and due to the particular geometry of the PR plane, we cannot simply connect them with lines.</p>
-<blockquote>
-<div><p>It is possible to prove, via Bayes’ theorem, the following fact. Let <span class="math notranslate nohighlight">\((x,y)\)</span> be the coordinates of the ROC plane (ie, <span class="math notranslate nohighlight">\(x\)</span> is the false positive rate and <span class="math notranslate nohighlight">\(y\)</span> is the true positive rate). Also let <span class="math notranslate nohighlight">\(d\)</span> be the imbalance rate (for example, if we have a 1:2 ratio between class 1 and class 0, <span class="math notranslate nohighlight">\(d = 1/2\)</span>). If we call the coordinates in the PR plane <span class="math notranslate nohighlight">\((x', y')\)</span>, with <span class="math notranslate nohighlight">\(x'\)</span> being the recall and <span class="math notranslate nohighlight">\(y'\)</span> being the precision, then
-\begin{align*}
+<p>It is possible to prove, via Bayes’ theorem, the following fact. Let <span class="math notranslate nohighlight">\((x,y)\)</span> be the coordinates of the ROC plane (ie, <span class="math notranslate nohighlight">\(x\)</span> is the false positive rate and <span class="math notranslate nohighlight">\(y\)</span> is the true positive rate). Also let <span class="math notranslate nohighlight">\(d\)</span> be the imbalance rate (for example, if we have a 1:2 ratio between class 1 and class 0, <span class="math notranslate nohighlight">\(d = 1/2\)</span>). If we call the coordinates in the PR plane <span class="math notranslate nohighlight">\((x', y')\)</span>, with <span class="math notranslate nohighlight">\(x'\)</span> being the recall and <span class="math notranslate nohighlight">\(y'\)</span> being the precision, then</p>
+<p>\begin{align*}
 x’ &amp;= y\
 y’ &amp;= \frac{y}{y+ x/r}.
-\end{align*}
-Straight lines in the <span class="math notranslate nohighlight">\((x,y)\)</span> plane are not mapped to straight lines in the <span class="math notranslate nohighlight">\((x', y')\)</span> plane. Therefore, we cannot simply say that the precision/recall curve of the calibrated model can be obtained by linear interpolation of the vertices.</p>
-</div></blockquote>
+\end{align*}</p>
+<p>Straight lines in the <span class="math notranslate nohighlight">\((x,y)\)</span> plane are not mapped to straight lines in the <span class="math notranslate nohighlight">\((x', y')\)</span> plane. Therefore, we cannot simply say that the precision/recall curve of the calibrated model can be obtained by linear interpolation of the vertices.</p>
 <p>Below, we solve this problem as follows:</p>
 <ul class="simple">
 <li><p>We calculate the ROC curve of the calibrated model;</p></li>
@@ -2700,7 +2717,7 @@ Straight lines in the <span class="math notranslate nohighlight">\((x,y)\)</span
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/Calibration_191_0.png" src="../_images/Calibration_191_0.png" />
+<img alt="../_images/Calibration_193_0.png" src="../_images/Calibration_193_0.png" />
 </div>
 </div>
 <p>As we can see, the area is basically the same. So, there are no problems using Avg. Precision of the original model as a proxy.</p>
@@ -2743,12 +2760,19 @@ Straight lines in the <span class="math notranslate nohighlight">\((x,y)\)</span
                 
     <!-- Previous / next buttons -->
 <div class='prev-next-area'>
-    <a class='left-prev' id="prev-link" href="Interpretability.html" title="previous page">
+    <a class='left-prev' id="prev-link" href="Feature%20selection%20methods.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">How imbalanced learning affects the interpretability of a model</p>
+            <p class="prev-next-title">Feature selection via the Boruta algorithm</p>
         </div>
+    </a>
+    <a class='right-next' id="next-link" href="Interpretability.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Model interpretability: how is it affected by imbalance?</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
     </a>
 </div>
             </footer>

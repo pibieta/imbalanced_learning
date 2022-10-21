@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>How imbalanced learning affects the interpretability of a model &#8212; Imbalanced Binary Classification - A survey with code</title>
+    <title>Model interpretability: how is it affected by imbalance? &#8212; Imbalanced Binary Classification - A survey with code</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -54,8 +54,7 @@ const thebe_selector_output = ".output, .cell_output"
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Model calibration part I - reliability assessment" href="Calibration.html" />
-    <link rel="prev" title="Feature selection via the Boruta algorithm" href="Feature%20selection%20methods.html" />
+    <link rel="prev" title="Probability calibration" href="Calibration.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
     
@@ -128,7 +127,7 @@ const thebe_selector_output = ".output, .cell_output"
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="Metrics%202%20-%20Lift%20curve.html">
-   A complement to the ROC: the lift curve (aka CAP curve)
+   The lift curve
   </a>
  </li>
  <li class="toctree-l1">
@@ -155,14 +154,14 @@ const thebe_selector_output = ".output, .cell_output"
    Feature selection via the Boruta algorithm
   </a>
  </li>
- <li class="toctree-l1 current active">
-  <a class="current reference internal" href="#">
-   How imbalanced learning affects the interpretability of a model
-  </a>
- </li>
  <li class="toctree-l1">
   <a class="reference internal" href="Calibration.html">
-   Model calibration part I - reliability assessment
+   Probability calibration
+  </a>
+ </li>
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   Model interpretability: how is it affected by imbalance?
   </a>
  </li>
 </ul>
@@ -328,7 +327,7 @@ title="Print to PDF"
         <ul class="visible nav section-nav flex-column">
  <li class="toc-h1 nav-item toc-entry">
   <a class="reference internal nav-link" href="#">
-   How imbalanced learning affects the interpretability of a model
+   Model interpretability: how is it affected by imbalance?
   </a>
   <ul class="visible nav section-nav flex-column">
    <li class="toc-h2 nav-item toc-entry">
@@ -382,7 +381,7 @@ title="Print to PDF"
         <div class="col pl-md-3 pl-lg-5 content-container">
             <!-- Table of contents that is only displayed when printing the page -->
             <div id="jb-print-docs-body" class="onlyprint">
-                <h1>How imbalanced learning affects the interpretability of a model</h1>
+                <h1>Model interpretability: how is it affected by imbalance?</h1>
                 <!-- Table of contents -->
                 <div id="print-main-content">
                     <div id="jb-print-toc">
@@ -394,7 +393,7 @@ title="Print to PDF"
                             <ul class="visible nav section-nav flex-column">
  <li class="toc-h1 nav-item toc-entry">
   <a class="reference internal nav-link" href="#">
-   How imbalanced learning affects the interpretability of a model
+   Model interpretability: how is it affected by imbalance?
   </a>
   <ul class="visible nav section-nav flex-column">
    <li class="toc-h2 nav-item toc-entry">
@@ -449,8 +448,8 @@ title="Print to PDF"
                 
               <div>
                 
-  <section class="tex2jax_ignore mathjax_ignore" id="how-imbalanced-learning-affects-the-interpretability-of-a-model">
-<h1>How imbalanced learning affects the interpretability of a model<a class="headerlink" href="#how-imbalanced-learning-affects-the-interpretability-of-a-model" title="Permalink to this headline">#</a></h1>
+  <section class="tex2jax_ignore mathjax_ignore" id="model-interpretability-how-is-it-affected-by-imbalance">
+<h1>Model interpretability: how is it affected by imbalance?<a class="headerlink" href="#model-interpretability-how-is-it-affected-by-imbalance" title="Permalink to this headline">#</a></h1>
 <p>In numerous data science applications, it’s important not only to get a correct prediction but also a comprehensive explanation of the inference process. This lends credibility to the model, making us comfortable in its use and ensuring that we are not “overfitting” on elements that are not relevant to the problem at hand.</p>
 <p>There are several different approaches to interpretability. In particular, one of the categorizations is splitting the methods between global explanations and local explanations. At a high level, a local explanation of a model is concerned with describing the reasoning behind a prediction (for example, LIME), while a global explanation attempts to describe the model’s behavior in completeness (such as using surrogate models with shallow decision trees).</p>
 <section id="feature-importances">
@@ -600,7 +599,7 @@ title="Print to PDF"
 </div>
 </div>
 </div>
-<p><img alt="image.png" src="notebooks/attachment:image.png" /></p>
+<p><img alt="fig1" src="../_images/fig11.png" /></p>
 </section>
 <section id="shap-importance-random-forest">
 <h2>2. SHAP importance Random Forest<a class="headerlink" href="#shap-importance-random-forest" title="Permalink to this headline">#</a></h2>
@@ -635,7 +634,7 @@ title="Print to PDF"
 </div>
 </div>
 </div>
-<p><img alt="image.png" src="notebooks/attachment:image.png" /></p>
+<p><img alt="fig1" src="../_images/fig21.png" /></p>
 </section>
 <section id="shap-y-1-importance-random-forest">
 <h2>3. SHAP[y==1] importance Random Forest<a class="headerlink" href="#shap-y-1-importance-random-forest" title="Permalink to this headline">#</a></h2>
@@ -672,7 +671,7 @@ title="Print to PDF"
 </div>
 </div>
 </div>
-<p><img alt="image.png" src="notebooks/attachment:image.png" /></p>
+<p><img alt="fig1" src="../_images/fig31.png" /></p>
 </section>
 <section id="shap-importance-normalization-random-forest">
 <h2>4. SHAP importance normalization Random Forest<a class="headerlink" href="#shap-importance-normalization-random-forest" title="Permalink to this headline">#</a></h2>
@@ -707,10 +706,9 @@ title="Print to PDF"
 </div>
 </div>
 </div>
-<p><img alt="image.png" src="notebooks/attachment:image.png" /></p>
+<p><img alt="fig1" src="../_images/fig41.png" /></p>
 </section>
 </section>
-<hr class="docutils" />
 <section class="tex2jax_ignore mathjax_ignore" id="conclusion">
 <h1>Conclusion<a class="headerlink" href="#conclusion" title="Permalink to this headline">#</a></h1>
 <p>We have seen that the methods of variable importance presented are more impacted with the absolute imbalance than with the relative imbalance, except for the “purest” SHAP. This occurred because the variation of <span class="math notranslate nohighlight">\(\phi_0\)</span> as we change the relative imbalance has a significant impact on the values that the SHAPs assume, due to the additive interpretation of their sum being the result of the forecast. It is important to note, however, that despite the values in these cases being on a bad scale, we still have a good ordering that was evidenced by the last use of SHAP, from the simple normalization.</p>
@@ -735,16 +733,16 @@ title="Print to PDF"
         },
         codeMirrorConfig: {
             theme: "abcdef",
-            mode: "shapimblearn"
+            mode: "python"
         },
         kernelOptions: {
-            kernelName: "shapimblearn",
+            kernelName: "python3",
             path: "./notebooks"
         },
         predefinedOutput: true
     }
     </script>
-    <script>kernelName = 'shapimblearn'</script>
+    <script>kernelName = 'python3'</script>
 
               </div>
               
@@ -753,19 +751,12 @@ title="Print to PDF"
                 
     <!-- Previous / next buttons -->
 <div class='prev-next-area'>
-    <a class='left-prev' id="prev-link" href="Feature%20selection%20methods.html" title="previous page">
+    <a class='left-prev' id="prev-link" href="Calibration.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">Feature selection via the Boruta algorithm</p>
+            <p class="prev-next-title">Probability calibration</p>
         </div>
-    </a>
-    <a class='right-next' id="next-link" href="Calibration.html" title="next page">
-    <div class="prev-next-info">
-        <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Model calibration part I - reliability assessment</p>
-    </div>
-    <i class="fas fa-angle-right"></i>
     </a>
 </div>
             </footer>

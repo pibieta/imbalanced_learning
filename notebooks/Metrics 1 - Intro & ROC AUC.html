@@ -54,7 +54,7 @@ const thebe_selector_output = ".output, .cell_output"
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="A complement to the ROC: the lift curve (aka CAP curve)" href="Metrics%202%20-%20Lift%20curve.html" />
+    <link rel="next" title="The lift curve" href="Metrics%202%20-%20Lift%20curve.html" />
     <link rel="prev" title="Loss functions" href="Loss%20functions.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
@@ -128,7 +128,7 @@ const thebe_selector_output = ".output, .cell_output"
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="Metrics%202%20-%20Lift%20curve.html">
-   A complement to the ROC: the lift curve (aka CAP curve)
+   The lift curve
   </a>
  </li>
  <li class="toctree-l1">
@@ -156,13 +156,13 @@ const thebe_selector_output = ".output, .cell_output"
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="Interpretability.html">
-   How imbalanced learning affects the interpretability of a model
+  <a class="reference internal" href="Calibration.html">
+   Probability calibration
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="Calibration.html">
-   Model calibration part I - reliability assessment
+  <a class="reference internal" href="Interpretability.html">
+   Model interpretability: how is it affected by imbalance?
   </a>
  </li>
 </ul>
@@ -417,7 +417,7 @@ title="Print to PDF"
  </li>
  <li class="toc-h1 nav-item toc-entry">
   <a class="reference internal nav-link" href="#appendix">
-   Appendix:
+   Appendix
   </a>
   <ul class="visible nav section-nav flex-column">
    <li class="toc-h2 nav-item toc-entry">
@@ -433,11 +433,6 @@ title="Print to PDF"
    <li class="toc-h2 nav-item toc-entry">
     <a class="reference internal nav-link" href="#references">
      References:
-    </a>
-   </li>
-   <li class="toc-h2 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#further-reading">
-     Further reading:
     </a>
    </li>
   </ul>
@@ -552,7 +547,7 @@ title="Print to PDF"
  </li>
  <li class="toc-h1 nav-item toc-entry">
   <a class="reference internal nav-link" href="#appendix">
-   Appendix:
+   Appendix
   </a>
   <ul class="visible nav section-nav flex-column">
    <li class="toc-h2 nav-item toc-entry">
@@ -568,11 +563,6 @@ title="Print to PDF"
    <li class="toc-h2 nav-item toc-entry">
     <a class="reference internal nav-link" href="#references">
      References:
-    </a>
-   </li>
-   <li class="toc-h2 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#further-reading">
-     Further reading:
     </a>
    </li>
   </ul>
@@ -748,16 +738,22 @@ Test score: 0.668
 <h3>Ratios of the confusion matrix<a class="headerlink" href="#ratios-of-the-confusion-matrix" title="Permalink to this headline">#</a></h3>
 <p>For now, fix a confusion matrix (this amounts to fixing an estimator <span class="math notranslate nohighlight">\(\hat y(x)\)</span>, or equivalently, to training a score function <span class="math notranslate nohighlight">\(p(x)\)</span> and fixing a threshold). One could ask questions such as: out of all the real positives, how many did we get right? Or, out of all the positives that we predicted, how many were actually positive?</p>
 <p>In most references, you will see these <em>rates</em> defined in terms of elements of the confusion matrix. Here, in order to keep up with the probabilistic language we have been using, we will define them a bit differently.</p>
-<p>[<strong>True positive rate / sensitivity / TPR</strong>] The TPR of an estimator is $<span class="math notranslate nohighlight">\(\mathbb{P}(\hat y(x) = 1 | Y = 1),\)</span>$ that is, the probability that we predict a positive if that was indeed an element of the positive class.</p>
-<p>[<strong>False positive rate, FPR</strong>] The FPR of an estimator is $<span class="math notranslate nohighlight">\(\mathbb{P}(\hat y(x) = 1 | Y = 0),\)</span>$ that is, the probability that we predict a positive for a member of the negative class.</p>
+<p>[<strong>True positive rate / sensitivity / TPR</strong>] The TPR of an estimator is <span class="math notranslate nohighlight">\(\mathbb{P}(\hat y(x) = 1 | Y = 1),\)</span> that is, the probability that we predict a positive if that was indeed an element of the positive class.</p>
+<p>[<strong>False positive rate, FPR</strong>] The FPR of an estimator is <span class="math notranslate nohighlight">\(\mathbb{P}(\hat y(x) = 1 | Y = 0),\)</span> that is, the probability that we predict a positive for a member of the negative class.</p>
 <p>Similar definitions can be made for the true negative rate and false negative rate, although these tend to be less commonly used.</p>
 <p>[<strong>Calculating TPR from the confusion matrix</strong>] TPR can be approximated from the confusion matrix via</p>
 <div class="math notranslate nohighlight">
 \[\widehat{\mathrm{TPR}} = \frac{\mathrm{\widehat{TP}}}{\mathrm{\widehat{TP}+\widehat{FN}}}\]</div>
-<blockquote>
-<div><p>Proof: from the definition of conditional probability,
-$<span class="math notranslate nohighlight">\(\mathrm{TPR} = \mathbb{P}(\hat y(x) = 1 | y = 1) = \frac{\mathbb{P}(\hat y(x) = 1 \cap y = 1)}{\mathbb{P}(y=1)}.\)</span><span class="math notranslate nohighlight">\( We can break the denominator into \)</span><span class="math notranslate nohighlight">\(\mathbb{P}(y=1) = \mathbb{P}(\hat y(x) = 1 \cap y =1) + \mathbb{P}(\hat y(x)=0 \cap y=1).\)</span><span class="math notranslate nohighlight">\( (see note below on why) Then \)</span><span class="math notranslate nohighlight">\(\mathrm{TPR} = \mathbb{P}(\hat y(x) = 1 | y = 1) = \frac{\mathbb{P}(\hat y(x) = 1 \cap y = 1)}{\mathbb{P}(\hat y(x) = 1 \cap y =1) + \mathbb{P}(\hat y(x)=0 \cap y=1)} = \mathrm{\frac{TP}{TP+FN}}.\)</span><span class="math notranslate nohighlight">\( But we have seen before that \)</span>\mathrm{\widehat{TP}}/N<span class="math notranslate nohighlight">\( is an unbiased estimator for \)</span>\mathbb{P}(\hat y(x) = 1 \cap y = 1)$, and similarly for false negatives, so “plugging hats” on all estimators on the right-hand side yields the final result.</p>
-</div></blockquote>
+<p><em>Proof</em>: from the definition of conditional probability,</p>
+<div class="math notranslate nohighlight">
+\[\mathrm{TPR} = \mathbb{P}(\hat y(x) = 1 | y = 1) = \frac{\mathbb{P}(\hat y(x) = 1 \cap y = 1)}{\mathbb{P}(y=1)}.\]</div>
+<p>We can break the denominator into</p>
+<div class="math notranslate nohighlight">
+\[\mathbb{P}(y=1) = \mathbb{P}(\hat y(x) = 1 \cap y =1) + \mathbb{P}(\hat y(x)=0 \cap y=1).\]</div>
+<p>(see note below on why) Then</p>
+<div class="math notranslate nohighlight">
+\[\mathrm{TPR} = \mathbb{P}(\hat y(x) = 1 | y = 1) = \frac{\mathbb{P}(\hat y(x) = 1 \cap y = 1)}{\mathbb{P}(\hat y(x) = 1 \cap y =1) + \mathbb{P}(\hat y(x)=0 \cap y=1)} = \mathrm{\frac{TP}{TP+FN}}.\]</div>
+<p>But we have seen before that <span class="math notranslate nohighlight">\(\mathrm{\widehat{TP}}/N\)</span> is an unbiased estimator for <span class="math notranslate nohighlight">\(\mathbb{P}(\hat y(x) = 1 \cap y = 1)\)</span>, and similarly for false negatives, so “plugging hats” on all estimators on the right-hand side yields the final result.</p>
 <blockquote>
 <div><p>Note: this comes from the general identity <span class="math notranslate nohighlight">\(\mathbb{P}(A) = \sum_i \mathbb{P}(A \cap B_i)\)</span> where each <span class="math notranslate nohighlight">\(B_i\)</span> is independent of the others, and together “reconstruct” <span class="math notranslate nohighlight">\(A\)</span> in the sense that <span class="math notranslate nohighlight">\(A = \cup_i (A \cap B_i)\)</span>. Convince yourself of that drawing a few Venn diagrams</p>
 </div></blockquote>
@@ -792,7 +788,7 @@ Test ROC AUC: 0.7458
 <p>From now on, we drop the hats on <span class="math notranslate nohighlight">\(\widehat{\mathrm{FPR}}, \widehat{\mathrm{TPR}}\)</span> etc.</p>
 <p>Notice that the whole discussion so far has considered a fixed estimator <span class="math notranslate nohighlight">\(\hat y\)</span>, which in turn means we have a fixed threshold <span class="math notranslate nohighlight">\(\lambda\)</span> such that <span class="math notranslate nohighlight">\(\hat y(x)=1\)</span> if <span class="math notranslate nohighlight">\(f(x) \geq \lambda\)</span> and 0 otherwise.</p>
 <p>Now, we <strong>let <span class="math notranslate nohighlight">\(\lambda\)</span> vary from low to high</strong>, and consider what happens to the <span class="math notranslate nohighlight">\((x=\mathrm{FPR}, y=\mathrm{TPR})\)</span> plane as <span class="math notranslate nohighlight">\(\lambda\)</span> changes.</p>
-<p>[<strong>Definition</strong>] Let <span class="math notranslate nohighlight">\(\mathrm{FPR}(\lambda)\)</span>, <span class="math notranslate nohighlight">\(\mathrm{TPR}(\lambda)\)</span> denote the false &amp; true positive rates at threshold <span class="math notranslate nohighlight">\(\lambda\)</span>. Then, the curve <span class="math notranslate nohighlight">\(\lambda \mapsto (\mathrm{FPR}(\lambda), \mathrm{TPR}(\lambda))\)</span> obtained when <span class="math notranslate nohighlight">\(\lambda\)</span> varies between <span class="math notranslate nohighlight">\(]-\infty, \infty[\)</span> is called the <strong>receiver operating characteristic (ROC) curve</strong>.</p>
+<p><strong>Definition.</strong> Let <span class="math notranslate nohighlight">\(\mathrm{FPR}(\lambda)\)</span>, <span class="math notranslate nohighlight">\(\mathrm{TPR}(\lambda)\)</span> denote the false &amp; true positive rates at threshold <span class="math notranslate nohighlight">\(\lambda\)</span>. Then, the curve <span class="math notranslate nohighlight">\(\lambda \mapsto (\mathrm{FPR}(\lambda), \mathrm{TPR}(\lambda))\)</span> obtained when <span class="math notranslate nohighlight">\(\lambda\)</span> varies between <span class="math notranslate nohighlight">\(]-\infty, \infty[\)</span> is called the <strong>receiver operating characteristic (ROC) curve</strong>.</p>
 <p>Before we use <code class="docutils literal notranslate"><span class="pre">scikit-learn</span></code> to plot it, let us intuitively understand what behaviors to expect from this curve. Consider the expression</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\hat{y}(x) = \begin{cases}
@@ -840,7 +836,9 @@ Test ROC AUC: 0.7458
 <li><p>Randomly take a point of the positive (<span class="math notranslate nohighlight">\(y=1\)</span>) class, and calculate its score <span class="math notranslate nohighlight">\(f(X_1)\)</span></p></li>
 <li><p>Randomly take a point of the negative (<span class="math notranslate nohighlight">\(y=0\)</span>) class, and calculate its score <span class="math notranslate nohighlight">\(f(X_0)\)</span></p></li>
 </ul>
-<p>Claim: $<span class="math notranslate nohighlight">\(\boxed{\mathrm{ROC\;AUC} = \mathbb{P}(f(X_1) \geq f(X_0))},\)</span>$</p>
+<p>Claim:</p>
+<div class="math notranslate nohighlight">
+\[\boxed{\mathrm{ROC\;AUC} = \mathbb{P}(f(X_1) \geq f(X_0))},\]</div>
 <p>that is: <strong>the ROC AUC measures how likely it is that a point of the positive class scores higher than a point of the negative class</strong>.</p>
 <blockquote>
 <div><p>This result is proven in the Appendix of this chapter.</p>
@@ -884,9 +882,10 @@ Test ROC AUC: 0.7458
 <ul class="simple">
 <li><p>This characterization of the ROC AUC allows one to extract interesting insights on how the AUC will behave under some transformations. For example: given the ROC AUC of a classifier <span class="math notranslate nohighlight">\(f(x)\)</span>, how will it change if we change the classifier to <span class="math notranslate nohighlight">\(10 f(x)\)</span>? Or <span class="math notranslate nohighlight">\(f(x)^2\)</span>?</p></li>
 </ul>
-<blockquote>
-<div><p>Answer: it will stay the same. Since <span class="math notranslate nohighlight">\(\mathrm{ROC\,AUC} = \mathbb{P}(Z_1 \geq Z_0)\)</span>, any function <span class="math notranslate nohighlight">\(\phi\)</span> applied to both sides of the inequality which does not change it will keep ROC AUC constant: $<span class="math notranslate nohighlight">\((Z_1 \geq Z_0)\,=\,(\phi(Z_1) \geq \phi(Z_0)).\)</span><span class="math notranslate nohighlight">\( In particular this is true for functions like \)</span>\phi(Z) = 10Z<span class="math notranslate nohighlight">\( or \)</span>\phi(Z) = Z^2$, which are monotonic functions. We can also see this numerically:</p>
-</div></blockquote>
+<p><em>Answer</em>: it will stay the same. Since <span class="math notranslate nohighlight">\(\mathrm{ROC\,AUC} = \mathbb{P}(Z_1 \geq Z_0)\)</span>, any function <span class="math notranslate nohighlight">\(\phi\)</span> applied to both sides of the inequality which does not change it will keep ROC AUC constant:</p>
+<div class="math notranslate nohighlight">
+\[(Z_1 \geq Z_0)\,=\,(\phi(Z_1) \geq \phi(Z_0)).\]</div>
+<p>In particular this is true for functions like <span class="math notranslate nohighlight">\(\phi(Z) = 10Z\)</span> or <span class="math notranslate nohighlight">\(\phi(Z) = Z^2\)</span>, which are monotonic functions. We can also see this numerically:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Original test ROC AUC: </span><span class="si">{0:.4f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">roc_auc_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_test_pred</span><span class="p">)))</span>
@@ -920,10 +919,12 @@ Applying square: 0.7458
 <h4>2. Invariance under class imbalance<a class="headerlink" href="#invariance-under-class-imbalance" title="Permalink to this headline">#</a></h4>
 <p>As we discussed in Chapter 1, class imbalance is one of the biggest sources of complexity in classification problems. We claim that the ROC AUC is “invariant under” class imbalance. What does it mean?</p>
 <p>First, let us clarify one thing. Physicists reading this probably feel like invariance under something is a positive thing, but this is not necessarily true in machine learning.</p>
-<p>Invariance under class imbalance means that the ROC AUC (and the ROC curve more generally) do not change if we change the relative proportion of the positive and negative classes. To see this, notice how
-$<span class="math notranslate nohighlight">\(\mathrm{TPR} = \mathbb{P}(\hat y(x)=1|y=1) \approx \frac{\mbox{true positives}}{\mbox{all positives}}\)</span><span class="math notranslate nohighlight">\(
-\)</span><span class="math notranslate nohighlight">\(\mathrm{FPR} = \mathbb{P}(\hat y(x)=1|y=0) \approx \frac{\mbox{false positives}}{\mbox{all negatives}};\)</span><span class="math notranslate nohighlight">\(
-the ratio \)</span>\mbox{all positives/all negatives}$ never appears. FPR and TPR only care about <strong>intra-class ratios, but not inter-class</strong>.</p>
+<p>Invariance under class imbalance means that the ROC AUC (and the ROC curve more generally) do not change if we change the relative proportion of the positive and negative classes. To see this, notice how</p>
+<div class="math notranslate nohighlight">
+\[\mathrm{TPR} = \mathbb{P}(\hat y(x)=1|y=1) \approx \frac{\mbox{true positives}}{\mbox{all positives}}\]</div>
+<div class="math notranslate nohighlight">
+\[\mathrm{FPR} = \mathbb{P}(\hat y(x)=1|y=0) \approx \frac{\mbox{false positives}}{\mbox{all negatives}};\]</div>
+<p>the ratio <span class="math notranslate nohighlight">\(\mbox{all positives/all negatives}\)</span> never appears. FPR and TPR only care about <strong>intra-class ratios, but not inter-class</strong>.</p>
 <ul class="simple">
 <li><p>The good thing about this is that AUC analysis works the same for balanced or imbalanced problems…</p></li>
 <li><p>The bad part is that if you blindly run AUC analysis <em>alone</em>, you are shortsighting yourself to class imbalance issues. You might think that a model is very good, when it actually is not!</p></li>
@@ -973,7 +974,7 @@ the ratio \)</span>\mbox{all positives/all negatives}$ never appears. FPR and TP
 <p>Convexity is a geometrical property of sets which will allow us to construct new (and better) classifiers based on old ones.</p>
 <p>Suppose we have two estimators A and B, represented in the FPR/TPR plane as below (A in red, B in blue). Recall that an estimator is a function that outputs either 0 or 1.</p>
 <p><strong>Convexity</strong> allows us to build a whole family of estimators in the line segment between A and B (represented in a dotted line).</p>
-<p><img alt="image.png" src="notebooks/attachment:image.png" /></p>
+<p><img alt="hull1" src="../_images/hull1.png" /></p>
 <p>The procedure on how to do it (which is not as important as knowing we can do it!) follows below:</p>
 <p>[<strong>Theorem</strong>] Let <span class="math notranslate nohighlight">\(c_A, c_B\)</span> be the two binary classifiers (i.e. taking values in <span class="math notranslate nohighlight">\(\{0,1\}\)</span>). Let <span class="math notranslate nohighlight">\((\mathrm{FPR_A, TPR_A})\)</span> and <span class="math notranslate nohighlight">\((\mathrm{FPR_B, TPR_B})\)</span> denote the coordinates of the two classifiers. Consider a point <span class="math notranslate nohighlight">\((\mathrm{FPR_*, TPR_*})\)</span> in the segment between A and B. Let</p>
 <div class="math notranslate nohighlight">
@@ -985,17 +986,16 @@ c_A(x) &amp; \mbox{with probability $1-p$}\\
 c_B(x) &amp; \mbox{with probability $p$}
 \end{cases}\end{split}\]</div>
 <p>attains a FPR of <span class="math notranslate nohighlight">\(\mathrm{FPR_*}\)</span> and TPR of <span class="math notranslate nohighlight">\(\mathrm{TPR_*}\)</span>.</p>
-<blockquote>
-<div><p>Proof: we do the calculation for FPR; that of TPR follows analogously. By definition, the FPR of <span class="math notranslate nohighlight">\(c_*\)</span> is
-$<span class="math notranslate nohighlight">\(\begin{align}
-\mathbb P (c_*(x) = 1 | y = 0) &amp;= p\, \mathbb P (c_B(x)=1|y=0) + (1-p) \,\mathbb P(c_A(x)=1|y=0) \\
-&amp;= p \,\mathrm{FPR_B} + (1-p) \,\mathrm{FPR_A} = \mathrm{FPR}_*
-\end{align}\)</span>$as claimed.</p>
-</div></blockquote>
+<p><em>Proof</em>: we do the calculation for FPR; that of TPR follows analogously. By definition, the FPR of <span class="math notranslate nohighlight">\(c_*\)</span> is</p>
+<p>\begin{align}
+\mathbb P (c_<em>(x) = 1 | y = 0) &amp;= p, \mathbb P (c_B(x)=1|y=0) + (1-p) ,\mathbb P(c_A(x)=1|y=0) \
+&amp;= p ,\mathrm{FPR_B} + (1-p) ,\mathrm{FPR_A} = \mathrm{FPR}_</em>
+\end{align}</p>
+<p>as claimed.<span class="math notranslate nohighlight">\(\Box\)</span></p>
 <p>The importance of this result is that it gives an <strong>optimal boundary</strong> for a set of classifiers. Consider the situation below, where a new classifier <span class="math notranslate nohighlight">\(C\)</span> (orange) lies in the region below the segment AB. <span class="math notranslate nohighlight">\(C\)</span> is, <em>in any sense</em>, worse then the projection <span class="math notranslate nohighlight">\(C'\)</span> (black) of C onto segment AB, since it has a higher TPR for the “cost” of the same FPR.</p>
-<p><img alt="image.png" src="notebooks/attachment:image.png" /></p>
+<p><img alt="hull2" src="../_images/hull2.png" /></p>
 <p>Because of this, when given a classifier <span class="math notranslate nohighlight">\(f(x)\)</span>, one is allowed to take the <strong>convex hull</strong> of the ROC curve (think of it as “laying a rubber band” on top of the your points:</p>
-<p><img alt="image.png" src="notebooks/attachment:image.png" /></p>
+<p><img alt="convex_hull" src="https://i.stack.imgur.com/QWkFh.png" /></p>
 <p>We can build a function which creates the convex hull and also computs its AUC as below:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -1081,7 +1081,7 @@ $<span class="math notranslate nohighlight">\(\begin{align}
 </section>
 <hr class="docutils" />
 <section class="tex2jax_ignore mathjax_ignore" id="appendix">
-<h1>Appendix:<a class="headerlink" href="#appendix" title="Permalink to this headline">#</a></h1>
+<h1>Appendix<a class="headerlink" href="#appendix" title="Permalink to this headline">#</a></h1>
 <section id="proof-of-probabilistic-interpretation-of-the-roc-auc">
 <h2>Proof of probabilistic interpretation of the ROC AUC<a class="headerlink" href="#proof-of-probabilistic-interpretation-of-the-roc-auc" title="Permalink to this headline">#</a></h2>
 <p>Here, we prove the claim that, if <span class="math notranslate nohighlight">\(f\)</span> is a trained binary classification model,</p>
@@ -1098,11 +1098,14 @@ $<span class="math notranslate nohighlight">\(\begin{align}
 \[\mathrm{TPR}(\lambda) = \int_\lambda^\infty g_1(z) dz,\qquad \mathrm{FPR}(\lambda) = \int_\lambda^\infty g_0(z) dz\]</div>
 <p>where <span class="math notranslate nohighlight">\(g_0, g_1\)</span> are the PDFs of <span class="math notranslate nohighlight">\(Z_0\)</span> and <span class="math notranslate nohighlight">\(Z_1\)</span> respectively.</p>
 <p>Plugging these back into the definition of ROC AUC gives</p>
-<p>\begin{align*}
-\mathrm{ROC,AUC} &amp;= \int_{\mathrm{FPR}=0}^{\mathrm{FPR}=1} \mathrm{TPR}, d\mathrm{FPR} \
-&amp;= \int_{\lambda=\infty}^{\lambda=-\infty} \mathrm{TPR}(\lambda) \frac{ d \mathrm{FPR}(\lambda)}{d\lambda} d\lambda \
-&amp;= \int_\infty^{-\infty} d\lambda \int_\lambda^\infty dz, g_1(z) (-g_0(\lambda)),
-\end{align*}</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align*}
+\mathrm{ROC\,AUC} &amp;= \int_{\mathrm{FPR}=0}^{\mathrm{FPR}=1} \mathrm{TPR}\, d\mathrm{FPR} \\
+&amp;= \int_{\lambda=\infty}^{\lambda=-\infty} \mathrm{TPR}(\lambda) \frac{ d \mathrm{FPR}(\lambda)}{d\lambda} d\lambda \\
+&amp;= \int_\infty^{-\infty} d\lambda \int_\lambda^\infty dz\, g_1(z) (-g_0(\lambda)),
+\end{align*}
+\end{split}\]</div>
 <p>where we have used the fundamental theorem of calculus in the last equality. Now one can equivalently write these iterated integrals as</p>
 <div class="math notranslate nohighlight">
 \[\int_{-\infty}^\infty \int_{-\infty}^\infty \mathbf{1}_{z \geq \lambda} g_0(\lambda) g_1(z)\, dz d\lambda = \mathbb{E}[\mathbf{1}_{Z_1 \geq Z_0}] = \mathbb{P}(Z_1 \geq Z_0),\]</div>
@@ -1121,10 +1124,12 @@ $<span class="math notranslate nohighlight">\(\begin{align}
 &amp;= 1- \mathbb P (f(X) &lt; \lambda | Y=1) = 1 - \mathbb P (Z_1 &lt; \lambda)\\
 &amp;= 1 - F_1(\lambda)
 \end{align}\end{split}\]</div>
-<p>Similarly,
-$<span class="math notranslate nohighlight">\(\mathrm{FPR}(\lambda) = 1 - F_0(\lambda)\)</span>$</p>
-<p>We can explicitly write <span class="math notranslate nohighlight">\(\mathrm{TPR}\)</span> as a function of <span class="math notranslate nohighlight">\(\mathrm{FPR}\)</span> if we invert the last expression for <span class="math notranslate nohighlight">\(\lambda\)</span>, obtaining <span class="math notranslate nohighlight">\(\lambda = F_0^{-1}(1-\mathrm{FPR})\)</span>; then
-$<span class="math notranslate nohighlight">\(\boxed{\mathrm{TPR} = 1 - F_1(F_0^{-1}(1-\mathrm{FPR}))}\)</span>$</p>
+<p>Similarly,</p>
+<div class="math notranslate nohighlight">
+\[\mathrm{FPR}(\lambda) = 1 - F_0(\lambda)\]</div>
+<p>We can explicitly write <span class="math notranslate nohighlight">\(\mathrm{TPR}\)</span> as a function of <span class="math notranslate nohighlight">\(\mathrm{FPR}\)</span> if we invert the last expression for <span class="math notranslate nohighlight">\(\lambda\)</span>, obtaining <span class="math notranslate nohighlight">\(\lambda = F_0^{-1}(1-\mathrm{FPR})\)</span>; then</p>
+<div class="math notranslate nohighlight">
+\[\boxed{\mathrm{TPR} = 1 - F_1(F_0^{-1}(1-\mathrm{FPR}))}.\]</div>
 <p>To simplify notation, call <span class="math notranslate nohighlight">\(x \equiv \mathrm{FPR}\)</span> and <span class="math notranslate nohighlight">\(y \equiv \mathrm{TPR}\)</span> (don’t confuse with variables <span class="math notranslate nohighlight">\(X\)</span> and <span class="math notranslate nohighlight">\(Y\)</span>; this is just a notation which reminds who goes in the vertical and horizontal axes). We can equivalently write</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{cases}
@@ -1142,11 +1147,10 @@ y &amp;= 1 - F_1(\lambda)
 </section>
 <section id="references">
 <h2>References:<a class="headerlink" href="#references" title="Permalink to this headline">#</a></h2>
-<p>Peter Flach, Meelis Kull, <em>Precision-Recall-Gain Curves: PR Analysis Done Right</em>, NIPS 2015</p>
-</section>
-<section id="further-reading">
-<h2>Further reading:<a class="headerlink" href="#further-reading" title="Permalink to this headline">#</a></h2>
-<p><a class="reference external" href="https://arxiv.org/pdf/1809.04808.pdf">https://arxiv.org/pdf/1809.04808.pdf</a> on the concavity of ROC curves</p>
+<ul class="simple">
+<li><p>Peter Flach, Meelis Kull, <em>Precision-Recall-Gain Curves: PR Analysis Done Right</em>, NIPS 2015</p></li>
+<li><p><a class="reference external" href="https://arxiv.org/pdf/1809.04808.pdf">https://arxiv.org/pdf/1809.04808.pdf</a> on the concavity of ROC curves</p></li>
+</ul>
 </section>
 </section>
 
@@ -1187,7 +1191,7 @@ y &amp;= 1 - F_1(\lambda)
     <a class='right-next' id="next-link" href="Metrics%202%20-%20Lift%20curve.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">A complement to the ROC: the lift curve (aka CAP curve)</p>
+        <p class="prev-next-title">The lift curve</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>

@@ -54,7 +54,7 @@ const thebe_selector_output = ".output, .cell_output"
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="How imbalanced learning affects the interpretability of a model" href="Interpretability.html" />
+    <link rel="next" title="Probability calibration" href="Calibration.html" />
     <link rel="prev" title="Choosing a baseline model" href="pablo-baseline-experiment.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
@@ -128,7 +128,7 @@ const thebe_selector_output = ".output, .cell_output"
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="Metrics%202%20-%20Lift%20curve.html">
-   A complement to the ROC: the lift curve (aka CAP curve)
+   The lift curve
   </a>
  </li>
  <li class="toctree-l1">
@@ -156,13 +156,13 @@ const thebe_selector_output = ".output, .cell_output"
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="Interpretability.html">
-   How imbalanced learning affects the interpretability of a model
+  <a class="reference internal" href="Calibration.html">
+   Probability calibration
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="Calibration.html">
-   Model calibration part I - reliability assessment
+  <a class="reference internal" href="Interpretability.html">
+   Model interpretability: how is it affected by imbalance?
   </a>
  </li>
 </ul>
@@ -777,22 +777,22 @@ Wall time: 5.54 s
 <p>Below, you see the results. The first picture shows the value of the AUCs of the models <em>relative to the model described in (1) above</em>, ie the model with the good features. The idea here is to see how much performance models 2 and 3 can achieve compared to an “oracle” which knows which features are good.</p>
 <section id="performance-analysis-for-perc-80-baseline-randomforest-model">
 <h3>Performance analysis for <code class="docutils literal notranslate"><span class="pre">perc=80</span></code>, baseline RandomForest model<a class="headerlink" href="#performance-analysis-for-perc-80-baseline-randomforest-model" title="Permalink to this headline">#</a></h3>
-<p><img alt="image.png" src="notebooks/attachment:image.png" /></p>
+<p><img alt="fig1" src="../_images/fig1.png" /></p>
 <p>We see that, regardless of the total amount of features, the <strong>model trained with the Boruta-selected features outperforms the one trained on all variables</strong>. This is promising: in real life, we have no oracle, and can only hope that our feature selection algorithm chooses features in such a way as to beat the model trained on all features.</p>
 <blockquote>
 <div><p>There is a slight overfit (where the green line goes higher than the orange one) for some values, but this is fine.</p>
 </div></blockquote>
-<p>We can also look at how many of the “good” features were captured by Boruta in each case:
-<img alt="image.png" src="notebooks/attachment:image.png" /></p>
+<p>We can also look at how many of the “good” features were captured by Boruta in each case:</p>
+<p><img alt="" src="../_images/fig2.png" /></p>
 <p>As we see, the more features in the dataset, the less Boruta is able to capture them all. With these settings, it plateaus at around 300 features. Despite that, it was able to perform better than a model which had all features available to them.</p>
 <p>To see how important the <code class="docutils literal notranslate"><span class="pre">perc</span></code> parameter is, compare the results above with the same ones for <code class="docutils literal notranslate"><span class="pre">perc=100</span></code>:</p>
-<p><img alt="image.png" src="notebooks/attachment:image.png" /></p>
+<p><img alt="fig1" src="../_images/fig3.png" /></p>
 <p>The situation is now inverted: Boruta is not able to capture enough features, and the model with selected features loses to the one using the full feature set.</p>
 <p>Below, we show a consolidated result. In the x-axis we have <code class="docutils literal notranslate"><span class="pre">perc</span></code>; in the y-axis we have the AUC difference between a model with Boruta-selected features and one trained on the full feature set (normalized by the AUC of the model trained only with the good features). A positive value will mean that the Boruta model is better.</p>
 <p>We do this across many feature counts. As we see, for a higher number of total features, Boruta consistently performs better than the full model if <code class="docutils literal notranslate"><span class="pre">perc</span></code> is set to values lower than 90, with the overall best between 70 and 80.</p>
-<p><img alt="image.png" src="notebooks/attachment:image.png" /></p>
+<p><img alt="fig1" src="../_images/fig4.png" /></p>
 <p>We can run a similar analysis using LightGBM as the base model:
-<img alt="image.png" src="notebooks/attachment:image.png" /></p>
+<img alt="fig1" src="../_images/fig5.png" /></p>
 <p>The qualitative conclusion is the same: <code class="docutils literal notranslate"><span class="pre">perc</span></code> must be set to a smaller value, and the difference between Boruta and the model trained on the full features grows as the total amount of features increases.</p>
 </section>
 </section>
@@ -822,7 +822,7 @@ Wall time: 5.54 s
 </li>
 </ul>
 <p>Below, we show a few results of experiments for a dataset with imbalance ratio of 2%. We compare the undersampled, oversampled and  no-sampling, with-weights approaches.</p>
-<p><img alt="image.png" src="notebooks/attachment:image.png" /></p>
+<p><img alt="fig1" src="../_images/fig6.png" /></p>
 <section id="conclusion-1-pure-undersampling-is-consistently-worse-than-using-weights">
 <h3>Conclusion 1: pure undersampling is consistently worse than using weights<a class="headerlink" href="#conclusion-1-pure-undersampling-is-consistently-worse-than-using-weights" title="Permalink to this headline">#</a></h3>
 <p>Dataset 1: <strong>2% imbalance ratio</strong></p>
@@ -835,12 +835,12 @@ Wall time: 5.54 s
 <li><p>In the first plot, the Y-axis is ROC AUC. The second and third plots show, respectively, how many of the good features were captured and how many of the bad features were captured by Boruta. The orange line shows the AUC for a model containing all the good features, which we know a priori; the green line shows the performance of a model trained with all features; and the blue line shows the performance of a model trained only using the features selected via Boruta.</p></li>
 <li><p>Also, the dashed red line show the performance for a model trained without sampling, but simply using <code class="docutils literal notranslate"><span class="pre">class_weight='balanced_subsample'</span></code> in the Boruta base learner (Random Forest) and then <code class="docutils literal notranslate"><span class="pre">class_weight='balanced'</span></code> in the final LightGBM model. Just as before, notice there is a slight fitting to noise (surpassing the orange model, with all good features).</p></li>
 </ul>
-<p><img alt="image.png" src="notebooks/attachment:image.png" /></p>
+<p><img alt="fig1" src="../_images/fig7.png" /></p>
 <p>Notice how we capture more of the good features  with a model with <code class="docutils literal notranslate"><span class="pre">class_weight</span></code> than with an undersampled one; similarly, we avoid more features with it.</p>
 </section>
 <section id="conclusion-2-oversampling-is-too-loose-and-slow">
 <h3>Conclusion 2: oversampling is too loose (and slow)<a class="headerlink" href="#conclusion-2-oversampling-is-too-loose-and-slow" title="Permalink to this headline">#</a></h3>
-<p><img alt="image.png" src="notebooks/attachment:image.png" /></p>
+<p><img alt="fig1" src="../_images/fig8.png" /></p>
 <p>We can see that, as we increase the target balance, oversampling quickly becomes too loose and lets all features in, hence making models which are equivalent with just training with all features (also, since it increases the total amount of points, it makes Boruta slower).</p>
 </section>
 <section id="what-about-extreme-imbalance">
@@ -1131,10 +1131,10 @@ Wall time: 5.54 s
             <p class="prev-next-title">Choosing a baseline model</p>
         </div>
     </a>
-    <a class='right-next' id="next-link" href="Interpretability.html" title="next page">
+    <a class='right-next' id="next-link" href="Calibration.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">How imbalanced learning affects the interpretability of a model</p>
+        <p class="prev-next-title">Probability calibration</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>

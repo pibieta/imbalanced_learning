@@ -55,7 +55,7 @@ const thebe_selector_output = ".output, .cell_output"
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Precision, recall, and \(F\)-scores" href="Metrics%204%20-%20Precision%20and%20Recall.html" />
-    <link rel="prev" title="A complement to the ROC: the lift curve (aka CAP curve)" href="Metrics%202%20-%20Lift%20curve.html" />
+    <link rel="prev" title="The lift curve" href="Metrics%202%20-%20Lift%20curve.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
     
@@ -128,7 +128,7 @@ const thebe_selector_output = ".output, .cell_output"
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="Metrics%202%20-%20Lift%20curve.html">
-   A complement to the ROC: the lift curve (aka CAP curve)
+   The lift curve
   </a>
  </li>
  <li class="toctree-l1 current active">
@@ -156,13 +156,13 @@ const thebe_selector_output = ".output, .cell_output"
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="Interpretability.html">
-   How imbalanced learning affects the interpretability of a model
+  <a class="reference internal" href="Calibration.html">
+   Probability calibration
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="Calibration.html">
-   Model calibration part I - reliability assessment
+  <a class="reference internal" href="Interpretability.html">
+   Model interpretability: how is it affected by imbalance?
   </a>
  </li>
 </ul>
@@ -337,8 +337,8 @@ title="Print to PDF"
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#calculating-the-ks-score-for-our-model-and-visualizing-it">
-   Calculating the KS score for our model (and visualizing it)
+  <a class="reference internal nav-link" href="#calculating-the-ks-score">
+   Calculating the KS score
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
@@ -408,8 +408,8 @@ title="Print to PDF"
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#calculating-the-ks-score-for-our-model-and-visualizing-it">
-   Calculating the KS score for our model (and visualizing it)
+  <a class="reference internal nav-link" href="#calculating-the-ks-score">
+   Calculating the KS score
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
@@ -491,8 +491,8 @@ It is a measure of the difference between class 1 and class 0, and is created fr
 </ul>
 <p>The KS score is very used in credit models, and particularly used in Brazilian markets as the industry benchmark.</p>
 </section>
-<section id="calculating-the-ks-score-for-our-model-and-visualizing-it">
-<h2>Calculating the KS score for our model (and visualizing it)<a class="headerlink" href="#calculating-the-ks-score-for-our-model-and-visualizing-it" title="Permalink to this headline">#</a></h2>
+<section id="calculating-the-ks-score">
+<h2>Calculating the KS score<a class="headerlink" href="#calculating-the-ks-score" title="Permalink to this headline">#</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -655,14 +655,12 @@ It is a measure of the difference between class 1 and class 0, and is created fr
 \mathrm{KS} &amp;= \sup_{\lambda \in [0,1]} |F_0(\lambda) - F_1(\lambda)|\\
             &amp;= \sup_{\lambda \in [0,1]} (y(\lambda) - x(\lambda))
 \end{align*}\end{split}\]</div>
-<p>We define <strong>Youden’s J statistic</strong> as
-$<span class="math notranslate nohighlight">\(\boxed{J(\lambda) := y(\lambda) - x(\lambda) = \mathrm{TPR}(\lambda) - \mathrm{FPR}(\lambda)}\)</span>$</p>
+<p>We define <strong>Youden’s J statistic</strong> as</p>
+<div class="math notranslate nohighlight">
+\[\boxed{J(\lambda) := y(\lambda) - x(\lambda) = \mathrm{TPR}(\lambda) - \mathrm{FPR}(\lambda)}\]</div>
 <p>so that
 $<span class="math notranslate nohighlight">\(\mathrm{KS} = \sup_{\lambda \in [0,1]} J(\lambda)\)</span>$</p>
-<p>Note:</p>
-<ul class="simple">
-<li><p>One will usually see the definition of <span class="math notranslate nohighlight">\(J\)</span> as being <span class="math notranslate nohighlight">\(J = \mathrm{sensitivity + specificity} -1\)</span>, where sensitivity is another name for TPR and specificity is <span class="math notranslate nohighlight">\(1 - \mathrm{FPR}\)</span>.</p></li>
-</ul>
+<p>Note: one will usually see the definition of <span class="math notranslate nohighlight">\(J\)</span> as being <span class="math notranslate nohighlight">\(J = \mathrm{sensitivity + specificity} -1\)</span>, where sensitivity is another name for TPR and specificity is <span class="math notranslate nohighlight">\(1 - \mathrm{FPR}\)</span>.</p>
 <p>There is an intricate visual connection between the ROC curve and the KS metric. <strong>Notice how <span class="math notranslate nohighlight">\(y-x\)</span> is simply the vertical distance, in the ROC plane</strong>, between the ROC curve and the 45 degree diagonal, as we exemplify below:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -693,11 +691,10 @@ $<span class="math notranslate nohighlight">\(\mathrm{KS} = \sup_{\lambda \in [0
 <p>is such that</p>
 <div class="math notranslate nohighlight">
 \[\left.\frac{dy}{dx}\right|_{\lambda=\lambda^*} = 1.\]</div>
-<blockquote>
-<div><p><em>Proof</em>: since <span class="math notranslate nohighlight">\(J(\lambda) = y(\lambda) - x(\lambda)\)</span>, one can write
-$<span class="math notranslate nohighlight">\(\frac{dJ}{d\lambda} = \frac{dy}{d\lambda} - \frac{dx}{d\lambda} = \frac{dx}{d\lambda} \left(\frac{dy}{dx} - 1\right)\)</span><span class="math notranslate nohighlight">\(
-Under the assumption of \)</span>\lambda \mapsto x(\lambda)<span class="math notranslate nohighlight">\( invertible, \)</span>dx/d\lambda<span class="math notranslate nohighlight">\( is never zero and thus \)</span>dy/dx = 1$ as claimed.</p>
-</div></blockquote>
+<p><em>Proof</em>: since <span class="math notranslate nohighlight">\(J(\lambda) = y(\lambda) - x(\lambda)\)</span>, one can write</p>
+<div class="math notranslate nohighlight">
+\[\frac{dJ}{d\lambda} = \frac{dy}{d\lambda} - \frac{dx}{d\lambda} = \frac{dx}{d\lambda} \left(\frac{dy}{dx} - 1\right)\]</div>
+<p>Under the assumption of <span class="math notranslate nohighlight">\(\lambda \mapsto x(\lambda)\)</span> invertible, <span class="math notranslate nohighlight">\(dx/d\lambda\)</span> is never zero and thus <span class="math notranslate nohighlight">\(dy/dx = 1\)</span> as claimed.<span class="math notranslate nohighlight">\(\Box\)</span></p>
 <p>To see that this value is unique, it is easier to work with a rotated version of the ROC curve. We rotate the whole plane 45 degrees clockwise, in such a way that the 45 degree diagonal is now on the <span class="math notranslate nohighlight">\(x\)</span> axis. This can be achieved via the rotation matrix</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}R = \frac{1}{\sqrt 2}\begin{pmatrix}
@@ -727,20 +724,23 @@ Under the assumption of \)</span>\lambda \mapsto x(\lambda)<span class="math not
 <p>Technical notes:</p>
 <ul class="simple">
 <li><p>Empirical ROC curves need not be concave. The argument still applies, since we can always build the convex hull (which is really a misnomer - it is a concave hull) making it concave.</p></li>
-<li><p>Empirical ROC curves need not be differentiable. However, their convex hull is piecewise differentiable in the form of line segments. Then, the argument still applies, since the convex hull admits a subderivative (<a class="reference external" href="https://en.wikipedia.org/wiki/Subderivative">https://en.wikipedia.org/wiki/Subderivative</a>).</p></li>
+<li><p>Empirical ROC curves need not be differentiable. However, their convex hull is piecewise differentiable in the form of line segments. Then, the argument still applies, since the convex hull admits a <a class="reference external" href="https://en.wikipedia.org/wiki/Subderivative">subderivative</a>.</p></li>
 </ul>
 </section>
 <section id="what-about-ks-and-the-roc-auc">
 <h2>What about KS and the ROC AUC?<a class="headerlink" href="#what-about-ks-and-the-roc-auc" title="Permalink to this headline">#</a></h2>
 <p>As we we have just seen, there is an intimate connection between the ROC curve and the KS score. One might wonder if there is a connection between the ROC <em>AUC</em> and the KS scores, as two scalars that indicate model performance.</p>
 <p>It turns out that <strong>there is a connection, although not a super useful one</strong>: the KS score is (an affine function of) the ROC AUC of the classifier constructed via the below procedure.</p>
-<ol>
+<ol class="simple">
 <li><p>For your original score <span class="math notranslate nohighlight">\(f(x)\)</span>, find the optimal <span class="math notranslate nohighlight">\(\lambda^*\)</span> as that for which <span class="math notranslate nohighlight">\(J(\lambda^*) = \mathrm{KS}\)</span></p></li>
-<li><p>Build a single-point classifier:
-$<span class="math notranslate nohighlight">\(g(x) = \begin{cases}
+<li><p>Build a single-point classifier:</p></li>
+</ol>
+<div class="math notranslate nohighlight">
+\[\begin{split}g(x) = \begin{cases}
 1 &amp; \mbox{ if } f(x) \geq \lambda^*\\
 0 &amp; \mbox{ if } f(x) &lt; \lambda^*
-\end{cases}\)</span>$</p></li>
+\end{cases}\end{split}\]</div>
+<ol>
 <li><p>Then,</p>
 <div class="math notranslate nohighlight">
 \[\mathrm{AUC}[g] = \frac{\mathrm{KS}[f]+1}{2}\]</div>
@@ -1021,7 +1021,7 @@ Let’s see if adding class weights improves anything.</p>
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">A complement to the ROC: the lift curve (aka CAP curve)</p>
+            <p class="prev-next-title">The lift curve</p>
         </div>
     </a>
     <a class='right-next' id="next-link" href="Metrics%204%20-%20Precision%20and%20Recall.html" title="next page">

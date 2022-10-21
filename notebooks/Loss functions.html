@@ -128,7 +128,7 @@ const thebe_selector_output = ".output, .cell_output"
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="Metrics%202%20-%20Lift%20curve.html">
-   A complement to the ROC: the lift curve (aka CAP curve)
+   The lift curve
   </a>
  </li>
  <li class="toctree-l1">
@@ -156,13 +156,13 @@ const thebe_selector_output = ".output, .cell_output"
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="Interpretability.html">
-   How imbalanced learning affects the interpretability of a model
+  <a class="reference internal" href="Calibration.html">
+   Probability calibration
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="Calibration.html">
-   Model calibration part I - reliability assessment
+  <a class="reference internal" href="Interpretability.html">
+   Model interpretability: how is it affected by imbalance?
   </a>
  </li>
 </ul>
@@ -358,46 +358,10 @@ title="Print to PDF"
      </li>
     </ul>
    </li>
-  </ul>
- </li>
- <li class="toc-h1 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#advanced-topic-proper-scoring-rules">
-   Advanced topic: proper scoring rules
-  </a>
-  <ul class="visible nav section-nav flex-column">
-   <li class="toc-h2 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#expected-losses">
-     Expected losses
-    </a>
-    <ul class="nav section-nav flex-column">
-     <li class="toc-h3 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#proper-scoring-rules">
-       Proper scoring rules
-      </a>
-     </li>
-     <li class="toc-h3 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#the-weight-function-the-unifier-of-proper-scoring-rules">
-       The weight function: the unifier of proper scoring rules
-      </a>
-     </li>
-     <li class="toc-h3 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#the-beta-family-of-proper-scoring-rules">
-       The Beta family of proper scoring rules
-      </a>
-     </li>
-    </ul>
-   </li>
    <li class="toc-h2 nav-item toc-entry">
     <a class="reference internal nav-link" href="#possible-issues-with-our-loss-functions">
      Possible issues with our loss functions
     </a>
-    <ul class="nav section-nav flex-column">
-     <li class="toc-h3 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#for-those-who-have-read-the-section-on-proper-scoring-rules">
-       For those who have read the section on proper scoring rules:
-      </a>
-     </li>
-    </ul>
    </li>
   </ul>
  </li>
@@ -446,6 +410,35 @@ title="Print to PDF"
   <a class="reference internal nav-link" href="#conclusions">
    Conclusions
   </a>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#appendix-proper-scoring-rules">
+   Appendix: proper scoring rules
+  </a>
+  <ul class="visible nav section-nav flex-column">
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#expected-losses">
+     Expected losses
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h3 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#proper-scoring-rules">
+       Proper scoring rules
+      </a>
+     </li>
+     <li class="toc-h3 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#the-weight-function-the-unifier-of-proper-scoring-rules">
+       The weight function: the unifier of proper scoring rules
+      </a>
+     </li>
+     <li class="toc-h3 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#the-beta-family-of-proper-scoring-rules">
+       The Beta family of proper scoring rules
+      </a>
+     </li>
+    </ul>
+   </li>
+  </ul>
  </li>
  <li class="toc-h1 nav-item toc-entry">
   <a class="reference internal nav-link" href="#references">
@@ -503,46 +496,10 @@ title="Print to PDF"
      </li>
     </ul>
    </li>
-  </ul>
- </li>
- <li class="toc-h1 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#advanced-topic-proper-scoring-rules">
-   Advanced topic: proper scoring rules
-  </a>
-  <ul class="visible nav section-nav flex-column">
-   <li class="toc-h2 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#expected-losses">
-     Expected losses
-    </a>
-    <ul class="nav section-nav flex-column">
-     <li class="toc-h3 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#proper-scoring-rules">
-       Proper scoring rules
-      </a>
-     </li>
-     <li class="toc-h3 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#the-weight-function-the-unifier-of-proper-scoring-rules">
-       The weight function: the unifier of proper scoring rules
-      </a>
-     </li>
-     <li class="toc-h3 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#the-beta-family-of-proper-scoring-rules">
-       The Beta family of proper scoring rules
-      </a>
-     </li>
-    </ul>
-   </li>
    <li class="toc-h2 nav-item toc-entry">
     <a class="reference internal nav-link" href="#possible-issues-with-our-loss-functions">
      Possible issues with our loss functions
     </a>
-    <ul class="nav section-nav flex-column">
-     <li class="toc-h3 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#for-those-who-have-read-the-section-on-proper-scoring-rules">
-       For those who have read the section on proper scoring rules:
-      </a>
-     </li>
-    </ul>
    </li>
   </ul>
  </li>
@@ -593,6 +550,35 @@ title="Print to PDF"
   </a>
  </li>
  <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#appendix-proper-scoring-rules">
+   Appendix: proper scoring rules
+  </a>
+  <ul class="visible nav section-nav flex-column">
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#expected-losses">
+     Expected losses
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h3 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#proper-scoring-rules">
+       Proper scoring rules
+      </a>
+     </li>
+     <li class="toc-h3 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#the-weight-function-the-unifier-of-proper-scoring-rules">
+       The weight function: the unifier of proper scoring rules
+      </a>
+     </li>
+     <li class="toc-h3 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#the-beta-family-of-proper-scoring-rules">
+       The Beta family of proper scoring rules
+      </a>
+     </li>
+    </ul>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
   <a class="reference internal nav-link" href="#references">
    References
   </a>
@@ -625,7 +611,7 @@ title="Print to PDF"
 <h2>Back to basics: the log-loss<a class="headerlink" href="#back-to-basics-the-log-loss" title="Permalink to this headline">#</a></h2>
 <p>In binary classification, the standard loss function is the <strong>log-loss</strong> (aka binary cross-entropy)</p>
 <div class="math notranslate nohighlight">
-\[\boxed{\ell(y, q) = - y \log q - (1-y) \log(1-q)}\]</div>
+\[\boxed{L( y| q) = - y \log q - (1-y) \log(1-q)}\]</div>
 <p>where <span class="math notranslate nohighlight">\(y\)</span> is the real label taking values 0 or 1, and <span class="math notranslate nohighlight">\(q \in [0,1]\)</span> is a predicted score, <span class="math notranslate nohighlight">\(q = q(x) = \widehat{\mathbb P}(Y=1|X=x)\)</span>. The logarithm is usually taken to be the natural log (base <span class="math notranslate nohighlight">\(e\)</span>), although any other base would be equally valid. We take <span class="math notranslate nohighlight">\(0 \log 0 \equiv 0\)</span>, as would be the natural extension from the limit.</p>
 <blockquote>
 <div><p>For example: if we predict a score of <span class="math notranslate nohighlight">\(q=0.8\)</span> for a point with <span class="math notranslate nohighlight">\(y=1\)</span>, this yields a log-loss of <span class="math notranslate nohighlight">\(-\log 0.8 = 0.22\)</span>.</p>
@@ -689,129 +675,19 @@ title="Print to PDF"
 \[q(x) = \frac{1}{\displaystyle 1+e^{-2F(x)}} \quad \Leftrightarrow \quad F(x) = \frac 12 \log \frac{q}{1-q}\]</div>
 <p>we can rewrite the loss function as a function of <span class="math notranslate nohighlight">\(y\)</span> and the score <span class="math notranslate nohighlight">\(q\)</span>, in an expression similar to the log-loss:</p>
 <div class="math notranslate nohighlight">
-\[\boxed{L_\mathrm{exp} = y \sqrt{\frac{1-q}{q}} + (1-y) \sqrt{\frac{q}{1-q}}.}\]</div>
+\[\boxed{L_\mathrm{exp}(y|q) = y \sqrt{\frac{1-q}{q}} + (1-y) \sqrt{\frac{q}{1-q}}.}\]</div>
 </li>
 <li><p><strong>Brier score</strong>: as we will see in the Calibration section, we can define the so-called Brier loss (or Brier score)</p>
 <div class="math notranslate nohighlight">
-\[\boxed{L_\mathrm{Brier} = (y-q)^2 = y(1-q)^2 + (1-y)q^2}\]</div>
+\[\boxed{L_\mathrm{Brier}(y|q) = (y-q)^2 = y(1-q)^2 + (1-y)q^2}\]</div>
 </li>
 <li><p><strong>Focal loss</strong>: for completeness, we write out here the focal loss, which we will discuss in the section about imbalanced learning:</p>
 <div class="math notranslate nohighlight">
-\[\boxed{L_\mathrm{focal} = -y (1-q)^\gamma \log q - (1-\eta) q^\gamma \log(1-q)}\]</div>
+\[\boxed{L_\mathrm{focal}(y|q) = -y (1-q)^\gamma \log q - (1-\eta) q^\gamma \log(1-q)}\]</div>
 </li>
 </ul>
 </section>
 </section>
-</section>
-<hr class="docutils" />
-<section class="tex2jax_ignore mathjax_ignore" id="advanced-topic-proper-scoring-rules">
-<h1>Advanced topic: proper scoring rules<a class="headerlink" href="#advanced-topic-proper-scoring-rules" title="Permalink to this headline">#</a></h1>
-<p>(this section can be skipped on a first reading)</p>
-<section id="expected-losses">
-<h2>Expected losses<a class="headerlink" href="#expected-losses" title="Permalink to this headline">#</a></h2>
-<p>All loss functions discussed above can be written in the form</p>
-<div class="math notranslate nohighlight">
-\[\boxed{L(y|q) = y L_1(1-q) + (1-y)L_0(q)}.\]</div>
-<p>Here, we have explicitly written that <span class="math notranslate nohighlight">\(L\)</span> depends on <span class="math notranslate nohighlight">\(y\)</span> <em>conditioned on</em> the predicted score <span class="math notranslate nohighlight">\(q\)</span>. Notice that this is the only dependence that <span class="math notranslate nohighlight">\(y\)</span> has on <span class="math notranslate nohighlight">\(x\)</span>, namely via <span class="math notranslate nohighlight">\(q = q(x)\)</span>.</p>
-<blockquote>
-<div><p>Example: for the log-loss,
-$<span class="math notranslate nohighlight">\(\begin{align*}
-L_0(q) &amp;= - \log(1-q)\\
-L_1(1-q) &amp;= -\log q \quad \Rightarrow L_1(u) = - \log(1-u) = L_0(u)
-\end{align*}\)</span>$
-Notice that both functions are equal, but functions of different variables.</p>
-</div></blockquote>
-<blockquote>
-<div><p>Example: for the Brier loss,
-$<span class="math notranslate nohighlight">\(L_0(q) = q^2, \quad L_1(1-q) = (1-q)^2\)</span>$</p>
-</div></blockquote>
-<p>In what follows, <strong>we fix a point <span class="math notranslate nohighlight">\(X=x\)</span></strong>. Write <span class="math notranslate nohighlight">\(Y|X=x\)</span> as simply <span class="math notranslate nohighlight">\(Y\)</span> as an abuse of notation. Then,</p>
-<div class="math notranslate nohighlight">
-\[Y \sim \mathrm{Bernoulli}(\eta)\]</div>
-<p>where <span class="math notranslate nohighlight">\(\eta = \mathbb P(Y=1)\)</span> (really <span class="math notranslate nohighlight">\(\mathbb P(Y=1|X=x)\)</span>).</p>
-<p>We define the <strong>expected loss</strong></p>
-<div class="math notranslate nohighlight">
-\[\boxed{R(\eta|q) = \mathbb E_Y L(Y|q).}\]</div>
-<p>It is a function of two variables: the real Bernoulli parameter <span class="math notranslate nohighlight">\(\eta\)</span>, and the predicted score <span class="math notranslate nohighlight">\(q\)</span>.</p>
-<p>Intuitively, what do we want? If we predict the parameter perfectly (ie. <span class="math notranslate nohighlight">\(q = \eta\)</span>) we would expect <span class="math notranslate nohighlight">\(R\)</span> to be minimized. This is a logical desideratum, but it is not obvious, and it motivates the following:</p>
-<section id="proper-scoring-rules">
-<h3>Proper scoring rules<a class="headerlink" href="#proper-scoring-rules" title="Permalink to this headline">#</a></h3>
-<p>A loss function <span class="math notranslate nohighlight">\(L(y|q)\)</span> is a <strong>proper scoring rule</strong> if the expected loss <span class="math notranslate nohighlight">\(q \mapsto R(\eta|q)\)</span> is minimized by <span class="math notranslate nohighlight">\(q=\eta\)</span>. It is further described as <strong>strict</strong> if <span class="math notranslate nohighlight">\(\eta\)</span> is the global minimizer.</p>
-<blockquote>
-<div><p>Notice that we can write, since <span class="math notranslate nohighlight">\(\mathbb E[Y] =\eta\)</span> if <span class="math notranslate nohighlight">\(Y \sim \mathrm{Bernoulli}(\eta)\)</span>:
-$<span class="math notranslate nohighlight">\(\boxed{R(\eta|q) = \eta L_1 (1-q) + (1-\eta) L_0(q)}\)</span>$</p>
-</div></blockquote>
-<p>Not everything is a proper scoring rule. The losses we mentioned above definitely are, but ROC AUC or Average Precision, for instance, are not. In fact, proper scoring rules have very interesting properties, which we now lay out:</p>
-<p><strong>Theorem</strong> [Shuford-Albert-Massengil]</p>
-<p><span class="math notranslate nohighlight">\(L(y|p)\)</span> is a proper scoring rule if and only if there exists a <strong>weight function</strong> <span class="math notranslate nohighlight">\(\omega: [0,1] \to \mathbb R_+\)</span> such that</p>
-<div class="math notranslate nohighlight">
-\[\frac{d L_1(1-q)}{d(1-q)} = \omega(q) (1-q),\qquad \frac{d L_0}{dq} = \omega(q) q;\]</div>
-<p>if these are bounded below, then the equations can be integrated to give</p>
-<div class="math notranslate nohighlight">
-\[L_1(1-q) = \int_q^1 (1-c) \omega(c) dc,\qquad L_0(q) = \int_0^q c \omega(c) dc,\]</div>
-<p>[and in fact, this is the general form regardless of smoothness, due to a theorem by Schervish 1989].</p>
-<p>In the case of twice-differentiable <span class="math notranslate nohighlight">\(R\)</span>,</p>
-<div class="math notranslate nohighlight">
-\[\boxed{\omega(\eta) = \left.\frac{\partial^2 R(\eta|q)}{\partial q^2} \right|_{q = \eta}}\]</div>
-<blockquote>
-<div><p>Example: consider again the log-loss, where <span class="math notranslate nohighlight">\(L(y|q) = - y \log q - (1-y) \log (1-q)\)</span>. The expected loss is
-$<span class="math notranslate nohighlight">\(R(\eta|q) = -\mathbb E[y] \log q - (1-\mathbb E[y]) \log(1-q) = - \eta \log q - (1-\eta)\log(1-q).\)</span><span class="math notranslate nohighlight">\(
-Differentiating, we get
-\)</span><span class="math notranslate nohighlight">\(\frac{\partial R}{\partial q} = - \frac{\eta}{q} + \frac{1-\eta}{1-q};\quad \frac{\partial^2 R}{\partial q^2} =  \frac{\eta}{q^2} + \frac{1-\eta}{(1-q)^2}\)</span><span class="math notranslate nohighlight">\(
-\)</span><span class="math notranslate nohighlight">\(\Rightarrow \omega(\eta) = \left.\frac{\partial^2 R}{\partial q^2}\right|_{q=\eta} = \frac{1}{\eta (1-\eta)}\)</span>$</p>
-</div></blockquote>
-</section>
-<section id="the-weight-function-the-unifier-of-proper-scoring-rules">
-<h3>The weight function: the unifier of proper scoring rules<a class="headerlink" href="#the-weight-function-the-unifier-of-proper-scoring-rules" title="Permalink to this headline">#</a></h3>
-<p>The calculation in the example above is actually interesting because it shows that this weight function (which we haven’t interpreted yet) diverges at both <span class="math notranslate nohighlight">\(\eta = 0\)</span> and <span class="math notranslate nohighlight">\(\eta = 1\)</span>, similarly to how the log-loss itself does.</p>
-<p>To motivate the reasoning of <span class="math notranslate nohighlight">\(\omega\)</span> as a weight, we notice a theorem by Shuford, Albert, Massengil, Savage and Scherviss (see [1]) which states the following:</p>
-<p>Fix <span class="math notranslate nohighlight">\(0 &lt; c &lt; 1\)</span>, and let</p>
-<div class="math notranslate nohighlight">
-\[\boxed{L_c(y|q) = y(1-c) 1_{q \leq c} + (1-y) c 1_{q&gt;c}}\]</div>
-<p>be a <strong>cost-weighted misclassification error</strong>: it penalizes false positives with cost <span class="math notranslate nohighlight">\(c\)</span> and false negatives with cost <span class="math notranslate nohighlight">\(1-c\)</span>.</p>
-<p>Then, any proper scoring rule can be written as</p>
-<div class="math notranslate nohighlight">
-\[\boxed{L(y|p) = \int_0^1 L_c(y|p) \,\omega(c) dc}\]</div>
-<p><strong>This result is extremely interesting</strong>. It is a <strong>unified vision</strong> of all the different loss functions we saw so far: if we consider the simplest loss function, which penalizes both false positive and negatives, and integrate it against a weight function <span class="math notranslate nohighlight">\(\omega(c)\)</span> for all possible costs <span class="math notranslate nohighlight">\(c\)</span>, we arrive at a loss function which is a proper scoring rule!</p>
-<p>In fact, it shows that the degree of freedom in choosing a proper scoring rule <strong>lies in the choice of the weight function</strong>, period.</p>
-<blockquote>
-<div><p>Exercise: starting from <span class="math notranslate nohighlight">\(\omega(c) = [c(1-c)]^{-1}\)</span>, obtain the log-loss.</p>
-</div></blockquote>
-</section>
-<section id="the-beta-family-of-proper-scoring-rules">
-<h3>The Beta family of proper scoring rules<a class="headerlink" href="#the-beta-family-of-proper-scoring-rules" title="Permalink to this headline">#</a></h3>
-<p>In the discussion above, we saw a unified approach to creating loss functions which are proper scoring rules. We can go one step beyond, and show that they all (except the focal loss) <em>belong in the the same family of functions!</em></p>
-<p>Recall that</p>
-<div class="math notranslate nohighlight">
-\[\omega_\mathrm{log-loss}(q) = \frac{1}{q(1-q)}\]</div>
-<p>For the exponential loss,</p>
-<div class="math notranslate nohighlight">
-\[L(y|q) = y \sqrt{\frac{1-q}{q}} + (1-y) \sqrt{\frac{q}{1-q}}\]</div>
-<p>we have an actually similar weight function</p>
-<div class="math notranslate nohighlight">
-\[\omega_\mathrm{exp}(q) = \left(\frac{1}{q(1-q)}\right)^{3/2}\]</div>
-<p>We can actually introduce a parametric family of functions which include all these as well as the Brier score and misclassification loss: the <strong>Beta family</strong></p>
-<div class="math notranslate nohighlight">
-\[\boxed{\omega_{\alpha,\beta}(q) := q^{\alpha-1} (1-q)^{\beta-1}}\]</div>
-<p>where the name is obviously motivated by the <a class="reference external" href="https://en.wikipedia.org/wiki/Beta_function">Beta function</a>.</p>
-<p>Then:</p>
-<ul class="simple">
-<li><p><span class="math notranslate nohighlight">\(\alpha=\beta=-1/2\)</span>: exponential loss</p></li>
-<li><p><span class="math notranslate nohighlight">\(\alpha=\beta=0\)</span>: log-loss</p></li>
-<li><p><span class="math notranslate nohighlight">\(\alpha=\beta=1\)</span>: Brier (squared error) loss</p></li>
-<li><p><span class="math notranslate nohighlight">\(\alpha=\beta\to\infty\)</span>: misclassification loss (weak convergence to delta mass)</p></li>
-</ul>
-<p>Also, any values of <span class="math notranslate nohighlight">\(\alpha\)</span> and <span class="math notranslate nohighlight">\(\beta\)</span> which are multiples of <span class="math notranslate nohighlight">\(1/2\)</span> yield closed-form formulas for <span class="math notranslate nohighlight">\(\omega\)</span>. For example, if <span class="math notranslate nohighlight">\(\alpha=\beta=1/2\)</span>, we get an intermediate between log-loss and squared error loss:
-$<span class="math notranslate nohighlight">\(L(y|q) = y (\arcsin\sqrt{1-q} - \sqrt{q(1-q)}) + (1-y) (\arcsin\sqrt{q} - \sqrt{q(1-q)})\)</span>$</p>
-<p>In general, if we define the (non-regularized) <strong>incomplete Beta function</strong></p>
-<div class="math notranslate nohighlight">
-\[B(x; a, b) := \int_0^x t^{a-1} (1-t)^{b-1} dt\]</div>
-<p>then we can explicitly write the loss functions for the Beta family as</p>
-<div class="math notranslate nohighlight">
-\[\boxed{L(y|q) = y B(1-q; \beta+1, \alpha) + (1-y) B(q; \alpha+1,\beta)}\]</div>
-</section>
-</section>
-<hr class="docutils" />
 <section id="possible-issues-with-our-loss-functions">
 <h2>Possible issues with our loss functions<a class="headerlink" href="#possible-issues-with-our-loss-functions" title="Permalink to this headline">#</a></h2>
 <p>As we have mentioned before, the log-loss has divergent behavior for <span class="math notranslate nohighlight">\(q = 0\)</span> and <span class="math notranslate nohighlight">\(q=1\)</span>. Let us study that further.</p>
@@ -842,15 +718,14 @@ $<span class="math notranslate nohighlight">\(L(y|q) = y (\arcsin\sqrt{1-q} - \s
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/Loss functions_47_0.png" src="../_images/Loss functions_47_0.png" />
+<img alt="../_images/Loss functions_23_0.png" src="../_images/Loss functions_23_0.png" />
 </div>
 </div>
 <p>The behavior we see for the log-loss is that it heavily penalizes misclassified points, due to the exponential behavior - which is good - but only decreases linearly as we classify correctly - which isn’t great.</p>
 <p>Ideally, in many applications, you would like points which are “easier to classify” (meaning that the score is close to the actual label 0 or 1) to be “taken care of” first, and then deal with points which are harder to classify. For a classification problem, these are the points close to 0.5 (assuming good model calibration).</p>
 <p>Notice that for the exponential loss, these characteristics (diverging at 0, slowly going to 0 at 1) are even more pronounced. The Brier loss has the issue that it doesn’t penalize enough points with low <span class="math notranslate nohighlight">\(q\)</span> here.</p>
 <p>In other words, for all cases here, both misclassified and well-classified points count significantly towards the loss, with a higher contribution from misclassifications (and a particularly higher contribution in the case of log-loss and exponential loss).</p>
-<section id="for-those-who-have-read-the-section-on-proper-scoring-rules">
-<h3>For those who have read the section on proper scoring rules:<a class="headerlink" href="#for-those-who-have-read-the-section-on-proper-scoring-rules" title="Permalink to this headline">#</a></h3>
+<p><strong>For those who have read the Appendix on proper scoring rules</strong></p>
 <p>The issue is that all losses in the Beta family have weights of the form <span class="math notranslate nohighlight">\(\omega(q) = q^{\alpha-1} (1-q)^{\beta-1}\)</span>; as we can see in the plot below, for all values of <span class="math notranslate nohighlight">\(\alpha &lt;1\)</span>, we have the same behavior: convex curves which diverge at <span class="math notranslate nohighlight">\(q=0\)</span> and <span class="math notranslate nohighlight">\(q=1\)</span>. Therefore, qualitatively, they all have similar behaviors as log-loss. For <span class="math notranslate nohighlight">\(\alpha=1\)</span> (which corresponds to the Brier score), all values are equally weighted and the loss function doesn’t have enough discriminative power.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -866,7 +741,7 @@ $<span class="math notranslate nohighlight">\(L(y|q) = y (\arcsin\sqrt{1-q} - \s
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/Loss functions_51_0.png" src="../_images/Loss functions_51_0.png" />
+<img alt="../_images/Loss functions_27_0.png" src="../_images/Loss functions_27_0.png" />
 </div>
 </div>
 <p>In fact, we can explicitly use the expression</p>
@@ -895,12 +770,11 @@ $<span class="math notranslate nohighlight">\(L(y|q) = y (\arcsin\sqrt{1-q} - \s
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/Loss functions_54_0.png" src="../_images/Loss functions_54_0.png" />
+<img alt="../_images/Loss functions_30_0.png" src="../_images/Loss functions_30_0.png" />
 </div>
 </div>
 <p>We can the study all these losses’ behavior close to <span class="math notranslate nohighlight">\(q=1\)</span>. Taylor series are easy to calculate there, since our function <span class="math notranslate nohighlight">\(q \mapsto B(1-q;\beta+1,\alpha)\)</span> is described as an integral of polynomial-like quantities. Hence, we should not expect eg. exponential weighings close to 1, only polynomial behavior.</p>
 <p>In conclusion, the Beta family provides us with a class of functions which diverge at the origin <span class="math notranslate nohighlight">\(q=0\)</span>, and are polynomially behaved at <span class="math notranslate nohighlight">\(q=1\)</span> (of course, the opposite is true if we study the loss function for <span class="math notranslate nohighlight">\(y=0\)</span>). This will affect how they perform in imbalanced cases, as we will see below.</p>
-</section>
 </section>
 </section>
 <hr class="docutils" />
@@ -1189,7 +1063,7 @@ AP:  0.118
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/Loss functions_88_0.png" src="../_images/Loss functions_88_0.png" />
+<img alt="../_images/Loss functions_64_0.png" src="../_images/Loss functions_64_0.png" />
 </div>
 </div>
 <p>Notice that the raw model heavily skews the threshold range: almost 80% of the curve lies within thresholds 0 and 0.1. The model with weights is much better at spacing the thresholds at uniform intervals.</p>
@@ -1218,7 +1092,7 @@ AP:  0.118
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/Loss functions_94_0.png" src="../_images/Loss functions_94_0.png" />
+<img alt="../_images/Loss functions_70_0.png" src="../_images/Loss functions_70_0.png" />
 </div>
 </div>
 <ul class="simple">
@@ -1358,6 +1232,111 @@ AP:  0.490
 <li><p>We were able to get even better results from <strong>focal loss</strong> via the LightGBM and XGBoost implementations in the imbalanced case, and we recommend trying it out</p></li>
 </ul>
 </section>
+<section class="tex2jax_ignore mathjax_ignore" id="appendix-proper-scoring-rules">
+<h1>Appendix: proper scoring rules<a class="headerlink" href="#appendix-proper-scoring-rules" title="Permalink to this headline">#</a></h1>
+<section id="expected-losses">
+<h2>Expected losses<a class="headerlink" href="#expected-losses" title="Permalink to this headline">#</a></h2>
+<p>All loss functions discussed here can be written in the form</p>
+<div class="math notranslate nohighlight">
+\[\boxed{L(y|q) = y L_1(1-q) + (1-y)L_0(q)}.\]</div>
+<p>Here, we have explicitly written that <span class="math notranslate nohighlight">\(L\)</span> depends on <span class="math notranslate nohighlight">\(y\)</span> <em>conditioned on</em> the predicted score <span class="math notranslate nohighlight">\(q\)</span>. Notice that this is the only dependence that <span class="math notranslate nohighlight">\(y\)</span> has on <span class="math notranslate nohighlight">\(x\)</span>, namely via <span class="math notranslate nohighlight">\(q = q(x)\)</span>.</p>
+<p><em>Example</em>: for the log-loss,</p>
+<p>\begin{align*}
+L_0(q) &amp;= - \log(1-q)\
+L_1(1-q) &amp;= -\log q \quad \Rightarrow L_1(u) = - \log(1-u) = L_0(u)
+\end{align*}</p>
+<p>Notice that both functions are equal, but functions of different variables.</p>
+<p><em>Example</em>: for the Brier loss,</p>
+<div class="math notranslate nohighlight">
+\[L_0(q) = q^2, \quad L_1(1-q) = (1-q)^2.\]</div>
+<p>In what follows, <strong>we fix a point <span class="math notranslate nohighlight">\(X=x\)</span></strong>. Write <span class="math notranslate nohighlight">\(Y|X=x\)</span> as simply <span class="math notranslate nohighlight">\(Y\)</span> as an abuse of notation. Then,</p>
+<div class="math notranslate nohighlight">
+\[Y \sim \mathrm{Bernoulli}(\eta)\]</div>
+<p>where <span class="math notranslate nohighlight">\(\eta = \mathbb P(Y=1)\)</span> (really <span class="math notranslate nohighlight">\(\mathbb P(Y=1|X=x)\)</span>).</p>
+<p>We define the <strong>expected loss</strong></p>
+<div class="math notranslate nohighlight">
+\[\boxed{R(\eta|q) = \mathbb E_Y L(Y|q).}\]</div>
+<p>It is a function of two variables: the real Bernoulli parameter <span class="math notranslate nohighlight">\(\eta\)</span>, and the predicted score <span class="math notranslate nohighlight">\(q\)</span>.</p>
+<p>Intuitively, what do we want? If we predict the parameter perfectly (ie. <span class="math notranslate nohighlight">\(q = \eta\)</span>) we would expect <span class="math notranslate nohighlight">\(R\)</span> to be minimized. This is a logical desideratum, but it is not obvious, and it motivates the following:</p>
+<section id="proper-scoring-rules">
+<h3>Proper scoring rules<a class="headerlink" href="#proper-scoring-rules" title="Permalink to this headline">#</a></h3>
+<p>A loss function <span class="math notranslate nohighlight">\(L(y|q)\)</span> is a <strong>proper scoring rule</strong> if the expected loss <span class="math notranslate nohighlight">\(q \mapsto R(\eta|q)\)</span> is minimized by <span class="math notranslate nohighlight">\(q=\eta\)</span>. It is further described as <strong>strict</strong> if <span class="math notranslate nohighlight">\(\eta\)</span> is the global minimizer.</p>
+<p>Notice that we can write, since <span class="math notranslate nohighlight">\(\mathbb E[Y] =\eta\)</span> if <span class="math notranslate nohighlight">\(Y \sim \mathrm{Bernoulli}(\eta)\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[\boxed{R(\eta|q) = \eta L_1 (1-q) + (1-\eta) L_0(q)}\]</div>
+<p>Not everything is a proper scoring rule. The losses we mentioned above definitely are, but ROC AUC or Average Precision, for instance, are not. In fact, proper scoring rules have very interesting properties, which we now lay out:</p>
+<p><strong>Theorem</strong> [Shuford-Albert-Massengil]</p>
+<p><span class="math notranslate nohighlight">\(L(y|p)\)</span> is a proper scoring rule if and only if there exists a <strong>weight function</strong> <span class="math notranslate nohighlight">\(\omega: [0,1] \to \mathbb R_+\)</span> such that</p>
+<div class="math notranslate nohighlight">
+\[\frac{d L_1(1-q)}{d(1-q)} = \omega(q) (1-q),\qquad \frac{d L_0}{dq} = \omega(q) q;\]</div>
+<p>if these are bounded below, then the equations can be integrated to give</p>
+<div class="math notranslate nohighlight">
+\[L_1(1-q) = \int_q^1 (1-c) \omega(c) dc,\qquad L_0(q) = \int_0^q c \omega(c) dc,\]</div>
+<p>[and in fact, this is the general form regardless of smoothness, due to a theorem by Schervish 1989].</p>
+<p>In the case of twice-differentiable <span class="math notranslate nohighlight">\(R\)</span>,</p>
+<div class="math notranslate nohighlight">
+\[\boxed{\omega(\eta) = \left.\frac{\partial^2 R(\eta|q)}{\partial q^2} \right|_{q = \eta}}\]</div>
+<p><em>Example</em>: consider again the log-loss, where <span class="math notranslate nohighlight">\(L(y|q) = - y \log q - (1-y) \log (1-q)\)</span>. The expected loss is</p>
+<div class="math notranslate nohighlight">
+\[R(\eta|q) = -\mathbb E[y] \log q - (1-\mathbb E[y]) \log(1-q) = - \eta \log q - (1-\eta)\log(1-q).\]</div>
+<p>Differentiating, we get</p>
+<div class="math notranslate nohighlight">
+\[\frac{\partial R}{\partial q} = - \frac{\eta}{q} + \frac{1-\eta}{1-q};\quad \frac{\partial^2 R}{\partial q^2} =  \frac{\eta}{q^2} + \frac{1-\eta}{(1-q)^2}\]</div>
+<div class="math notranslate nohighlight">
+\[\Rightarrow \omega(\eta) = \left.\frac{\partial^2 R}{\partial q^2}\right|_{q=\eta} = \frac{1}{\eta (1-\eta)}.\]</div>
+</section>
+<section id="the-weight-function-the-unifier-of-proper-scoring-rules">
+<h3>The weight function: the unifier of proper scoring rules<a class="headerlink" href="#the-weight-function-the-unifier-of-proper-scoring-rules" title="Permalink to this headline">#</a></h3>
+<p>The calculation in the example above is actually interesting because it shows that this weight function (which we haven’t interpreted yet) diverges at both <span class="math notranslate nohighlight">\(\eta = 0\)</span> and <span class="math notranslate nohighlight">\(\eta = 1\)</span>, similarly to how the log-loss itself does.</p>
+<p>To motivate the reasoning of <span class="math notranslate nohighlight">\(\omega\)</span> as a weight, we notice a theorem by Shuford, Albert, Massengil, Savage and Scherviss (see [1]) which states the following:</p>
+<p>Fix <span class="math notranslate nohighlight">\(0 &lt; c &lt; 1\)</span>, and let</p>
+<div class="math notranslate nohighlight">
+\[\boxed{L_c(y|q) = y(1-c) 1_{q \leq c} + (1-y) c 1_{q&gt;c}}\]</div>
+<p>be a <strong>cost-weighted misclassification error</strong>: it penalizes false positives with cost <span class="math notranslate nohighlight">\(c\)</span> and false negatives with cost <span class="math notranslate nohighlight">\(1-c\)</span>.</p>
+<p>Then, any proper scoring rule can be written as</p>
+<div class="math notranslate nohighlight">
+\[\boxed{L(y|p) = \int_0^1 L_c(y|p) \,\omega(c) dc}\]</div>
+<p><strong>This result is extremely interesting</strong>. It is a <strong>unified vision</strong> of all the different loss functions we saw so far: if we consider the simplest loss function, which penalizes both false positive and negatives, and integrate it against a weight function <span class="math notranslate nohighlight">\(\omega(c)\)</span> for all possible costs <span class="math notranslate nohighlight">\(c\)</span>, we arrive at a loss function which is a proper scoring rule!</p>
+<p>In fact, it shows that the degree of freedom in choosing a proper scoring rule <strong>lies in the choice of the weight function</strong>, period.</p>
+<blockquote>
+<div><p>Exercise: starting from <span class="math notranslate nohighlight">\(\omega(c) = [c(1-c)]^{-1}\)</span>, obtain the log-loss.</p>
+</div></blockquote>
+</section>
+<section id="the-beta-family-of-proper-scoring-rules">
+<h3>The Beta family of proper scoring rules<a class="headerlink" href="#the-beta-family-of-proper-scoring-rules" title="Permalink to this headline">#</a></h3>
+<p>In the discussion above, we saw a unified approach to creating loss functions which are proper scoring rules. We can go one step beyond, and show that they all (except the focal loss) <em>belong in the the same family of functions!</em></p>
+<p>Recall that</p>
+<div class="math notranslate nohighlight">
+\[\omega_\mathrm{log-loss}(q) = \frac{1}{q(1-q)}\]</div>
+<p>For the exponential loss,</p>
+<div class="math notranslate nohighlight">
+\[L(y|q) = y \sqrt{\frac{1-q}{q}} + (1-y) \sqrt{\frac{q}{1-q}}\]</div>
+<p>we have an actually similar weight function</p>
+<div class="math notranslate nohighlight">
+\[\omega_\mathrm{exp}(q) = \left(\frac{1}{q(1-q)}\right)^{3/2}\]</div>
+<p>We can actually introduce a parametric family of functions which include all these as well as the Brier score and misclassification loss: the <strong>Beta family</strong></p>
+<div class="math notranslate nohighlight">
+\[\boxed{\omega_{\alpha,\beta}(q) := q^{\alpha-1} (1-q)^{\beta-1}}\]</div>
+<p>where the name is obviously motivated by the <a class="reference external" href="https://en.wikipedia.org/wiki/Beta_function">Beta function</a>.</p>
+<p>Then:</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(\alpha=\beta=-1/2\)</span>: exponential loss</p></li>
+<li><p><span class="math notranslate nohighlight">\(\alpha=\beta=0\)</span>: log-loss</p></li>
+<li><p><span class="math notranslate nohighlight">\(\alpha=\beta=1\)</span>: Brier (squared error) loss</p></li>
+<li><p><span class="math notranslate nohighlight">\(\alpha=\beta\to\infty\)</span>: misclassification loss (weak convergence to delta mass)</p></li>
+</ul>
+<p>Also, any values of <span class="math notranslate nohighlight">\(\alpha\)</span> and <span class="math notranslate nohighlight">\(\beta\)</span> which are multiples of <span class="math notranslate nohighlight">\(1/2\)</span> yield closed-form formulas for <span class="math notranslate nohighlight">\(\omega\)</span>. For example, if <span class="math notranslate nohighlight">\(\alpha=\beta=1/2\)</span>, we get an intermediate between log-loss and squared error loss:
+$<span class="math notranslate nohighlight">\(L(y|q) = y (\arcsin\sqrt{1-q} - \sqrt{q(1-q)}) + (1-y) (\arcsin\sqrt{q} - \sqrt{q(1-q)})\)</span>$</p>
+<p>In general, if we define the (non-regularized) <strong>incomplete Beta function</strong></p>
+<div class="math notranslate nohighlight">
+\[B(x; a, b) := \int_0^x t^{a-1} (1-t)^{b-1} dt\]</div>
+<p>then we can explicitly write the loss functions for the Beta family as</p>
+<div class="math notranslate nohighlight">
+\[\boxed{L(y|q) = y B(1-q; \beta+1, \alpha) + (1-y) B(q; \alpha+1,\beta)}\]</div>
+</section>
+</section>
+</section>
+<hr class="docutils" />
 <section class="tex2jax_ignore mathjax_ignore" id="references">
 <h1>References<a class="headerlink" href="#references" title="Permalink to this headline">#</a></h1>
 <p>[1] Andreas Buja, Werner Stuetzle, Yi Shen. <em>Loss Functions for Binary Class Probability Estimation and Classification: Structure and Applications</em> (2015)</p>

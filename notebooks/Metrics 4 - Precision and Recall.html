@@ -128,7 +128,7 @@ const thebe_selector_output = ".output, .cell_output"
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="Metrics%202%20-%20Lift%20curve.html">
-   A complement to the ROC: the lift curve (aka CAP curve)
+   The lift curve
   </a>
  </li>
  <li class="toctree-l1">
@@ -156,13 +156,13 @@ const thebe_selector_output = ".output, .cell_output"
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="Interpretability.html">
-   How imbalanced learning affects the interpretability of a model
+  <a class="reference internal" href="Calibration.html">
+   Probability calibration
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="Calibration.html">
-   Model calibration part I - reliability assessment
+  <a class="reference internal" href="Interpretability.html">
+   Model interpretability: how is it affected by imbalance?
   </a>
  </li>
 </ul>
@@ -620,15 +620,10 @@ title="Print to PDF"
 <p>The conclusion above is a falacy, because we do not have enough data. Does the person mean</p>
 <div class="math notranslate nohighlight">
 \[\mathbb P (\mbox{test gives positive | you have Covid}) = 99\%\]</div>
-<p>or
-$<span class="math notranslate nohighlight">\(\mathbb P (\mbox{ you have Covid | test gives positive}) = 99\%?\)</span>$</p>
+<p>or</p>
+<div class="math notranslate nohighlight">
+\[\mathbb P (\mbox{ you have Covid | test gives positive}) = 99\%?\]</div>
 <p>These two cases are completely different, as we show below.</p>
-<blockquote>
-<div><p><strong>(Review: Bayes’ rule</strong>). We are entering the domain where Bayes’ theorem becomes important. It is the rewriting of the definition of conditional probability as follows:
-$<span class="math notranslate nohighlight">\(\mathbb P(A|B) = \frac{\mathbb P(A\cap B)}{\mathbb P(B)} = \frac{\mathbb P(B|A) \mathbb P(A)}{\mathbb P (B)}\)</span><span class="math notranslate nohighlight">\(
-where one sometimes writes the denominator as a sum over all possible dependencies of \)</span>B<span class="math notranslate nohighlight">\(: 
-\)</span><span class="math notranslate nohighlight">\(\mathbb P (B) = \sum_{A'} \mathbb P(B|A') \mathbb P(A')\)</span>$</p>
-</div></blockquote>
 <p>For instance, in the case above, let <span class="math notranslate nohighlight">\(y=1\)</span> denote if someone has Covid, and <span class="math notranslate nohighlight">\(\hat y = 1\)</span> denote that they tested positive.</p>
 <p>Let us assume that</p>
 <div class="math notranslate nohighlight">
@@ -648,17 +643,18 @@ where one sometimes writes the denominator as a sum over all possible dependenci
 <li><p>If you are infected, there is a 99% chance the test will come back positive: <span class="math notranslate nohighlight">\(\mathbb P(\hat y=1|y=1) = 0.99\)</span></p></li>
 <li><p>If you are not infected, there is a 5% chance the test will come back as a (false) positive: <span class="math notranslate nohighlight">\(\mathbb P(\hat y=1|y=0) = 0.05\)</span></p></li>
 </ul>
-<p>Then, from the expression above we get
-$<span class="math notranslate nohighlight">\(\mathbb P(y=1|\hat y=1) = \frac{1}{\displaystyle 1 + \frac{0.05 \times 0.99}{0.99 \times 0.01}} = \frac 16 \approx  16.7\%\)</span>$</p>
+<p>Then, from the expression above we get</p>
+<div class="math notranslate nohighlight">
+\[\mathbb P(y=1|\hat y=1) = \frac{1}{\displaystyle 1 + \frac{0.05 \times 0.99}{0.99 \times 0.01}} = \frac 16 \approx  16.7\%\]</div>
 <p>that is, if your test comes back positive, there is only a 16.7% chance that you actually have Covid.</p>
 <p>This is a <em>significantly</em> smaller number than the 99% we started with (and also shows why a “test with 99% confidence” does not mean much by itself). This is why <span class="math notranslate nohighlight">\(\mathbb P (\hat y = 1|y=1)\)</span> and <span class="math notranslate nohighlight">\(\mathbb P(y=1|\hat y=1)\)</span> are <em>very</em> different things.</p>
 <blockquote>
 <div><p>One might argue that the test is bad. It is not. To see why, think about it this way. Without having taken a test, your prior chance of being infected was 1%. Now that you have taken the test, this chance grows by <strong>almost 17 times</strong>. This is a huge growth! It is just not a definitive answer. Indeed, one could <strong>take the test again</strong> and see how much the probability changes.</p>
 </div></blockquote>
-<blockquote>
-<div><p>(<strong>Problem</strong>) Suppose we test again, and again we get a positive. Convince yourself that we can calculate the new probability of being infected by formally starting out from the exact same formula above but changing the prior probability of being infected to <span class="math notranslate nohighlight">\(\mathbb P (y=1) = 1/6\)</span> (which implies <span class="math notranslate nohighlight">\(\mathbb P(y=0) = 5/6\)</span>), yielding
-$<span class="math notranslate nohighlight">\(\mathbb P(y=1|\hat y_1=1, \hat y_2 = 1) = \frac{1}{\displaystyle 1 + \frac{0.05\times 5/6}{0.99 \times 1/6}} \approx 80\%,\)</span>$which is now much higher. If we further test again this number increases to 99%, and so on.</p>
-</div></blockquote>
+<p><em>Problem</em>. Suppose we test again, and again we get a positive. Convince yourself that we can calculate the new probability of being infected by formally starting out from the exact same formula above but changing the prior probability of being infected to <span class="math notranslate nohighlight">\(\mathbb P (y=1) = 1/6\)</span> (which implies <span class="math notranslate nohighlight">\(\mathbb P(y=0) = 5/6\)</span>), yielding</p>
+<div class="math notranslate nohighlight">
+\[\mathbb P(y=1|\hat y_1=1, \hat y_2 = 1) = \frac{1}{\displaystyle 1 + \frac{0.05\times 5/6}{0.99 \times 1/6}} \approx 80\%,\]</div>
+<p>which is now much higher. If we further test again this number increases to 99%, and so on.</p>
 </section>
 <section id="precision-and-recall">
 <h2>Precision and recall<a class="headerlink" href="#precision-and-recall" title="Permalink to this headline">#</a></h2>
@@ -668,9 +664,10 @@ $<span class="math notranslate nohighlight">\(\mathbb P(y=1|\hat y_1=1, \hat y_2
 <div class="math notranslate nohighlight">
 \[\boxed{\mathrm{Precision} = \mathbb P(y=1|\hat y=1)}\]</div>
 <p>For the Covid test above, it had a recall of 99% and a precision of 16.7% for the positive class.</p>
-<blockquote>
-<div><p>For multiclass models (which generalize the binary case we see here), one calculates precision/recall for each class. For instance, if you have an image classification model which classifies an image into <span class="math notranslate nohighlight">\(\{\mathrm{dog, cat, horse, penguin}\}\)</span> then you should calculate precision/recall for each class: $<span class="math notranslate nohighlight">\(\mathrm{Recall_{dog}} = \mathbb P (\hat y = \mathrm{dog} | y = \mathrm{dog}),\quad \mathrm{Recall_{cat}} = \mathbb P (\hat y = \mathrm{cat} | y = \mathrm{cat})\)</span>$ and so on.</p>
-</div></blockquote>
+<p>For multiclass models (which generalize the binary case we see here), one calculates precision/recall for each class. For instance, if you have an image classification model which classifies an image into <span class="math notranslate nohighlight">\(\{\mathrm{dog, cat, horse, penguin}\}\)</span> then you should calculate precision/recall for each class:</p>
+<div class="math notranslate nohighlight">
+\[\mathrm{Recall_{dog}} = \mathbb P (\hat y = \mathrm{dog} | y = \mathrm{dog}),\quad \mathrm{Recall_{cat}} = \mathbb P (\hat y = \mathrm{cat} | y = \mathrm{cat})\]</div>
+<p>and so on.</p>
 </section>
 <section id="the-precision-recall-pr-curve">
 <h2>The precision &amp; recall (PR) curve<a class="headerlink" href="#the-precision-recall-pr-curve" title="Permalink to this headline">#</a></h2>
@@ -706,16 +703,24 @@ $<span class="math notranslate nohighlight">\(\mathbb P(y=1|\hat y_1=1, \hat y_2
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/Metrics 4 - Precision and Recall_21_0.png" src="../_images/Metrics 4 - Precision and Recall_21_0.png" />
+<img alt="../_images/Metrics 4 - Precision and Recall_20_0.png" src="../_images/Metrics 4 - Precision and Recall_20_0.png" />
 </div>
 </div>
 <p>(this function gives the average precision (AP) metric as well - we shall discuss it later)</p>
 <p>Notes:</p>
-<ul class="simple">
-<li><p>For a very small threshold <span class="math notranslate nohighlight">\(\lambda = -\infty\)</span>, we have $<span class="math notranslate nohighlight">\(\mathrm{Recall}(-\infty) = 1,\quad \mathrm{Precision}(-\infty) = \pi_1\)</span><span class="math notranslate nohighlight">\( where \)</span>\pi_1 = \mathbb P(y=1)$ is the prevalence of the positive class (can you see why?);</p></li>
+<ul>
+<li><p>For a very small threshold <span class="math notranslate nohighlight">\(\lambda = -\infty\)</span>, we have</p>
+<div class="math notranslate nohighlight">
+\[\mathrm{Recall}(-\infty) = 1,\quad \mathrm{Precision}(-\infty) = \pi_1\]</div>
+<p>where <span class="math notranslate nohighlight">\(\pi_1 = \mathbb P(y=1)\)</span> is the prevalence of the positive class (can you see why?);</p>
+</li>
 <li><p>The curve is indeed bounded below by the prevalence <span class="math notranslate nohighlight">\(\pi_1\)</span>;</p></li>
 <li><p>As we increase the threshold, the curve increases in precision and reduces in recall</p></li>
-<li><p>For <span class="math notranslate nohighlight">\(\lambda = \infty\)</span>, we should have $<span class="math notranslate nohighlight">\(\mathrm{Recall}(\infty) = 0,\quad \mathrm{Precision}(\infty) = 1\)</span>$ (can you see why?)</p></li>
+<li><p>For <span class="math notranslate nohighlight">\(\lambda = \infty\)</span>, we should have</p>
+<div class="math notranslate nohighlight">
+\[\mathrm{Recall}(\infty) = 0,\quad \mathrm{Precision}(\infty) = 1\]</div>
+<p>(can you see why?)</p>
+</li>
 </ul>
 <p>This curve has more interesting properties that we shall see later, after we better understand the geometry of the PR plane.</p>
 </section>
@@ -743,7 +748,7 @@ $<span class="math notranslate nohighlight">\(\mathbb P(y=1|\hat y_1=1, \hat y_2
 <p>One could argue that there is no need to use a harmonic mean of recall and precision to estimate their (weighted) average. It would be enough to calculate a (weighted) simple average <span class="math notranslate nohighlight">\((\mathrm{precision+recall})/2\)</span>, which still captures the trade-off between precision and recall.</p>
 <p>The advantage of using the harmonic mean comes when considering extremes. A simple average <span class="math notranslate nohighlight">\((x+y)/2\)</span> is forgiving if either <span class="math notranslate nohighlight">\(x\)</span> or <span class="math notranslate nohighlight">\(y\)</span> become 0 (see the figure below, top-left: there are non-zero simple averages at both the <span class="math notranslate nohighlight">\(x=0\)</span> and <span class="math notranslate nohighlight">\(y=0\)</span> axes). Harmonic means are not so forgiving: if <span class="math notranslate nohighlight">\(x\)</span> or <span class="math notranslate nohighlight">\(y\)</span> tend to zero, then their harmonic mean will also go to zero.</p>
 <blockquote>
-<div><p>Notice that there is always <strong>one choice</strong> of precision and recall that will maximize the simple average: $<span class="math notranslate nohighlight">\(\mathrm{Recall} = 0,\quad \mathrm{Precision} =1\)</span><span class="math notranslate nohighlight">\(, which corresponds to the trivial \)</span>\lambda=\infty$ model which labels every point as 0. Thus, if we tried to maximize the simple average, we would just obtain this trivial model.</p>
+<div><p>Notice that there is always <strong>one choice</strong> of precision and recall that will maximize the simple average: <span class="math notranslate nohighlight">\(\mathrm{Recall} = 0\)</span> and <span class="math notranslate nohighlight">\(\mathrm{Precision} =1\)</span>, which corresponds to the trivial <span class="math notranslate nohighlight">\(\lambda=\infty\)</span> model which labels every point as 0. Thus, if we tried to maximize the simple average, we would just obtain this trivial model.</p>
 </div></blockquote>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -784,7 +789,7 @@ $<span class="math notranslate nohighlight">\(\mathbb P(y=1|\hat y_1=1, \hat y_2
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/Metrics 4 - Precision and Recall_36_0.png" src="../_images/Metrics 4 - Precision and Recall_36_0.png" />
+<img alt="../_images/Metrics 4 - Precision and Recall_35_0.png" src="../_images/Metrics 4 - Precision and Recall_35_0.png" />
 </div>
 </div>
 </section>
@@ -914,24 +919,24 @@ You work in medical research, and you are developing a test for a specific colon
 \mathbf y'&amp;= \frac{\mathbf y}{\mathbf y+ \mathbf x/r}
 \end{align}}\end{split}\]</div>
 <p>Then: all else being equal, recall is invariant under shifts in <span class="math notranslate nohighlight">\(r\)</span>, but <strong>precision decreases</strong>.</p>
-<blockquote>
-<div><p>Proof: there is nothing to prove regarding recall <span class="math notranslate nohighlight">\(\mathbf x'\)</span>. For precision, we use Bayes’ rule:
-$<span class="math notranslate nohighlight">\(\begin{align}
+<p><em>Proof</em>: there is nothing to prove regarding recall <span class="math notranslate nohighlight">\(\mathbf x'\)</span>. For precision, we use Bayes’ rule:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{align}
 \mathbf y'&amp;= \mathbb P(y =1|\hat y=1)\\
 &amp;= \frac{\mathbb P(\hat y =1| y=1) \mathbb P (y=1)}{\mathbb P(\hat y =1| y=1) \mathbb P (y=1)+\mathbb P(\hat y =1| y=0) \mathbb P (y=0)}\\
 &amp;= \frac{\mathbf y \mathbb P (y=1)}{\mathbf{y} \mathbb P (y=1)+ \mathbf x \mathbb P (y=0)}\\
 &amp;= \frac{\mathbf y }{\displaystyle \mathbf{y} + \mathbf x  \frac{\mathbb P (y=0)}{\mathbb P (y=1)}}\\
-&amp;= \frac{\mathbf y }{\displaystyle \mathbf{y} + \frac{\mathbf x}{r}}
-\end{align}\)</span>$</p>
-</div></blockquote>
+&amp;= \frac{\mathbf y }{\displaystyle \mathbf{y} + \frac{\mathbf x}{r}} \quad \Box
+\end{align}\end{split}\]</div>
 <p>Therefore, if <span class="math notranslate nohighlight">\(r\)</span> shifts,</p>
 <ul class="simple">
 <li><p>The precision curve naturally goes down</p></li>
 <li><p>The area under the precision curve also goes down</p></li>
-<li><p>Since (prove it)
-$<span class="math notranslate nohighlight">\(F_\beta = \frac{(1+\beta^2) \mathbf{y}}{\displaystyle \mathbf{y} + \frac{\mathbf x}{r} +\beta^2}\)</span><span class="math notranslate nohighlight">\(
-then \)</span>F$-scores suffer from the same problem as precision.</p></li>
+<li><p>Since (prove it)</p></li>
 </ul>
+<div class="math notranslate nohighlight">
+\[F_\beta = \frac{(1+\beta^2) \mathbf{y}}{\displaystyle \mathbf{y} + \frac{\mathbf x}{r} +\beta^2}\]</div>
+<p>then <span class="math notranslate nohighlight">\(F\)</span>-scores suffer from the same problem as precision.</p>
 </section>
 <section id="visual-proof-of-non-convexity-in-pr-space">
 <h3>Visual proof of non-convexity in PR space<a class="headerlink" href="#visual-proof-of-non-convexity-in-pr-space" title="Permalink to this headline">#</a></h3>
@@ -1035,14 +1040,15 @@ then \)</span>F$-scores suffer from the same problem as precision.</p></li>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/Metrics 4 - Precision and Recall_74_0.png" src="../_images/Metrics 4 - Precision and Recall_74_0.png" />
+<img alt="../_images/Metrics 4 - Precision and Recall_73_0.png" src="../_images/Metrics 4 - Precision and Recall_73_0.png" />
 </div>
 </div>
 <p>As you can see, the hull is mapped to a very non-convex shape; the part between points M and N shows clearly that the hull becomes curved in this new space. Therefore, starting out from the PR curve, there is no simple linear structure as the one we had in the ROC plane.</p>
 <blockquote>
-<div><p>Indeed, since the mapping is <span class="math notranslate nohighlight">\(x'= y\)</span> and <span class="math notranslate nohighlight">\(y'= y/(y+x/r)\)</span>, any straight line <span class="math notranslate nohighlight">\(y = ax+ b\)</span> becomes, in primed variables,
-$<span class="math notranslate nohighlight">\(y'= \frac{x'}{\displaystyle x'+ \frac 1r (\frac ya - b)} =  \frac{1}{\displaystyle 1+ \frac 1{ra} - \frac{b}{rx'}}\)</span>$</p>
+<div><p>Indeed, since the mapping is <span class="math notranslate nohighlight">\(x'= y\)</span> and <span class="math notranslate nohighlight">\(y'= y/(y+x/r)\)</span>, any straight line <span class="math notranslate nohighlight">\(y = ax+ b\)</span> becomes, in primed variables,</p>
 </div></blockquote>
+<div class="math notranslate nohighlight">
+\[y'= \frac{x'}{\displaystyle x'+ \frac 1r (\frac ya - b)} =  \frac{1}{\displaystyle 1+ \frac 1{ra} - \frac{b}{rx'}}\]</div>
 <p>The imbalance issue is partially fixed in the next section.</p>
 </section>
 </section>
@@ -1092,7 +1098,7 @@ $<span class="math notranslate nohighlight">\(y'= \frac{x'}{\displaystyle x'+ \f
   frontier = np.where(xaxis &lt; pi,1, 1/(1 + 1/pi - 1/xaxis))
 </pre></div>
 </div>
-<img alt="../_images/Metrics 4 - Precision and Recall_82_1.png" src="../_images/Metrics 4 - Precision and Recall_82_1.png" />
+<img alt="../_images/Metrics 4 - Precision and Recall_81_1.png" src="../_images/Metrics 4 - Precision and Recall_81_1.png" />
 </div>
 </div>
 <p>In this sense, all classifiers lying in the red zone are worse than the all-positive one. We want to find models which somehow maximize our “presence” in the green region.</p>
@@ -1122,7 +1128,7 @@ $<span class="math notranslate nohighlight">\(y'= \frac{x'}{\displaystyle x'+ \f
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/Metrics 4 - Precision and Recall_90_0.png" src="../_images/Metrics 4 - Precision and Recall_90_0.png" />
+<img alt="../_images/Metrics 4 - Precision and Recall_89_0.png" src="../_images/Metrics 4 - Precision and Recall_89_0.png" />
 </div>
 </div>
 <p><strong>Def [harmonic precision &amp; recall]</strong> Let <span class="math notranslate nohighlight">\(\pi_1 = \mathbb P (y=1)\)</span> be the prevalence of class 1. The harmonic precision and recall are defined as</p>
@@ -1224,12 +1230,12 @@ $<span class="math notranslate nohighlight">\(y'= \frac{x'}{\displaystyle x'+ \f
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/Metrics 4 - Precision and Recall_96_0.png" src="../_images/Metrics 4 - Precision and Recall_96_0.png" />
+<img alt="../_images/Metrics 4 - Precision and Recall_95_0.png" src="../_images/Metrics 4 - Precision and Recall_95_0.png" />
 </div>
 </div>
 <p>We find a very interesting fact: in this plane, <strong>the (ROC) convex hull is mapped to the (harmonic PR) convex hull!</strong> This is a consequence of the more general fact that <strong>straight lines in the ROC plane are straight lines in the harmonic PR plane</strong>.</p>
 <p>We prove this in the Theorem below:</p>
-<p><strong>[Theorem]</strong> Consider two classifiers <span class="math notranslate nohighlight">\(c_A\)</span> and <span class="math notranslate nohighlight">\(c_B\)</span> with coordinates <span class="math notranslate nohighlight">\((\mathrm{hRecall_A, hPrecision_A})\)</span> and <span class="math notranslate nohighlight">\((\mathrm{hRecall_B, hPrecision_B})\)</span> in the harmonic PR plane. Then, for any point in the segment between <span class="math notranslate nohighlight">\(c_A\)</span> and <span class="math notranslate nohighlight">\(c_B\)</span>, with coordinates <span class="math notranslate nohighlight">\((\mathrm{hRecall_*, hPrecision_*})\)</span>, there is a classifier <span class="math notranslate nohighlight">\(c_*\)</span> which can be obtained as follows.</p>
+<p><strong>Theorem.</strong> Consider two classifiers <span class="math notranslate nohighlight">\(c_A\)</span> and <span class="math notranslate nohighlight">\(c_B\)</span> with coordinates <span class="math notranslate nohighlight">\((\mathrm{hRecall_A, hPrecision_A})\)</span> and <span class="math notranslate nohighlight">\((\mathrm{hRecall_B, hPrecision_B})\)</span> in the harmonic PR plane. Then, for any point in the segment between <span class="math notranslate nohighlight">\(c_A\)</span> and <span class="math notranslate nohighlight">\(c_B\)</span>, with coordinates <span class="math notranslate nohighlight">\((\mathrm{hRecall_*, hPrecision_*})\)</span>, there is a classifier <span class="math notranslate nohighlight">\(c_*\)</span> which can be obtained as follows.</p>
 <p>First, let</p>
 <div class="math notranslate nohighlight">
 \[\displaystyle \mu = \mathrm{\frac{hRecall_*-hRecall_B}{hRecall_A - hRecall_B}} = \mathrm{\frac{hPrecision_*-hPrecision_B}{hPrecision_A - hPrecision_B}}\]</div>
@@ -1243,27 +1249,38 @@ c_A(x) &amp; \mbox{with probability}\; \lambda\\
 c_B(x) &amp; \mbox{with probability}\;1-\lambda
 \end{cases}\end{split}\]</div>
 <p>has the desired values for <span class="math notranslate nohighlight">\(\mathrm{hRecall, hPrecision}\)</span>. As we saw in the ROC session, the classifier above is one in the straight line segment between <span class="math notranslate nohighlight">\(c_A\)</span> and <span class="math notranslate nohighlight">\(c_B\)</span> in the ROC plane.</p>
-<blockquote>
-<div><p>Proof: we start by noticing that $<span class="math notranslate nohighlight">\(\mathrm{hPrecision = 1 - \frac{FPR}{TPR}},\)</span><span class="math notranslate nohighlight">\( which is easy to prove by using the fact that
-\)</span><span class="math notranslate nohighlight">\(\mathrm{Precision} = \frac{\mathrm{TPR}}{\mathrm{TPR}+\mathrm{FPR}/r}\)</span><span class="math notranslate nohighlight">\(
-(where \)</span>r = \mathbb P(Y=1)/\mathbb P(Y=0) = \pi/(1-\pi)<span class="math notranslate nohighlight">\( is the imbalance ratio and  \)</span>\pi = \mathbb P(Y=1)<span class="math notranslate nohighlight">\( is the prevalence).
-Now, from our discussion on the ROC curve, we know the classifier \)</span>c_<em><span class="math notranslate nohighlight">\( built above has a false positive rate of \)</span><span class="math notranslate nohighlight">\(\mathrm{FPR}[c_*] = \lambda \mathrm{FPR_A} + (1-\lambda) \mathrm{ FPR_B},\)</span><span class="math notranslate nohighlight">\( and analogously for the true positive rate. Then, its harmonic precision equals (we will only do the derivation for precision; that of recall follows analogously)
-\)</span><span class="math notranslate nohighlight">\(\begin{align}
+<p><em>Proof</em>: we start by noticing that</p>
+<div class="math notranslate nohighlight">
+\[\mathrm{hPrecision = 1 - \frac{FPR}{TPR}},\]</div>
+<p>which is easy to prove by using the fact that</p>
+<div class="math notranslate nohighlight">
+\[\mathrm{Precision} = \frac{\mathrm{TPR}}{\mathrm{TPR}+\mathrm{FPR}/r}\]</div>
+<p>(where <span class="math notranslate nohighlight">\(r = \mathbb P(Y=1)/\mathbb P(Y=0) = \pi/(1-\pi)\)</span> is the imbalance ratio and  <span class="math notranslate nohighlight">\(\pi = \mathbb P(Y=1)\)</span> is the prevalence).
+Now, from our discussion on the ROC curve, we know the classifier <span class="math notranslate nohighlight">\(c_*\)</span> built above has a false positive rate of</p>
+<div class="math notranslate nohighlight">
+\[\mathrm{FPR}[c_*] = \lambda \mathrm{FPR_A} + (1-\lambda) \mathrm{ FPR_B},\]</div>
+<p>and analogously for the true positive rate. Then, its harmonic precision equals (we will only do the derivation for precision; that of recall follows analogously)</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{align}
 \mathrm{hPrecision}[c_*] &amp;= 1 - \frac{\mathrm{TPR}[c_*]}{\mathrm{FPR}[c_*]}\\
 &amp;= 1 - \frac{\lambda \mathrm{FPR_A} + (1-\lambda) \mathrm{FPR_B}}{\lambda \mathrm{TPR_A} + (1-\lambda) \mathrm{TPR_B}}\\
 &amp;=\frac{\lambda \mathrm{TPR_A} + (1-\lambda) \mathrm{TPR_B} -\lambda \mathrm{FPR_A} - (1-\lambda) \mathrm{FPR_B}}{\lambda \mathrm{TPR_A} + (1-\lambda) \mathrm{TPR_B}}\\
 &amp;= \frac{1}{\lambda \mathrm{TPR_A} + (1-\lambda) \mathrm{TPR_B}} \left[ \lambda \mathrm{TPR_A} \left( 1 - \mathrm{\frac{TPR_A}{FPR_A}} \right) + (1-\lambda) \mathrm{TPR_B} \left( 1 - \mathrm{\frac{TPR_B}{FPR_B}} \right) \right]\\
 &amp;= \frac{\lambda \mathrm{TPR_A}}{\lambda \mathrm{TPR_A} + (1-\lambda) \mathrm{TPR_B}} \mathrm{hPrecision_A} + \frac{(1-\lambda) \mathrm{TPR_B}}{\lambda \mathrm{TPR_A} + (1-\lambda) \mathrm{TPR_B}} \mathrm{hPrecision_B}\\
 &amp;= \mu \, \mathrm{hPrecision_A} + (1-\mu) \, \mathrm{hPrecision_B}
-\end{align}\)</span><span class="math notranslate nohighlight">\(
-where we have inverted the definition of \)</span>\lambda<span class="math notranslate nohighlight">\( to give 
-\)</span><span class="math notranslate nohighlight">\(\mu = \frac{\lambda \mathrm{TPR_A}}{\lambda \mathrm{TPR_A} + (1-\lambda) \mathrm{TPR_B}}.\)</span><span class="math notranslate nohighlight">\(
-Finally, applying the original definition of \)</span>\mu<span class="math notranslate nohighlight">\(, we find \)</span>\mathrm{hPrecision}[c_</em>] = \mathrm{hPrecision}_*$ as claimed.</p>
-</div></blockquote>
+\end{align}\end{split}\]</div>
+<p>where we have inverted the definition of <span class="math notranslate nohighlight">\(\lambda\)</span> to give</p>
+<div class="math notranslate nohighlight">
+\[\mu = \frac{\lambda \mathrm{TPR_A}}{\lambda \mathrm{TPR_A} + (1-\lambda) \mathrm{TPR_B}}.\]</div>
+<p>Finally, applying the original definition of <span class="math notranslate nohighlight">\(\mu\)</span>, we find <span class="math notranslate nohighlight">\(\mathrm{hPrecision}[c_*] = \mathrm{hPrecision}_*\)</span> as claimed.</p>
 <p>The cool thing about this is that we can construct hulls in the harmonic PR plane in the exact same way we do for the ROC plane, and they will still be meaningful.</p>
-<blockquote>
-<div><p>Exercise: we showed above that $<span class="math notranslate nohighlight">\(\mathrm{hPrecision} = 1 - \frac{\mathrm{FPR}}{\mathrm{TPR}}.\)</span><span class="math notranslate nohighlight">\( Show analogously that \)</span><span class="math notranslate nohighlight">\(\mathrm{hRecall} = 1 - \frac{\pi}{1-\pi} \mathrm{\frac{FNR}{TPR}}.\)</span><span class="math notranslate nohighlight">\( *Hint*: use that \)</span>\mathrm{FNR + TPR} = 1$. Can you see why?</p>
-</div></blockquote>
+<p><em>Exercise</em>: we showed above that</p>
+<div class="math notranslate nohighlight">
+\[\mathrm{hPrecision} = 1 - \frac{\mathrm{FPR}}{\mathrm{TPR}}.\]</div>
+<p>Show analogously that</p>
+<div class="math notranslate nohighlight">
+\[\mathrm{hRecall} = 1 - \frac{\pi}{1-\pi} \mathrm{\frac{FNR}{TPR}}.\]</div>
+<p><em>Hint</em>: use that <span class="math notranslate nohighlight">\(\mathrm{FNR + TPR} = 1\)</span>. Can you see why?</p>
 <section id="baseline-for-the-harmonic-pr-plane">
 <h3>Baseline for the harmonic PR plane<a class="headerlink" href="#baseline-for-the-harmonic-pr-plane" title="Permalink to this headline">#</a></h3>
 <p>It becomes clear from the previous discussion that, <strong>in the scenario we want to find classifiers which maximize <span class="math notranslate nohighlight">\(F_1\)</span></strong>, our baseline is the all-positive classifier lying in the bottom right corner of the PR plane, as well as all classifiers in the boundary parabola which share the same <span class="math notranslate nohighlight">\(F_1\)</span> value with it.</p>
@@ -1320,7 +1337,7 @@ Finally, applying the original definition of \)</span>\mu<span class="math notra
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/Metrics 4 - Precision and Recall_107_0.png" src="../_images/Metrics 4 - Precision and Recall_107_0.png" />
+<img alt="../_images/Metrics 4 - Precision and Recall_106_0.png" src="../_images/Metrics 4 - Precision and Recall_106_0.png" />
 </div>
 </div>
 <p>Notice how the gradient boosting model is evidently superior to the logistic regression model, and how the analysis is simpler in the harmonic PR plane. In fact, its area is about twice as large as that of the logistic regression - which leads us to our next discussion, the interpretation of this area.</p>
@@ -1380,17 +1397,17 @@ Finally, applying the original definition of \)</span>\mu<span class="math notra
 </section>
 <section id="harmonic-f-beta-the-area-under-the-harmonic-pr-curve">
 <h3>Harmonic <span class="math notranslate nohighlight">\(F_\beta\)</span> &amp; the area under the harmonic PR curve<a class="headerlink" href="#harmonic-f-beta-the-area-under-the-harmonic-pr-curve" title="Permalink to this headline">#</a></h3>
-<p>[<strong>Definition</strong>] The harmonic <span class="math notranslate nohighlight">\(F_\beta\)</span> score is the harmonic rescaling of <span class="math notranslate nohighlight">\(F_\beta\)</span>:</p>
+<p><strong>Definition.</strong> The harmonic <span class="math notranslate nohighlight">\(F_\beta\)</span> score is the harmonic rescaling of <span class="math notranslate nohighlight">\(F_\beta\)</span>:</p>
 <div class="math notranslate nohighlight">
 \[hF_\beta = \mathrm{hScale}(F_\beta, \pi_1, 1)\]</div>
-<p>[<strong>Lemma</strong>] <span class="math notranslate nohighlight">\(hF_\beta\)</span> is linear as a function of harmonic precision and recall:</p>
+<p><strong>Lemma</strong>. <span class="math notranslate nohighlight">\(hF_\beta\)</span> is linear as a function of harmonic precision and recall:</p>
 <div class="math notranslate nohighlight">
 \[\boxed{hF_\beta = \frac{1}{1+\beta^2} (\mathrm{hPrecision} + \beta^2 \mathrm{hRecall})}\]</div>
 <blockquote>
 <div><p>Proof is left to the reader! :)</p>
 </div></blockquote>
 <p>With the definition of <span class="math notranslate nohighlight">\(hF_\beta\)</span>, we can prove a very interesting result relating the area under the harmonic PR curve (AUhPR) with the expected <span class="math notranslate nohighlight">\(hF_\beta\)</span>:</p>
-<p>[<strong>Theorem</strong>] Under some technical assumptions, <strong><span class="math notranslate nohighlight">\(\mathbb{E}[hF_\beta]\)</span> is a linear function of AUhPR</strong>, and thus <strong>maximizing AUhPR is a strategy to finding the best model</strong>.</p>
+<p><strong>Theorem.</strong> Under some technical assumptions, <strong><span class="math notranslate nohighlight">\(\mathbb{E}[hF_\beta]\)</span> is a linear function of AUhPR</strong>, and thus <strong>maximizing AUhPR is a strategy to finding the best model</strong>.</p>
 <p>The proof is technical and left in the Appendix.</p>
 </section>
 </section>
@@ -1402,15 +1419,16 @@ Finally, applying the original definition of \)</span>\mu<span class="math notra
 <hr class="docutils" />
 <section class="tex2jax_ignore mathjax_ignore" id="appendix">
 <h1>Appendix<a class="headerlink" href="#appendix" title="Permalink to this headline">#</a></h1>
-<p>[<strong>Theorem</strong>] Under some technical assumptions, <strong><span class="math notranslate nohighlight">\(\mathbb{E}[hF_\beta]\)</span> is a linear function of AUhPR</strong>, and thus <strong>maximizing AUhPR is a strategy to finding the best model</strong>.</p>
+<p><strong>Theorem.</strong> Under some technical assumptions, <strong><span class="math notranslate nohighlight">\(\mathbb{E}[hF_\beta]\)</span> is a linear function of AUhPR</strong>, and thus <strong>maximizing AUhPR is a strategy to finding the best model</strong>.</p>
 <p>The proof is split into two parts:</p>
 <ul class="simple">
 <li><p>First we construct a (simplified) probability measure, that facilitates the calculation of the expectation</p></li>
 <li><p>Then, we actually calculate this expectation and show that it equals the area under the harmonic PR curve</p></li>
 </ul>
-<blockquote>
-<div><p><strong>[Review: probability measures]</strong> In probability, one usually considers a cumulative density function (CDF) <span class="math notranslate nohighlight">\(F\)</span> such that $<span class="math notranslate nohighlight">\(\lim_{x\to-\infty} F(x) = 0,\qquad \lim_{x\to\infty} F(x) = 1\)</span><span class="math notranslate nohighlight">\( and is right-continuous. The measure is then \)</span>dF(x) = f(x) dx<span class="math notranslate nohighlight">\( where \)</span>f(x) = F’(x)<span class="math notranslate nohighlight">\(, when it exists, is called the probabiliity density function (PDF). Notice that, if one is given some function \)</span>G<span class="math notranslate nohighlight">\(, it can be made into a measure if it is (1) at least right-continuous (2) monotonically increasing and (3) it is bounded. Under these assumptions, \)</span>G<span class="math notranslate nohighlight">\( converges for \)</span>x \to \pm\infty$ and we can construct a measure from it.</p>
-</div></blockquote>
+<p><em>Review: probability measures</em>. In probability, one usually considers a cumulative density function (CDF) <span class="math notranslate nohighlight">\(F\)</span> such that</p>
+<div class="math notranslate nohighlight">
+\[\lim_{x\to-\infty} F(x) = 0,\qquad \lim_{x\to\infty} F(x) = 1\]</div>
+<p>and is right-continuous. The measure is then <span class="math notranslate nohighlight">\(dF(x) = f(x) dx\)</span> where <span class="math notranslate nohighlight">\(f(x) = F'(x)\)</span>, when it exists, is called the probabiliity density function (PDF). Notice that, if one is given some function <span class="math notranslate nohighlight">\(G\)</span>, it can be made into a measure if it is (1) at least right-continuous (2) monotonically increasing and (3) it is bounded. Under these assumptions, <span class="math notranslate nohighlight">\(G\)</span> converges for <span class="math notranslate nohighlight">\(x \to \pm\infty\)</span> and we can construct a measure from it.</p>
 <p><em>Proof of part 1 (building a probability measure)</em>
 Let <span class="math notranslate nohighlight">\(\pi = \mathbb P(Y=1)\)</span> and</p>
 <div class="math notranslate nohighlight">
@@ -1435,7 +1453,7 @@ Let <span class="math notranslate nohighlight">\(\pi = \mathbb P(Y=1)\)</span> a
 <div class="math notranslate nohighlight">
 \[\frac{d\Delta}{\displaystyle \int_{-1/\pi}^{y_0/(1-\pi)} d\Delta} = \frac{d\Delta}{\displaystyle \frac{y_0}{1-\pi} + \frac{1}{\pi}}\]</div>
 <blockquote>
-<div><p>Recall: a variable <span class="math notranslate nohighlight">\(X\)</span> uniformly distributed on an interval <span class="math notranslate nohighlight">\([a,b]\)</span> (denoted by <span class="math notranslate nohighlight">\(X\sim\mathrm{Uniform}([a,b])\)</span>) has PDF $<span class="math notranslate nohighlight">\(f(x) = \frac{1}{b-a}\)</span><span class="math notranslate nohighlight">\( or, equivalently, our probability measure is \)</span><span class="math notranslate nohighlight">\(dF(x) = \frac{dx}{b-a}\)</span><span class="math notranslate nohighlight">\( with support on \)</span>[a,b]$.</p>
+<div><p>Recall: a variable <span class="math notranslate nohighlight">\(X\)</span> uniformly distributed on an interval <span class="math notranslate nohighlight">\([a,b]\)</span> (denoted by <span class="math notranslate nohighlight">\(X\sim\mathrm{Uniform}([a,b])\)</span>) has PDF <span class="math notranslate nohighlight">\(f(x) = \frac{1}{b-a}\)</span> or, equivalently, our probability measure is <span class="math notranslate nohighlight">\(dF(x) = \frac{dx}{b-a}\)</span> with support on <span class="math notranslate nohighlight">\([a,b]\)</span>.</p>
 </div></blockquote>
 <blockquote>
 <div><p>We do we assume this uniformity? Honestly, because it makes our calculations easier; it is also the least informative prior we can put on our knowledge of <span class="math notranslate nohighlight">\(\Delta\)</span>. In principle, we could have chosen a different PDF for it (with a function <span class="math notranslate nohighlight">\(f(\Delta)\)</span> which integrates to 1), but for now it suffices to consider the uniform case.</p>

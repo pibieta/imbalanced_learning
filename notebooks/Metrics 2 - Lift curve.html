@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>A complement to the ROC: the lift curve (aka CAP curve) &#8212; Imbalanced Binary Classification - A survey with code</title>
+    <title>The lift curve &#8212; Imbalanced Binary Classification - A survey with code</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -128,7 +128,7 @@ const thebe_selector_output = ".output, .cell_output"
  </li>
  <li class="toctree-l1 current active">
   <a class="current reference internal" href="#">
-   A complement to the ROC: the lift curve (aka CAP curve)
+   The lift curve
   </a>
  </li>
  <li class="toctree-l1">
@@ -156,13 +156,13 @@ const thebe_selector_output = ".output, .cell_output"
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="Interpretability.html">
-   How imbalanced learning affects the interpretability of a model
+  <a class="reference internal" href="Calibration.html">
+   Probability calibration
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="Calibration.html">
-   Model calibration part I - reliability assessment
+  <a class="reference internal" href="Interpretability.html">
+   Model interpretability: how is it affected by imbalance?
   </a>
  </li>
 </ul>
@@ -328,7 +328,7 @@ title="Print to PDF"
         <ul class="visible nav section-nav flex-column">
  <li class="toc-h1 nav-item toc-entry">
   <a class="reference internal nav-link" href="#">
-   A complement to the ROC: the lift curve (aka CAP curve)
+   The lift curve
   </a>
   <ul class="visible nav section-nav flex-column">
    <li class="toc-h2 nav-item toc-entry">
@@ -382,17 +382,19 @@ title="Print to PDF"
      The Gini coefficient
     </a>
    </li>
-   <li class="toc-h2 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#references">
-     References
-    </a>
-   </li>
   </ul>
  </li>
  <li class="toc-h1 nav-item toc-entry">
   <a class="reference internal nav-link" href="#appendix">
    Appendix
   </a>
+  <ul class="visible nav section-nav flex-column">
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#references">
+     References
+    </a>
+   </li>
+  </ul>
  </li>
 </ul>
 
@@ -403,7 +405,7 @@ title="Print to PDF"
         <div class="col pl-md-3 pl-lg-5 content-container">
             <!-- Table of contents that is only displayed when printing the page -->
             <div id="jb-print-docs-body" class="onlyprint">
-                <h1>A complement to the ROC: the lift curve (aka CAP curve)</h1>
+                <h1>The lift curve</h1>
                 <!-- Table of contents -->
                 <div id="print-main-content">
                     <div id="jb-print-toc">
@@ -415,7 +417,7 @@ title="Print to PDF"
                             <ul class="visible nav section-nav flex-column">
  <li class="toc-h1 nav-item toc-entry">
   <a class="reference internal nav-link" href="#">
-   A complement to the ROC: the lift curve (aka CAP curve)
+   The lift curve
   </a>
   <ul class="visible nav section-nav flex-column">
    <li class="toc-h2 nav-item toc-entry">
@@ -469,17 +471,19 @@ title="Print to PDF"
      The Gini coefficient
     </a>
    </li>
-   <li class="toc-h2 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#references">
-     References
-    </a>
-   </li>
   </ul>
  </li>
  <li class="toc-h1 nav-item toc-entry">
   <a class="reference internal nav-link" href="#appendix">
    Appendix
   </a>
+  <ul class="visible nav section-nav flex-column">
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#references">
+     References
+    </a>
+   </li>
+  </ul>
  </li>
 </ul>
 
@@ -491,8 +495,9 @@ title="Print to PDF"
                 
               <div>
                 
-  <section class="tex2jax_ignore mathjax_ignore" id="a-complement-to-the-roc-the-lift-curve-aka-cap-curve">
-<h1>A complement to the ROC: the lift curve (aka CAP curve)<a class="headerlink" href="#a-complement-to-the-roc-the-lift-curve-aka-cap-curve" title="Permalink to this headline">#</a></h1>
+  <section class="tex2jax_ignore mathjax_ignore" id="the-lift-curve">
+<h1>The lift curve<a class="headerlink" href="#the-lift-curve" title="Permalink to this headline">#</a></h1>
+<p><strong>(aka the CAP curve or the gain curve)</strong></p>
 <p>Despite the ROC AUC having a clear interpretation, it is often hard to interpret the ROC curve itself.
 In this section we introduce the <strong>lift curve</strong>, which is much easier to interpret and has a clear deterministic relation to the ROC.</p>
 <section id="problem-setup-credit-scoring">
@@ -1050,190 +1055,12 @@ In this section we introduce the <strong>lift curve</strong>, which is much easi
 <h3>Area under the lift curve &amp; its relation to ROC AUC<a class="headerlink" href="#area-under-the-lift-curve-its-relation-to-roc-auc" title="Permalink to this headline">#</a></h3>
 <p><strong>The lift curves must be analyzed together with the ROC AUC</strong>. It turns out they are both complementary and interpretable, providing a full picture of what is happening.</p>
 <p>We now state (and prove in the Appendix below) a very interesting result relating it to the ROC AUC: <strong>one of them uniquely defines the other</strong>, so the area under the lift curve doesn’t really matter. We can use the ROC AUC instead.</p>
+<p>Let <span class="math notranslate nohighlight">\(\pi\)</span> denote the proportion of the minority class to the total amount of points. Then</p>
 <div class="math notranslate nohighlight">
-\[\boxed{\binom{\mbox{area under}}{\mbox{lift curve}} = \mathrm{constant}_1+ \mathrm{constant}_2 \times \mathrm{AUC}}\qquad \mbox{(high to low scores)}\]</div>
-<p>The constants are calculated as follows. Let <span class="math notranslate nohighlight">\(\pi\)</span> denote the proportion of the minority class to the total amount of points. Then</p>
-<div class="math notranslate nohighlight">
-\[\mathrm{constant}_1 = \frac \pi 2\]</div>
-<div class="math notranslate nohighlight">
-\[\mathrm{constant}_2 = 1 - \pi\]</div>
+\[\boxed{\binom{\mbox{area under}}{\mbox{lift curve}} = \frac{\pi}{2} + (1-\pi) \times \mathrm{AUC}}\qquad \mbox{(high to low scores)}\]</div>
 <section id="numerically-checking-this">
 <h4>Numerically checking this<a class="headerlink" href="#numerically-checking-this" title="Permalink to this headline">#</a></h4>
-<p>Let us us the DataFrame defined above (which has the lift with scores from high to low):</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_html"><div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>V1</th>
-      <th>V2</th>
-      <th>V3</th>
-      <th>V4</th>
-      <th>V5</th>
-      <th>V6</th>
-      <th>V7</th>
-      <th>V8</th>
-      <th>V9</th>
-      <th>V10</th>
-      <th>...</th>
-      <th>V20</th>
-      <th>V21</th>
-      <th>V22</th>
-      <th>V23</th>
-      <th>V24</th>
-      <th>V25</th>
-      <th>V26</th>
-      <th>V27</th>
-      <th>V28</th>
-      <th>Class</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>185723</th>
-      <td>-2.132915</td>
-      <td>-1.435724</td>
-      <td>-0.167875</td>
-      <td>-0.613622</td>
-      <td>-1.523509</td>
-      <td>0.702004</td>
-      <td>3.318497</td>
-      <td>-0.407880</td>
-      <td>-0.036720</td>
-      <td>-1.293947</td>
-      <td>...</td>
-      <td>-0.068133</td>
-      <td>-0.402366</td>
-      <td>-1.273932</td>
-      <td>0.686603</td>
-      <td>-0.426971</td>
-      <td>-0.304671</td>
-      <td>-0.970158</td>
-      <td>0.268611</td>
-      <td>0.097632</td>
-      <td>0</td>
-    </tr>
-    <tr>
-      <th>39757</th>
-      <td>0.254733</td>
-      <td>1.270708</td>
-      <td>-0.909430</td>
-      <td>1.916788</td>
-      <td>2.456681</td>
-      <td>4.305723</td>
-      <td>-1.164007</td>
-      <td>-1.813797</td>
-      <td>-1.951456</td>
-      <td>0.401035</td>
-      <td>...</td>
-      <td>0.843244</td>
-      <td>-1.634035</td>
-      <td>-0.876942</td>
-      <td>0.130014</td>
-      <td>0.950920</td>
-      <td>0.542166</td>
-      <td>-0.022867</td>
-      <td>0.100057</td>
-      <td>0.256621</td>
-      <td>0</td>
-    </tr>
-    <tr>
-      <th>189045</th>
-      <td>2.124338</td>
-      <td>-0.679729</td>
-      <td>-1.153490</td>
-      <td>-0.739702</td>
-      <td>-0.639216</td>
-      <td>-0.527015</td>
-      <td>-0.997817</td>
-      <td>0.006910</td>
-      <td>-0.206940</td>
-      <td>0.241344</td>
-      <td>...</td>
-      <td>0.044019</td>
-      <td>0.273254</td>
-      <td>0.884667</td>
-      <td>0.061971</td>
-      <td>-0.487875</td>
-      <td>-0.141140</td>
-      <td>-0.081836</td>
-      <td>0.030883</td>
-      <td>-0.026193</td>
-      <td>0</td>
-    </tr>
-    <tr>
-      <th>82443</th>
-      <td>-0.593932</td>
-      <td>1.237201</td>
-      <td>1.228652</td>
-      <td>1.720319</td>
-      <td>1.370083</td>
-      <td>1.082608</td>
-      <td>0.892225</td>
-      <td>0.375500</td>
-      <td>-1.667653</td>
-      <td>0.113343</td>
-      <td>...</td>
-      <td>-0.260720</td>
-      <td>0.240098</td>
-      <td>0.777437</td>
-      <td>-0.058924</td>
-      <td>-0.644662</td>
-      <td>-0.378534</td>
-      <td>0.091938</td>
-      <td>0.156481</td>
-      <td>0.122518</td>
-      <td>0</td>
-    </tr>
-    <tr>
-      <th>274069</th>
-      <td>-2.357838</td>
-      <td>1.374659</td>
-      <td>0.194077</td>
-      <td>-0.620863</td>
-      <td>-0.799228</td>
-      <td>0.004177</td>
-      <td>-0.873491</td>
-      <td>1.684539</td>
-      <td>-0.046760</td>
-      <td>-0.508703</td>
-      <td>...</td>
-      <td>-0.064811</td>
-      <td>-0.096609</td>
-      <td>-0.522473</td>
-      <td>0.121794</td>
-      <td>0.655800</td>
-      <td>-0.250214</td>
-      <td>-0.015225</td>
-      <td>0.218985</td>
-      <td>0.025066</td>
-      <td>0</td>
-    </tr>
-  </tbody>
-</table>
-<p>5 rows × 29 columns</p>
-</div></div></div>
-</div>
+<p>Let us use the DataFrame defined above (which has the lift with scores from high to low).</p>
 <p>We want to compare the area under the lift curve (which has no unique name; let us call it <span class="math notranslate nohighlight">\(\mathrm{AUL}\)</span> for now) with the expression <span class="math notranslate nohighlight">\(\pi_1/2 +(1-\pi_1) \mathrm{AUC}\)</span>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -1272,17 +1099,12 @@ Calculated AUL: 0.624
 <section id="the-gini-coefficient">
 <h2>The Gini coefficient<a class="headerlink" href="#the-gini-coefficient" title="Permalink to this headline">#</a></h2>
 <p>A quantity related to both the ROC AUC and the area under the lift curve is the <strong>Gini coefficient</strong>.</p>
-<p><img alt="image-2.png" src="notebooks/attachment:image-2.png" /></p>
+<p><img alt="" src="../_images/gini.png" /></p>
 <p>(image modified from <a class="reference external" href="https://www.listendata.com/2019/09/gini-cumulative-accuracy-profile-auc.html">this post</a>)</p>
 <p>One can easily show (using a similar logic to that of the calculations we do in the Appendix) that</p>
 <div class="math notranslate nohighlight">
 \[\boxed{\mathrm{Gini} = 2\mathrm{AUC}-1}\]</div>
 <p>Hence, this is yet another metric which coincides with the ROC AUC.</p>
-</section>
-<section id="references">
-<h2>References<a class="headerlink" href="#references" title="Permalink to this headline">#</a></h2>
-<p>[1] Chris J. Lloyd, <em>A Note on the Area under the Lifts Chart</em>. International Journal of Statistics in Medical Research, 2018, 7, 66-69</p>
-<p>[2] Max Kuhn, Kjell Johnson, <em>Applied Predictive Modeling</em>. Springer, 2016, pp. 265-266</p>
 </section>
 </section>
 <section class="tex2jax_ignore mathjax_ignore" id="appendix">
@@ -1297,27 +1119,36 @@ Calculated AUL: 0.624
 <div class="math notranslate nohighlight">
 \[F(\lambda) = \mathbb P (f(X) &lt; \lambda),\]</div>
 <p>which can also be written in terms of the conditionals <span class="math notranslate nohighlight">\(F_i\)</span> via</p>
-<p>\begin{align}F(\lambda) &amp;=  \mathbb P (f(X) &lt; \lambda) = \mathbb P (f(X) &lt; \lambda|Y=1) \mathbb{P} (Y=1) + \mathbb P (f(X) &lt; \lambda|Y=0) \mathbb{P}(Y=0)\
-&amp;= \pi_1 F_1(\lambda) + \pi_0 F_0 (\lambda)\end{align}.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align}F(\lambda) &amp;=  \mathbb P (f(X) &lt; \lambda) = \mathbb P (f(X) &lt; \lambda|Y=1) \mathbb{P} (Y=1) + \mathbb P (f(X) &lt; \lambda|Y=0) \mathbb{P}(Y=0)\\
+&amp;= \pi_1 F_1(\lambda) + \pi_0 F_0 (\lambda)\end{align}.
+\end{split}\]</div>
 <p>Here <span class="math notranslate nohighlight">\(\pi_1 + \pi_0 = 1\)</span> are the proportions of <span class="math notranslate nohighlight">\(Y=1\)</span> and <span class="math notranslate nohighlight">\(Y=0\)</span>. We have thus written the lift curve as</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{cases}x(\lambda) &amp;=&amp; 1 - F(\lambda) = 1 - \pi_1 F_1(\lambda) - \pi_0 F_0(\lambda)\\
 y(\lambda) &amp;=&amp; 1 - F_1(\lambda)\end{cases}\end{split}\]</div>
 <p>To calculate <span class="math notranslate nohighlight">\(\mathrm{AUL}\)</span>, ideally we would like to write <span class="math notranslate nohighlight">\(y\)</span> as a function of <span class="math notranslate nohighlight">\(x\)</span> and integrate. This is possible if we invert <span class="math notranslate nohighlight">\(\lambda = \lambda(x)\)</span> and plug it into the expression for <span class="math notranslate nohighlight">\(y\)</span>. This is hard since <span class="math notranslate nohighlight">\(\lambda\)</span> appears both as the argument of <span class="math notranslate nohighlight">\(F_0\)</span> and <span class="math notranslate nohighlight">\(F_1\)</span>. Instead, what we can do is to <em>write <span class="math notranslate nohighlight">\(x\)</span> as a function of <span class="math notranslate nohighlight">\(y\)</span> instead</em> and calculate the integral <span class="math notranslate nohighlight">\(\int x dy\)</span> instead of <span class="math notranslate nohighlight">\(\int y dx\)</span>. These integrals are not the same, but they will be related as we show below.</p>
 <p>We have <span class="math notranslate nohighlight">\(\lambda = F_1^{-1}(1-y)\)</span>. Plugging this into the equation for <span class="math notranslate nohighlight">\(x\)</span> yields (calling <span class="math notranslate nohighlight">\(G(x)\)</span> the lift curve and <span class="math notranslate nohighlight">\(G^{-1}(y)\)</span> its inverse:</p>
-<p>\begin{align}
-x \equiv G^{-1}(y) &amp;= 1 - \pi_1 F_1 (F_1^{-1}(1-y)) - \pi_0 F_0 (F_1^{-1}(1-y)) \
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align}
+x \equiv G^{-1}(y) &amp;= 1 - \pi_1 F_1 (F_1^{-1}(1-y)) - \pi_0 F_0 (F_1^{-1}(1-y)) \\
 &amp;= 1 - \pi_1(1-y) - \pi_0 F_0(F_1^{-1}(1-y)).
-\end{align}</p>
+\end{align}
+\end{split}\]</div>
 <p>In the Appendix for the ROC curve we saw that we could write it as <span class="math notranslate nohighlight">\(y = R(x) = 1 - F_1(F_0^{-1}(1-x))\)</span>. This is almost what we have, but the roles of <span class="math notranslate nohighlight">\(F_1\)</span> and <span class="math notranslate nohighlight">\(F_0\)</span> are shifted. We can actually invert this expression to get</p>
 <div class="math notranslate nohighlight">
 \[x \equiv R^{-1}(y) = 1 - F_0(F_1^{-1}(1-y)),\]</div>
 <p>which matches nicely with the RHS above. Hence</p>
-<p>\begin{align}
-G^{-1}(y) &amp;= 1 - \pi_1 (1-y) - \pi_0 (1 - R^{-1}(y))\
-&amp;=\pi_1 y + \pi_0 R^{-1}(y)\
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align}
+G^{-1}(y) &amp;= 1 - \pi_1 (1-y) - \pi_0 (1 - R^{-1}(y))\\
+&amp;=\pi_1 y + \pi_0 R^{-1}(y)\\
 \Rightarrow \int_0^1 G^{-1}(y)dy  &amp;= \frac{\pi_1}{2} + \pi_0 \int_0^1R^{-1}(y)dy
-\end{align}</p>
+\end{align}
+\end{split}\]</div>
 <p>Now, both the ROC and lift curve live inside the unit square <span class="math notranslate nohighlight">\([0,1]\times[0,1]\)</span>, which has area equal to 1, and have endpoints in <span class="math notranslate nohighlight">\((0,0)\)</span> and <span class="math notranslate nohighlight">\((1,1)\)</span>. For any such function,</p>
 <div class="math notranslate nohighlight">
 \[\int_0^1 f(x) dx + \int_0^1 f^{-1}(y) dy = 1.\]</div>
@@ -1331,6 +1162,11 @@ G^{-1}(y) &amp;= 1 - \pi_1 (1-y) - \pi_0 (1 - R^{-1}(y))\
 <p><strong>Problem</strong>: using the exact same logic as above (or just good old geometry) prove that for the lift curve I it holds that</p>
 <div class="math notranslate nohighlight">
 \[\boxed{\mathrm{AUL} = 1 - \left[\frac{\pi_1}{2} + (1-\pi_1) \mathrm{AUC}\right]}\qquad \mbox{(low to high scores)}\]</div>
+<section id="references">
+<h2>References<a class="headerlink" href="#references" title="Permalink to this headline">#</a></h2>
+<p>[1] Chris J. Lloyd, <em>A Note on the Area under the Lifts Chart</em>. International Journal of Statistics in Medical Research, 2018, 7, 66-69</p>
+<p>[2] Max Kuhn, Kjell Johnson, <em>Applied Predictive Modeling</em>. Springer, 2016, pp. 265-266</p>
+</section>
 </section>
 
     <script type="text/x-thebe-config">
