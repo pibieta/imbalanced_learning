@@ -1,0 +1,875 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Model Assessment and Selection 1 &#8212; Imbalanced Binary Classification - A survey with code</title>
+    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
+    
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+<!-- Checkboxes to toggle the left sidebar -->
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
+<label class="overlay overlay-navbar" for="__navigation">
+    <div class="visually-hidden">Toggle navigation sidebar</div>
+</label>
+<!-- Checkboxes to toggle the in-page toc -->
+<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
+<label class="overlay overlay-pagetoc" for="__page-toc">
+    <div class="visually-hidden">Toggle in-page Table of Contents</div>
+</label>
+<!-- Headers at the top -->
+<div class="announcement header-item noprint"></div>
+<div class="header header-item noprint"></div>
+
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<!-- Sidebar -->
+<div class="bd-sidebar noprint" id="site-navigation">
+    <div class="bd-sidebar__content">
+        <div class="bd-sidebar__top"><div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="../index.html">
+      
+        <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
+        
+      
+      
+      <img src="../_static/DataLab-logo-white.png" class="logo" alt="logo">
+      
+      
+      <h1 class="site-logo" id="site-title">Imbalanced Binary Classification - A survey with code</h1>
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="Introduction.html">
+                    Introduction
+                </a>
+            </li>
+        </ul>
+        <ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="Loss%20functions.html">
+   Loss functions
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="Metrics%201%20-%20Intro%20%26%20ROC%20AUC.html">
+   Classification metrics
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="Metrics%202%20-%20Lift%20curve.html">
+   The lift curve
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="Metrics%203%20-%20KS%20score.html">
+   The KS score and Youden’s J
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="Metrics%204%20-%20Precision%20and%20Recall.html">
+   Precision, recall, and
+   <span class="math notranslate nohighlight">
+    \(F\)
+   </span>
+   -scores
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="pablo-baseline-experiment.html">
+   Choosing a baseline model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="Feature%20selection%20methods.html">
+   Feature selection via the Boruta algorithm
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="Calibration.html">
+   Probability calibration
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="Interpretability.html">
+   Model interpretability: how is it affected by imbalance?
+  </a>
+ </li>
+</ul>
+
+    </div>
+</nav></div>
+        <div class="bd-sidebar__bottom">
+             <!-- To handle the deprecated key -->
+            
+            <div class="navbar_extra_footer">
+            Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+            </div>
+            
+        </div>
+    </div>
+    <div id="rtd-footer-container"></div>
+</div>
+
+
+          
+
+
+          
+<!-- A tiny helper pixel to detect if we've scrolled -->
+<div class="sbt-scroll-pixel-helper"></div>
+<!-- Main content -->
+<div class="col py-0 content-container">
+    
+    <div class="header-article row sticky-top noprint">
+        
+
+
+
+<div class="col py-1 d-flex header-article-main">
+    <div class="header-article__left">
+        
+        <label for="__navigation"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="right"
+title="Toggle navigation"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-bars"></i>
+  </span>
+
+</label>
+
+        
+    </div>
+    <div class="header-article__right">
+<div class="menu-dropdown menu-dropdown-launch-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Launch interactive content">
+      <i class="fas fa-rocket"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="https://mybinder.org/v2/gh/executablebooks/jupyter-book/master?urlpath=tree/notebooks/Model-Selection-1-Error-Estimation.ipynb"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Launch on Binder"
+>
+  
+
+<span class="headerbtn__icon-container">
+  
+    <img src="../_static/images/logo_binder.svg">
+  </span>
+<span class="headerbtn__text-container">Binder</span>
+</a>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+
+<button onclick="toggleFullScreen()"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="bottom"
+title="Fullscreen mode"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+<div class="menu-dropdown menu-dropdown-download-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Download this page">
+      <i class="fas fa-download"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="../_sources/notebooks/Model-Selection-1-Error-Estimation.ipynb"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Download source file"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="headerbtn__text-container">.ipynb</span>
+</a>
+
+      </li>
+      
+      <li>
+        
+<button onclick="printPdf(this)"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="left"
+title="Print to PDF"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="headerbtn__text-container">.pdf</span>
+</button>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+<label for="__page-toc"
+  class="headerbtn headerbtn-page-toc"
+  
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-list"></i>
+  </span>
+
+</label>
+
+    </div>
+</div>
+
+<!-- Table of contents -->
+<div class="col-md-3 bd-toc show noprint">
+    <div class="tocsection onthispage pt-5 pb-3">
+        <i class="fas fa-list"></i> Contents
+    </div>
+    <nav id="bd-toc-nav" aria-label="Page">
+        <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#error-estimation">
+   Error estimation
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#training-error-is-a-bad-error-estimate">
+     Training error is a bad error estimate!
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#fold-cross-validation">
+     10-fold Cross Validation
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#repeated-10-fold-cross-validation">
+     Repeated 10-fold Cross Validation
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+    </nav>
+</div>
+    </div>
+    <div class="article row">
+        <div class="col pl-md-3 pl-lg-5 content-container">
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>Model Assessment and Selection 1</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#error-estimation">
+   Error estimation
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#training-error-is-a-bad-error-estimate">
+     Training error is a bad error estimate!
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#fold-cross-validation">
+     10-fold Cross Validation
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#repeated-10-fold-cross-validation">
+     Repeated 10-fold Cross Validation
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            <main id="main-content" role="main">
+                
+              <div>
+                
+  <section class="tex2jax_ignore mathjax_ignore" id="model-assessment-and-selection-1">
+<h1>Model Assessment and Selection 1<a class="headerlink" href="#model-assessment-and-selection-1" title="Permalink to this headline">#</a></h1>
+<p>In this section we will begin the discusion about model selection inside the imbalanced learning context. To begin the discussion let us recall some basic definitions for the binary classification problem.
+In general terms, we are interested in extracting information about an <strong>unknown</strong> joint probability distribution <span class="math notranslate nohighlight">\(\text{Pr}(X,Y)\)</span> of random variables <span class="math notranslate nohighlight">\(X, Y\)</span> from which we have got a sample <span class="math notranslate nohighlight">\(\mathcal{D} = \{(x_i, y_i)\}_{i = 1, \dots, N}\)</span> (the dataset), with the random variable <span class="math notranslate nohighlight">\(Y\)</span> taking values in <span class="math notranslate nohighlight">\(\{0,1\}\)</span>. In other words: <span class="math notranslate nohighlight">\(y|X = x \sim \text{Bernoulli}(x)\)</span>.
+The binary classification problem can be summarized as the problem of finding a function <span class="math notranslate nohighlight">\(f: X \longrightarrow \{0,1\}\)</span> defined by:
+$<span class="math notranslate nohighlight">\(f(x):= \mathbb{P}(Y=1 | X=x),\)</span><span class="math notranslate nohighlight">\(
+often called **score**. In practice, solving the classification problem implies using an **estimator** function \)</span>\hat{f}:X \longrightarrow [0,1]<span class="math notranslate nohighlight">\(. It is worth mentioning that the output of this estimator function is not to be interpreted as a probability, in general. A more detailed discussion will be given in the model calibration section.
+The classification problem is not entirely solved by finding the best estimator function \)</span>\hat{f}<span class="math notranslate nohighlight">\( since in general we could be actually interested in predicting the class to which a particular example belongs, this is, we are looking for an estimator:
+\)</span><span class="math notranslate nohighlight">\(\hat{y}_{\lambda}(x) = \begin{cases}
+                1,\;\; \text{if } \hat{f}(x) \geq \lambda, \\ 
+                0, \;\; \text{if } \hat{f}(x) &lt; \lambda
+            \end{cases}\)</span>$
+Following these lines, we can state the problem of <strong>model selection</strong> as trying to answer the following question:</p>
+<blockquote>
+<div><p>Given a set of estimators <span class="math notranslate nohighlight">\(\{\hat{f}_1, \hat{f}_2, \dots\}\)</span>, <em>what is the best estimator function</em> <span class="math notranslate nohighlight">\(\hat{f}: X \longrightarrow [0,1]\)</span> among them?</p>
+</div></blockquote>
+<p>What does it mean to be <em>the best</em> estimator anyway? We will begin the model selection discussion by trying to answer this question.</p>
+<p>There are different criteria by which several <strong>estimators</strong> could be compared. In practice, however, we are mainly interested in measuring:</p>
+<ul class="simple">
+<li><p>missclassification error or classification metrics</p></li>
+<li><p>model complexity and <em>bias-variance</em> tradeoff</p></li>
+<li><p>training time</p></li>
+<li><p>sensitivity to class imbalance</p></li>
+<li><p>…</p></li>
+</ul>
+<p>Often, solving a binary classification problem involves optimizing the hyperparameters of inference models. This process can be both computationally intensive and time consuming. Thus, the gain in performance obtained by following this optimization procedure has to justify the effort, otherwise we would choose to go on with a simpler model. To this end, it is always a good practice to compare the results of a complex model with those of a simpler and more interpretable model, usually a logistic regression is selected as the baseline model.</p>
+<section id="error-estimation">
+<h2>Error estimation<a class="headerlink" href="#error-estimation" title="Permalink to this headline">#</a></h2>
+<p>There are different measures of missclassification error and choosing one might depend on the nature of the problem, on business criteria and the characteristics of the joint probability distribution <span class="math notranslate nohighlight">\(\text{Pr}(X,Y)\)</span>. A more detailed discussion is given in the section about losses for binary classification.
+Let us consider a classification model <span class="math notranslate nohighlight">\(\hat{f}: X \longrightarrow [0,1]\)</span> whose paremeters were estimated using a training set <span class="math notranslate nohighlight">\(\mathcal{T} = \{(\mathbb{x}_i, y_i)\}_{i = 1}^{N}\)</span>. Consider also an error (loss) function <span class="math notranslate nohighlight">\(L: \{0,1\} \times [0,1] \longrightarrow \mathbb{R}_{+}\)</span>, such that the missclassification error of a predicted observation <span class="math notranslate nohighlight">\(\hat{y} = \hat{f}(x)\)</span>, where <span class="math notranslate nohighlight">\(x \sim X\)</span> is denoted <span class="math notranslate nohighlight">\(L(y, \hat{y})\)</span>. One example of such a function and a common choice for binary classification problems is the so called <strong>Binary Cross-Entropy</strong> or <strong>Log Loss</strong>, given by:
+\begin{align*}
+L = -\dfrac{1}{N}\sum_{i = 1}^{N}\left[y_i \log(\hat{y}<em>i)+ (1 - y_i)\log(1 - \hat{y}<em>i)\right]
+\end{align*}
+where <span class="math notranslate nohighlight">\(N\)</span> is the size of the sample <span class="math notranslate nohighlight">\(\mathcal{D}\)</span> used for the error estimation, <span class="math notranslate nohighlight">\(y_i\)</span> is the <span class="math notranslate nohighlight">\(i\)</span>-th ground truth value an <span class="math notranslate nohighlight">\(\hat{y}_i\)</span> is the <span class="math notranslate nohighlight">\(i\)</span>-th estimated value (with estimator <span class="math notranslate nohighlight">\(\hat{f}\)</span>).
+The <strong>Test error</strong> or <strong>Generalization error</strong> is the missclassification error calculated on an independent data sample, commonly called <em>test set</em>.
+\begin{align}
+\text{Err}</em>{\mathcal{T}} = \mathbb{E}\left[L(Y, \hat{f}(X))| \mathcal{T}\right],
+\end{align}
+note that the training set is fixed, this means that the error estimate is conditioned on the training set choice. We can also average over the training set generation process to get the <em>expected prediction error</em>:
+\begin{align}
+\text{Err} = \mathbb{E}\left[L(Y, \hat{f}(X))\right] = \mathbb{E}\left[\text{Err}</em>{\mathcal{T}}\right].
+\end{align}
+<strong>Training error</strong> is nothing else that the missclassification error calculated on the training dataset <span class="math notranslate nohighlight">\(\mathcal{T}\)</span>,
+\begin{align*}
+\overline{\text{err}} = \dfrac{1}{N}\sum_{i = 1}^{N}L(y_i, \hat{f}(x_i)).
+\end{align*}</p>
+<section id="training-error-is-a-bad-error-estimate">
+<h3>Training error is a bad error estimate!<a class="headerlink" href="#training-error-is-a-bad-error-estimate" title="Permalink to this headline">#</a></h3>
+<p>In order to illustrate how the training error is not a good estimate of the test error let us consider the loss dependance on the model complexity. Consider the case of a binary classification problem, which we are trying to solve using a <strong>logistic regression</strong> or another more complex model (such as a GBDT). We will analyze the behavior of the error estimates for different realizations of the test set <span class="math notranslate nohighlight">\(\mathcal{T}\)</span>. To do that, let us construct a big dataset (parent distribution) from which we will sample different realizations of the training set. Aditionally, a hold-out dataset (the test dataset) will be sampled a single time from the parent distribution.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">product</span>
+<span class="kn">from</span> <span class="nn">lightgbm</span> <span class="kn">import</span> <span class="n">LGBMClassifier</span>
+<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+<span class="kn">from</span> <span class="nn">sklearn.tree</span> <span class="kn">import</span> <span class="n">DecisionTreeClassifier</span>
+<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">train_test_split</span><span class="p">,</span> <span class="n">StratifiedKFold</span><span class="p">,</span> <span class="n">RepeatedStratifiedKFold</span>
+<span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">log_loss</span><span class="p">,</span> <span class="n">roc_auc_score</span><span class="p">,</span> <span class="n">roc_curve</span><span class="p">,</span> <span class="n">precision_recall_curve</span>
+
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;../src/&#39;</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">create_imbalanced_binary_classification</span><span class="p">,</span> <span class="n">run_cross_validation_from_split</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">clean_ax</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="nb">all</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Clean spines of a matplotlib axis&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">all</span><span class="p">:</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s2">&quot;left&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s2">&quot;bottom&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s2">&quot;right&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>    
+    <span class="n">ax</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s2">&quot;top&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ax</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">n_samples</span> <span class="o">=</span> <span class="mi">10</span><span class="o">**</span><span class="mi">4</span>
+<span class="n">random_state</span> <span class="o">=</span> <span class="mi">42</span>
+<span class="n">n_features</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">data</span><span class="p">,</span> <span class="n">col_names</span> <span class="o">=</span> <span class="n">create_imbalanced_binary_classification</span><span class="p">(</span><span class="n">n_samples</span> <span class="o">=</span> <span class="n">n_samples</span><span class="p">,</span> <span class="n">n_features</span> <span class="o">=</span> <span class="n">n_features</span><span class="p">,</span> 
+                                                            <span class="n">n_informative</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">n_features</span><span class="o">/</span><span class="mi">2</span><span class="p">),</span> <span class="n">imbalance</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">,</span>
+                                                            <span class="n">random_state</span> <span class="o">=</span> <span class="n">random_state</span><span class="p">,</span> <span class="n">class_sep</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">)</span>
+<span class="n">data</span><span class="o">.</span><span class="n">target</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.1039
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">X</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">col_names</span><span class="p">]</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;target&#39;</span><span class="p">]</span>
+<span class="n">X_train_0</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train_0</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">test_size</span> <span class="o">=</span> <span class="mf">0.3</span><span class="p">,</span> <span class="n">stratify</span> <span class="o">=</span> <span class="n">y</span><span class="p">)</span>
+<span class="n">train_sample_size</span> <span class="o">=</span> <span class="mf">0.6</span>
+<span class="n">n_trials</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="n">max_depths</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">50</span><span class="p">]</span>
+<span class="n">results_train</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="p">{</span><span class="n">i</span><span class="p">:</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_trials</span><span class="p">)}</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">max_depths</span><span class="p">}</span>
+<span class="n">results_test</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="p">{</span><span class="n">i</span><span class="p">:</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_trials</span><span class="p">)}</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">max_depths</span><span class="p">}</span>
+<span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">product</span><span class="p">(</span><span class="n">max_depths</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_trials</span><span class="p">))):</span>
+    <span class="n">idx</span> <span class="o">=</span> <span class="n">X_train_0</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">frac</span> <span class="o">=</span> <span class="n">train_sample_size</span><span class="p">)</span><span class="o">.</span><span class="n">index</span>
+    <span class="n">X_train</span> <span class="o">=</span> <span class="n">X_train_0</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+    <span class="n">y_train</span> <span class="o">=</span> <span class="n">y_train_0</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+    <span class="c1"># Decision Tree</span>
+    <span class="c1"># print(f&#39;\tDecision Tree | max_depth = {n}&#39;)</span>
+    <span class="n">dt_clf</span> <span class="o">=</span> <span class="n">DecisionTreeClassifier</span><span class="p">(</span><span class="n">max_depth</span> <span class="o">=</span> <span class="n">n</span><span class="p">)</span>
+    <span class="n">dt_clf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+    <span class="n">y_proba</span> <span class="o">=</span> <span class="n">dt_clf</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+    <span class="n">y_proba_train</span> <span class="o">=</span> <span class="n">dt_clf</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">X_train</span><span class="p">)</span>
+    <span class="n">results_train</span><span class="p">[</span><span class="n">n</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">log_loss</span><span class="p">(</span><span class="n">y_train</span><span class="p">,</span> <span class="n">y_proba_train</span><span class="p">)</span> 
+    <span class="n">results_test</span><span class="p">[</span><span class="n">n</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">log_loss</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_proba</span><span class="p">)</span> 
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>700it [00:17, 40.74it/s]
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">results_stats_train</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="n">key</span> <span class="p">:</span> <span class="p">{</span><span class="s1">&#39;mean&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">results_train</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">())),</span>
+                        <span class="s1">&#39;std&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">results_train</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">()))}</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">max_depths</span><span class="p">})</span>
+<span class="n">results_stats_test</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="n">key</span> <span class="p">:</span> <span class="p">{</span><span class="s1">&#39;mean&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">results_test</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">())),</span>
+                        <span class="s1">&#39;std&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">results_test</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">()))}</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">max_depths</span><span class="p">})</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">f</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">dpi</span> <span class="o">=</span> <span class="mi">120</span><span class="p">)</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">max_depths</span><span class="p">))</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">results_stats_train</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
+            <span class="n">marker</span> <span class="o">=</span> <span class="s1">&#39;.&#39;</span><span class="p">,</span>
+            <span class="n">label</span> <span class="o">=</span> <span class="s1">&#39;train error&#39;</span><span class="p">,</span>
+            <span class="n">color</span> <span class="o">=</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span>
+            <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.6</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> 
+                <span class="n">y1</span> <span class="o">=</span> <span class="n">results_stats_train</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">values</span> <span class="o">-</span> <span class="n">results_stats_train</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s1">&#39;std&#39;</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
+                <span class="n">y2</span> <span class="o">=</span> <span class="n">results_stats_train</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">values</span> <span class="o">+</span> <span class="n">results_stats_train</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s1">&#39;std&#39;</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
+            <span class="n">color</span> <span class="o">=</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.2</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">results_stats_test</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
+            <span class="n">marker</span> <span class="o">=</span> <span class="s1">&#39;.&#39;</span><span class="p">,</span>
+            <span class="n">label</span> <span class="o">=</span> <span class="s1">&#39;test error&#39;</span><span class="p">,</span>
+            <span class="n">color</span> <span class="o">=</span> <span class="s1">&#39;purple&#39;</span><span class="p">,</span>
+            <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.6</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> 
+                <span class="n">y1</span> <span class="o">=</span> <span class="n">results_stats_test</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">values</span> <span class="o">-</span> <span class="n">results_stats_test</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s1">&#39;std&#39;</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
+                <span class="n">y2</span> <span class="o">=</span> <span class="n">results_stats_test</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">values</span> <span class="o">+</span> <span class="n">results_stats_test</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s1">&#39;std&#39;</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
+            <span class="n">color</span> <span class="o">=</span> <span class="s1">&#39;purple&#39;</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.2</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">(</span><span class="n">max_depths</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Model Complexity (max depth)&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Log Loss&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span> <span class="o">=</span> <span class="s1">&#39;best&#39;</span><span class="p">,</span> <span class="n">frameon</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;Generalization error $Err = \mathbb</span><span class="si">{E}</span><span class="s1">[Err_{\tau}]$&#39;</span><span class="p">)</span>
+<span class="n">clean_ax</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/Model-Selection-1-Error-Estimation_8_0.png" src="../_images/Model-Selection-1-Error-Estimation_8_0.png" />
+</div>
+</div>
+<p>The amount by which the training error and the true error differ is often called <strong>optimism</strong>. There are several ways of seeing this. To construct the above figure we used a held-out dataset (not seen in the training process) to compute the <em>true error</em>. Another common estimate of the true <em>training</em> error is often called <strong>in-sample error</strong>:
+$<span class="math notranslate nohighlight">\(\text{Err}_{\text{in}} = \dfrac{1}{N}\sum_{i=1}^{N}\mathbb{E}_{Y^0}[L(Y_{i}^0), \hat{f}(x_i)|\mathcal{T}],\)</span><span class="math notranslate nohighlight">\(
+where \)</span>Y^0<span class="math notranslate nohighlight">\( stands for the distribution of all possible target values (in the training dataset). This is, for each observation \)</span>x_i<span class="math notranslate nohighlight">\( we compute the expected error over the distribution of all possible outcomes \)</span>Y^0_i<span class="math notranslate nohighlight">\(. The optimism is defined as:
+\begin{align*}
+\text{op} := \text{Err}_{\text{in}} - \overline{\text{err}}.
+\end{align*}
+Thus, a way of solving the error underestimation problem is to estimate the optimism \)</span>\text{op}<span class="math notranslate nohighlight">\( and add this value to the training error \)</span>\text{err}<span class="math notranslate nohighlight">\( so the underestimation gets &quot;corrected&quot;. There are several methods that treat the error underestimation problem this way such as the *Akaike information criterion* (AIC), the *Bayesian information criterion* and the \)</span>C_p$-<em>statistic</em>. We refer the reader to [Tibshirani] for a detailed discussion about these techniques. We will rather focus our discussion in the usual way this problem is tackled in practice, this is, Cross Validation and Bootstrap.</p>
+<p>Let us see another example where we use an ensemble of decision trees, such as gradient boosted ensemble of decision trees. We are interested in the training-test error gap as the number of weak learners increases.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">n_samples</span> <span class="o">=</span> <span class="mi">10</span><span class="o">**</span><span class="mi">3</span>
+<span class="n">random_state</span> <span class="o">=</span> <span class="mi">42</span>
+<span class="n">n_features</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">data</span><span class="p">,</span> <span class="n">col_names</span> <span class="o">=</span> <span class="n">create_imbalanced_binary_classification</span><span class="p">(</span><span class="n">n_samples</span> <span class="o">=</span> <span class="n">n_samples</span><span class="p">,</span> <span class="n">n_features</span> <span class="o">=</span> <span class="n">n_features</span><span class="p">,</span> 
+                                                        <span class="n">n_informative</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">n_features</span><span class="o">/</span><span class="mi">2</span><span class="p">),</span> <span class="n">imbalance</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">,</span>
+                                                        <span class="n">random_state</span> <span class="o">=</span> <span class="n">random_state</span><span class="p">,</span> <span class="n">class_sep</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">)</span>
+<span class="n">parent_positive_rate</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">target</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">col_names</span><span class="p">]</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;target&#39;</span><span class="p">]</span>
+<span class="n">X_train_0</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train_0</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">test_size</span> <span class="o">=</span> <span class="mf">0.3</span><span class="p">,</span> <span class="n">stratify</span> <span class="o">=</span> <span class="n">y</span><span class="p">)</span>
+<span class="n">train_sample_size</span> <span class="o">=</span> <span class="mf">0.5</span>
+<span class="n">n_trials</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">n_estimators</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">150</span><span class="p">]</span>
+<span class="n">results_train</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="p">{</span><span class="n">i</span><span class="p">:</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_trials</span><span class="p">)}</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">n_estimators</span><span class="p">}</span>
+<span class="n">results_test</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="p">{</span><span class="n">i</span><span class="p">:</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_trials</span><span class="p">)}</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">n_estimators</span><span class="p">}</span>
+<span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">product</span><span class="p">(</span><span class="n">n_estimators</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_trials</span><span class="p">)):</span>
+    <span class="n">idx</span> <span class="o">=</span> <span class="n">X_train_0</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">frac</span> <span class="o">=</span> <span class="n">train_sample_size</span><span class="p">)</span><span class="o">.</span><span class="n">index</span>
+    <span class="n">X_train</span> <span class="o">=</span> <span class="n">X_train_0</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+    <span class="n">y_train</span> <span class="o">=</span> <span class="n">y_train_0</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+    <span class="c1"># Model training</span>
+    <span class="n">clf</span> <span class="o">=</span> <span class="n">LGBMClassifier</span><span class="p">(</span><span class="n">n_estimators</span> <span class="o">=</span> <span class="n">n</span><span class="p">)</span>
+    <span class="n">clf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+    <span class="n">y_proba</span> <span class="o">=</span> <span class="n">clf</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+    <span class="n">y_proba_train</span> <span class="o">=</span> <span class="n">clf</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">X_train</span><span class="p">)</span>
+    <span class="n">results_train</span><span class="p">[</span><span class="n">n</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">log_loss</span><span class="p">(</span><span class="n">y_train</span><span class="p">,</span> <span class="n">y_proba_train</span><span class="p">)</span> 
+    <span class="n">results_test</span><span class="p">[</span><span class="n">n</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">log_loss</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_proba</span><span class="p">)</span>
+<span class="c1"># Get results for plotting</span>
+<span class="n">results_stats_train</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="n">key</span> <span class="p">:</span> <span class="p">{</span><span class="s1">&#39;mean&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">results_train</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">())),</span>
+                    <span class="s1">&#39;std&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">results_train</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">()))}</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">n_estimators</span><span class="p">})</span>
+<span class="n">results_stats_test</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="n">key</span> <span class="p">:</span> <span class="p">{</span><span class="s1">&#39;mean&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">results_test</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">())),</span>    
+                    <span class="s1">&#39;std&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">results_test</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">()))}</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">n_estimators</span><span class="p">})</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">f</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">dpi</span> <span class="o">=</span> <span class="mi">120</span><span class="p">)</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">n_estimators</span><span class="p">))</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">results_stats_train</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
+            <span class="n">marker</span> <span class="o">=</span> <span class="s1">&#39;.&#39;</span><span class="p">,</span>
+            <span class="n">label</span> <span class="o">=</span> <span class="s1">&#39;train error&#39;</span><span class="p">,</span>
+            <span class="n">color</span> <span class="o">=</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span>
+            <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.6</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> 
+                <span class="n">y1</span> <span class="o">=</span> <span class="n">results_stats_train</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">values</span> <span class="o">-</span> <span class="n">results_stats_train</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s1">&#39;std&#39;</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
+                <span class="n">y2</span> <span class="o">=</span> <span class="n">results_stats_train</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">values</span> <span class="o">+</span> <span class="n">results_stats_train</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s1">&#39;std&#39;</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
+            <span class="n">color</span> <span class="o">=</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.2</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">results_stats_test</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
+            <span class="n">marker</span> <span class="o">=</span> <span class="s1">&#39;.&#39;</span><span class="p">,</span>
+            <span class="n">label</span> <span class="o">=</span> <span class="s1">&#39;test error&#39;</span><span class="p">,</span>
+            <span class="n">color</span> <span class="o">=</span> <span class="s1">&#39;purple&#39;</span><span class="p">,</span>
+            <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.6</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> 
+                <span class="n">y1</span> <span class="o">=</span> <span class="n">results_stats_test</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">values</span> <span class="o">-</span> <span class="n">results_stats_test</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s1">&#39;std&#39;</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
+                <span class="n">y2</span> <span class="o">=</span> <span class="n">results_stats_test</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">values</span> <span class="o">+</span> <span class="n">results_stats_test</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s1">&#39;std&#39;</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
+            <span class="n">color</span> <span class="o">=</span> <span class="s1">&#39;purple&#39;</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.2</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">(</span><span class="n">max_depths</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Model Complexity (n estimators)&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Log Loss&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span> <span class="o">=</span> <span class="s1">&#39;best&#39;</span><span class="p">,</span> <span class="n">frameon</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;Generalization error $Err = \mathbb</span><span class="si">{E}</span><span class="s1">[Err_{\tau}]$&#39;</span><span class="p">)</span>
+<span class="n">clean_ax</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/Model-Selection-1-Error-Estimation_11_0.png" src="../_images/Model-Selection-1-Error-Estimation_11_0.png" />
+</div>
+</div>
+<p>The above figure shows that the training error severely understimates the test (true) error value as the model becomes more complex, commonly known as <em>overfitting</em>. The effect is diminished as the training dataset size grows. The most widely used method to turnaround this error underestimation problem is known as <strong>Cross-Validation</strong> (CV). This method directly estimates the <em>extra-sample</em> error <span class="math notranslate nohighlight">\(\text{Err} = \mathbb{E}[L(Y, \hat{f}(X))]\)</span>, where <span class="math notranslate nohighlight">\((X,Y)\)</span> is a <em>test</em> sample from the joint distribution <span class="math notranslate nohighlight">\(p(X,Y)\)</span>. In k-fold CV the training dataset <span class="math notranslate nohighlight">\(\mathcal{T}\)</span> is split into k mutually-exclusive similar subsets <span class="math notranslate nohighlight">\(\{\mathcal{T}_1,\mathcal{T}_2, \dots, \mathcal{T}_k\}\)</span>. At each CV round, a different fold is left out of the training procedure and used as a testing set. The error (loss) is then averaged across all folds to obtain the generalization error estimate. To see this, let <span class="math notranslate nohighlight">\(\kappa: \{i\}_{i=1}^{N} \rightarrow \{k\}_{k=1}^{K}\)</span> be a mapping function that assigns a fold <span class="math notranslate nohighlight">\(k\)</span> to each observation <span class="math notranslate nohighlight">\(i\)</span>. Furthermore, let us write as <span class="math notranslate nohighlight">\(\mathcal{T}_k\)</span> the fold that is left out of the training procedure, the model obtained by fitting on the rest of the folds is then denoted as <span class="math notranslate nohighlight">\(\hat{f}^{-k}(x)\)</span>. Then we can write the cross-validation estimate of missclassification error as:
+\begin{align*}
+\widehat{\text{Err}}<em>{\text{CV}}(\hat{f}) = \dfrac{1}{N}\sum</em>{i = 1}^{N} L(y_i, \hat{f}^{-\kappa (i)}(x_i))
+\end{align*}
+The cross validation estimate is a random number that depends on the division into the k-folds. The extreme case where <span class="math notranslate nohighlight">\(k = n\)</span> is known as <strong>leave-one-out</strong> cross validation, since a single entity is left out of the training set for each fold and the fit is computed on all the rest observations. This can turn the method more computationally costly as the size of the training dataset grows. The choice for the number of splits is discussed in <a class="reference external" href="http://ai.stanford.edu/~ronnyk/accEst.pdf">kohavi</a>, stratified ten-fold cross-validation being the most common recommendation.</p>
+<p>Often CV is also used as a method for evaluating different hyperparameters of the classification model. In this scenario, consider a set of different models all indexed by a (set of) parameter(s) <span class="math notranslate nohighlight">\(\{\xi\}\)</span> such as regularization weights or the number of estimators for ensemble methods. We denote the model whose fit was computed using all but the <span class="math notranslate nohighlight">\(k\)</span>-th fold as <span class="math notranslate nohighlight">\(\hat{f}^{-k}(x,\xi)\)</span> so we can write:
+\begin{align*}
+\widehat{\text{Err}}<em>{CV}(\hat{f}, \xi) = \dfrac{1}{N} \sum</em>{i = 1}^{N}L(y_i, \hat{f}^{-\kappa(i)}(x_i, \xi)),
+\end{align*}
+for the cross-validation error estimate. This error estimate can be used to select the parameter <span class="math notranslate nohighlight">\(\hat{\xi}\)</span> for which the above quantity is minimum. The model <span class="math notranslate nohighlight">\(\hat{f}(x, \hat{\xi})\)</span> is then chosen as the final model.</p>
+<p>In the following experiment we will try to estimate the true error <a class="reference external" href="#fn1"><sup id="fn1">1</sup></a> using the cross validation strategy in two variations, the first one is a simple 10-fold cross validation strategy while the second one consists on a <em>repeated</em> 10-fold cross validation.</p>
+<p><a class="reference external" href="#fn1"><sup id="fn1">1</sup></a> Computed on a held-out validation sample that is never seen in the training procedure.</p>
+</section>
+<section id="fold-cross-validation">
+<h3>10-fold Cross Validation<a class="headerlink" href="#fold-cross-validation" title="Permalink to this headline">#</a></h3>
+<p>In the following cell we run the 10-fold CV experiment for error estimation with a LGBM classifier. Because of the imbalanced nature of our synthetic dataset we will use the <strong>stratified</strong> version of the K-folder to actually define the 10-folds, see <a class="reference external" href="https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.StratifiedKFold.html">here</a> for more details about the internals of this scikit-learn cross validator object.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">LGBMClassifier</span><span class="p">(</span><span class="n">max_depth</span><span class="o">=</span> <span class="mi">3</span><span class="p">)</span>
+<span class="n">n_folds</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">col_names</span><span class="p">]</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;target&#39;</span><span class="p">]</span>
+<span class="c1"># Sample validation test set </span>
+<span class="n">X_dev</span><span class="p">,</span> <span class="n">X_valid</span><span class="p">,</span> <span class="n">y_dev</span><span class="p">,</span> <span class="n">y_valid</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">test_size</span> <span class="o">=</span> <span class="mf">0.3</span><span class="p">)</span>
+<span class="c1"># KFold cross validation</span>
+<span class="n">skf</span> <span class="o">=</span> <span class="n">StratifiedKFold</span><span class="p">(</span><span class="n">n_folds</span><span class="p">)</span>
+<span class="n">results_cv</span> <span class="o">=</span> <span class="n">run_cross_validation_from_split</span><span class="p">(</span><span class="n">model</span> <span class="o">=</span> <span class="n">model</span><span class="p">,</span> 
+                                                <span class="n">kfold</span> <span class="o">=</span> <span class="n">skf</span><span class="p">,</span>
+                                                <span class="n">X_dev</span> <span class="o">=</span> <span class="n">X_dev</span><span class="p">,</span>
+                                                <span class="n">y_dev</span> <span class="o">=</span> <span class="n">y_dev</span><span class="p">,</span> 
+                                                <span class="n">X_valid</span> <span class="o">=</span> <span class="n">X_valid</span><span class="p">,</span> 
+                                                <span class="n">y_valid</span> <span class="o">=</span> <span class="n">y_valid</span><span class="p">)</span>
+<span class="n">df_results_cv</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">results_cv</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>                                                
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="repeated-10-fold-cross-validation">
+<h3>Repeated 10-fold Cross Validation<a class="headerlink" href="#repeated-10-fold-cross-validation" title="Permalink to this headline">#</a></h3>
+<p>Repeated cross validation consists on performing the 10 (or k) fold cross validation several times with different randomization at each repetition. As we will see, this results in less variation of the error estimate when averaging over repetitions, see <a class="reference external" href="https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.RepeatedStratifiedKFold.html#sklearn.model_selection.RepeatedStratifiedKFold">here</a> for details about the scikit-learn implementation.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">LGBMClassifier</span><span class="p">(</span><span class="n">max_depth</span> <span class="o">=</span> <span class="mi">3</span><span class="p">)</span>
+<span class="n">rskf</span> <span class="o">=</span> <span class="n">RepeatedStratifiedKFold</span><span class="p">(</span><span class="n">n_splits</span> <span class="o">=</span> <span class="n">n_folds</span><span class="p">,</span> <span class="n">n_repeats</span> <span class="o">=</span> <span class="mi">10</span><span class="p">)</span>
+<span class="n">results_repeated_cv</span> <span class="o">=</span> <span class="n">run_cross_validation_from_split</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">kfold</span> <span class="o">=</span> <span class="n">rskf</span><span class="p">,</span> 
+                                                        <span class="n">X_dev</span> <span class="o">=</span> <span class="n">X_dev</span><span class="p">,</span> <span class="n">y_dev</span> <span class="o">=</span> <span class="n">y_dev</span><span class="p">,</span>
+                                                        <span class="n">X_valid</span> <span class="o">=</span> <span class="n">X_valid</span><span class="p">,</span> <span class="n">y_valid</span> <span class="o">=</span> <span class="n">y_valid</span><span class="p">)</span>
+<span class="n">df_results_repeated_cv</span>  <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">results_repeated_cv</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+<span class="n">df_results_repeated_cv</span><span class="p">[</span><span class="s1">&#39;rep&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_results_repeated_cv</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()[</span><span class="s1">&#39;index&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">((</span><span class="n">x</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="mi">10</span><span class="p">))</span><span class="o">.</span><span class="n">values</span>
+<span class="n">df_results_rep_summarized</span> <span class="o">=</span> <span class="n">df_results_repeated_cv</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;rep&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Finally we take a look at the cross validation results for the error estimate:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">errors</span> <span class="o">=</span> <span class="p">[</span><span class="n">df_results_cv</span><span class="p">[</span><span class="s1">&#39;valid&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>\
+         <span class="n">df_results_cv</span><span class="p">[</span><span class="s1">&#39;test&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>\
+         <span class="n">df_results_rep_summarized</span><span class="p">[</span><span class="s1">&#39;test&#39;</span><span class="p">]]</span>
+<span class="n">x_labels</span> <span class="o">=</span> <span class="p">[</span><span class="sa">r</span><span class="s1">&#39;$Err$&#39;</span><span class="p">,</span>\
+            <span class="sa">r</span><span class="s1">&#39;$Err_</span><span class="si">{CV10}</span><span class="s1">$&#39;</span><span class="p">,</span>\
+            <span class="sa">r</span><span class="s1">&#39;$Err_</span><span class="si">{RCV10}</span><span class="s1">$&#39;</span><span class="p">]</span>
+<span class="n">f</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">dpi</span> <span class="o">=</span> <span class="mi">120</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">errors</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">(</span><span class="n">x_labels</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;log loss&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Error estimation comparative&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/Model-Selection-1-Error-Estimation_18_0.png" src="../_images/Model-Selection-1-Error-Estimation_18_0.png" />
+</div>
+</div>
+<p>The above figure shows that both 10-fold cross validation and the repeated 10-fold cross validation are slightly biased. However, the repeated version is an error estimator with less variance.</p>
+<p>Let us now explore the impact of different imbalance ratios on the error estimation both by using the simple 10-fold CV and the repeated CV strategies. For that, we will use a gradient boosting ensemble of decision trees as the classification algorithm.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">n_samples</span> <span class="o">=</span> <span class="mi">10</span><span class="o">**</span><span class="mi">4</span>
+<span class="n">n_features</span> <span class="o">=</span> <span class="mi">6</span>
+<span class="n">n_informative</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="n">class_sep</span> <span class="o">=</span> <span class="mf">0.5</span>
+<span class="n">cv_results</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">imbalances</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">,</span> <span class="mf">5e-3</span><span class="p">,</span> <span class="mf">1e-3</span><span class="p">]</span>
+<span class="n">random_state</span> <span class="o">=</span> <span class="mi">42</span>
+<span class="k">for</span> <span class="n">imbalance</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">imbalances</span><span class="p">):</span>
+    <span class="n">cv_results</span><span class="p">[</span><span class="n">imbalance</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="c1"># Create dataset</span>
+    <span class="n">data</span><span class="p">,</span> <span class="n">column_names</span> <span class="o">=</span> <span class="n">create_imbalanced_binary_classification</span><span class="p">(</span><span class="n">n_samples</span> <span class="o">=</span> <span class="n">n_samples</span><span class="p">,</span> 
+                                        <span class="n">n_features</span> <span class="o">=</span> <span class="n">n_features</span><span class="p">,</span>
+                                        <span class="n">n_informative</span> <span class="o">=</span> <span class="n">n_informative</span><span class="p">,</span>
+                                        <span class="n">imbalance</span> <span class="o">=</span> <span class="n">imbalance</span><span class="p">,</span>
+                                        <span class="n">class_sep</span> <span class="o">=</span> <span class="n">class_sep</span><span class="p">)</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">column_names</span><span class="p">]</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;target&#39;</span><span class="p">]</span>
+    <span class="c1"># Sample validation test set </span>
+    <span class="n">X_dev</span><span class="p">,</span> <span class="n">X_valid</span><span class="p">,</span> <span class="n">y_dev</span><span class="p">,</span> <span class="n">y_valid</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">test_size</span> <span class="o">=</span> <span class="mf">0.3</span><span class="p">)</span>
+    <span class="c1"># 10-Fold CV experiment</span>
+    <span class="n">n_folds</span> <span class="o">=</span> <span class="mi">10</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">LGBMClassifier</span><span class="p">(</span><span class="n">max_depth</span><span class="o">=</span> <span class="mi">3</span><span class="p">)</span>
+    <span class="n">skf</span> <span class="o">=</span> <span class="n">StratifiedKFold</span><span class="p">(</span><span class="n">n_folds</span><span class="p">)</span>
+    <span class="n">cv_results</span><span class="p">[</span><span class="n">imbalance</span><span class="p">][</span><span class="s1">&#39;CV10&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">run_cross_validation_from_split</span><span class="p">(</span><span class="n">model</span> <span class="o">=</span> <span class="n">model</span><span class="p">,</span> 
+                                                                        <span class="n">kfold</span> <span class="o">=</span> <span class="n">skf</span><span class="p">,</span>
+                                                                        <span class="n">X_dev</span> <span class="o">=</span> <span class="n">X_dev</span><span class="p">,</span>
+                                                                        <span class="n">y_dev</span> <span class="o">=</span> <span class="n">y_dev</span><span class="p">,</span> 
+                                                                        <span class="n">X_valid</span> <span class="o">=</span> <span class="n">X_valid</span><span class="p">,</span> 
+                                                                        <span class="n">y_valid</span> <span class="o">=</span> <span class="n">y_valid</span><span class="p">))</span><span class="o">.</span><span class="n">T</span>
+    
+    <span class="c1"># Repeated CV experiment</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">LGBMClassifier</span><span class="p">(</span><span class="n">max_depth</span> <span class="o">=</span> <span class="mi">3</span><span class="p">)</span>
+    <span class="n">rskf</span> <span class="o">=</span> <span class="n">RepeatedStratifiedKFold</span><span class="p">(</span><span class="n">n_splits</span> <span class="o">=</span> <span class="n">n_folds</span><span class="p">,</span> <span class="n">n_repeats</span> <span class="o">=</span> <span class="mi">10</span><span class="p">)</span>
+    <span class="n">df_results_repeated_cv</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">run_cross_validation_from_split</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">kfold</span> <span class="o">=</span> <span class="n">rskf</span><span class="p">,</span> 
+                                                                         <span class="n">X_dev</span> <span class="o">=</span> <span class="n">X_dev</span><span class="p">,</span> <span class="n">y_dev</span> <span class="o">=</span> <span class="n">y_dev</span><span class="p">,</span>
+                                                                         <span class="n">X_valid</span> <span class="o">=</span> <span class="n">X_valid</span><span class="p">,</span> <span class="n">y_valid</span> <span class="o">=</span> <span class="n">y_valid</span><span class="p">))</span><span class="o">.</span><span class="n">T</span>
+    <span class="n">df_results_repeated_cv</span><span class="p">[</span><span class="s1">&#39;rep&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_results_repeated_cv</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()[</span><span class="s1">&#39;index&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">((</span><span class="n">x</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="mi">10</span><span class="p">))</span><span class="o">.</span><span class="n">values</span>
+    <span class="n">cv_results</span><span class="p">[</span><span class="n">imbalance</span><span class="p">][</span><span class="s1">&#39;RCV10&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_results_repeated_cv</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;rep&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>100%|██████████| 7/7 [04:21&lt;00:00, 37.37s/it]
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">f</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">dpi</span> <span class="o">=</span> <span class="mi">120</span><span class="p">,</span> <span class="n">figsize</span> <span class="o">=</span> <span class="p">(</span><span class="mi">12</span><span class="p">,</span><span class="mi">4</span><span class="p">))</span>
+<span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">cv_results</span><span class="p">[</span><span class="n">imbalance</span><span class="p">][</span><span class="s1">&#39;CV10&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">imbalance</span> <span class="ow">in</span> <span class="n">imbalances</span><span class="p">],</span> <span class="n">axis</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">ax</span> <span class="o">=</span> <span class="n">ax</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;AxesSubplot:&gt;
+</pre></div>
+</div>
+<img alt="../_images/Model-Selection-1-Error-Estimation_21_1.png" src="../_images/Model-Selection-1-Error-Estimation_21_1.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">f</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">dpi</span> <span class="o">=</span> <span class="mi">120</span><span class="p">,</span> <span class="n">figsize</span> <span class="o">=</span> <span class="p">(</span><span class="mi">12</span><span class="p">,</span><span class="mi">4</span><span class="p">))</span>
+<span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">cv_results</span><span class="p">[</span><span class="n">imbalance</span><span class="p">][</span><span class="s1">&#39;RCV10&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">imbalance</span> <span class="ow">in</span> <span class="n">imbalances</span><span class="p">],</span> <span class="n">axis</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">ax</span> <span class="o">=</span> <span class="n">ax</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;AxesSubplot:&gt;
+</pre></div>
+</div>
+<img alt="../_images/Model-Selection-1-Error-Estimation_22_1.png" src="../_images/Model-Selection-1-Error-Estimation_22_1.png" />
+</div>
+</div>
+</section>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            kernelName: "python3",
+            path: "./notebooks"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+              </div>
+              
+            </main>
+            <footer class="footer-article noprint">
+                
+    <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+</div>
+            </footer>
+        </div>
+    </div>
+    <div class="footer-content row">
+        <footer class="col footer"><p>
+  
+    By Experian LatAm DataLab<br/>
+  
+      &copy; Copyright 2022.<br/>
+</p>
+        </footer>
+    </div>
+    
+</div>
+
+
+      </div>
+    </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+
+
+  </body>
+</html>

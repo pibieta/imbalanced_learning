@@ -653,10 +653,10 @@ At this point we won’t pay too much attention on optimizing the model’s para
 <section id="model-comparison">
 <h2>Model comparison<a class="headerlink" href="#model-comparison" title="Permalink to this headline">#</a></h2>
 <p>In this section we will compare the performance (and other aspects) of different models under different class imbalance scenarios.
-We will start by analyzing the performance dependence on the class imbalance index which we define as being the minority class ratio or <em>Prevalence</em>. If we call <span class="math notranslate nohighlight">\(N_{P}\)</span> and <span class="math notranslate nohighlight">\(N_{N}\)</span> the number of positive and negative observations, the prevalance is given by:</p>
+We will start by analyzing the performance dependence on the class imbalance index which we define as being the minority class ratio or <em>prevalence</em>. If we call <span class="math notranslate nohighlight">\(n_1\)</span> and <span class="math notranslate nohighlight">\(n_0\)</span> the number of positive and negative observations, the prevalance is given by:</p>
 <div class="math notranslate nohighlight">
-\[\nu := \dfrac{N_{P}}{N_{P}+N_{N}}.\]</div>
-<p>The main parameter to be explored is <span class="math notranslate nohighlight">\(\nu\)</span>, going from an equal-class setup to a highly imbalanced scenario where there really few examples of the minority class.</p>
+\[\pi := \dfrac{n_1}{n_1+n_0}.\]</div>
+<p>The main parameter to be explored is <span class="math notranslate nohighlight">\(\pi\)</span>, going from an equal-class setup to a highly imbalanced scenario where there really few examples of the minority class.</p>
 <p>The first simple analysis is to be made upon the performance impact of the imbalance in classes for several algorithms. At this point we are interested in answering a simple practical question:</p>
 <p><strong>&gt; What is the best benchmark algorithm in the presence of class imbalance?</strong></p>
 <p>To answer this question we might be interested in looking at other aspects of the statistical learning process aside of the classification performance metrics, such as model complexity and fit time. However, we will keep the discussion focused on the effect of class imbalance on the performance metrics of several classsification algorithms for now.</p>
@@ -1169,7 +1169,9 @@ end
 </section>
 <section id="conclusions">
 <h2>Conclusions<a class="headerlink" href="#conclusions" title="Permalink to this headline">#</a></h2>
-<p>Both experiments 1 and 2 (synthetic dataset and census income dataset) suggest that a simple Logistic Regression with L1 or L2 regularization mantain a somewhat consistent performance even when the imbalance gets more extreme, as in the case of the synthetic dataset. Both logistic regressions in the last experiment (with spam e-mail data) are the worst performers most of the time, until the imbalance begins to get extreme (0.01). Again, logistic regression appears to have a consistent performance along the imbalance scenarios. Thus, we think it is safe to say that a good baseline model for imbalanced classification problems is a <strong>Logistic Regression</strong>. In some cases L1 or L2 regularization can perform better, and this can depend on the nature of the problem. However, an L1 regularization is advised if we additionally want to perform some feature selection along the modelling process.</p>
+<p>Both experiments 1 and 2 (synthetic dataset and census income dataset) suggest that a <strong>simple Logistic Regression with L1 or L2 regularization</strong> mantains a somewhat consistent performance even when the imbalance gets more extreme, as in the case of the synthetic dataset.</p>
+<p>Both logistic regressions in the last experiment (with spam e-mail data) are the worst performers most of the time, until the imbalance begins to get extreme (0.01). Again, <strong>logistic regression appears to have a consistent performance along the imbalance scenarios</strong>.</p>
+<p>Thus, we think it is safe to say that a good baseline model for imbalanced classification problems is a <strong>logistic regression</strong>. In some cases L1 or L2 regularization can perform better, and this can depend on the nature of the problem. However, an L1 regularization is advised if we additionally want to perform some feature selection along the modelling process.</p>
 </section>
 </section>
 

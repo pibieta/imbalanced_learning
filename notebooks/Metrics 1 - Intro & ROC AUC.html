@@ -583,8 +583,8 @@ title="Print to PDF"
 <p>Recall that the threshold is the number <span class="math notranslate nohighlight">\(\lambda\)</span> such that we set the model’s prediction to 1 if the score is greater than <span class="math notranslate nohighlight">\(\lambda\)</span>, and 0 otherwise. Mathematically, given a machine learning model <span class="math notranslate nohighlight">\(f\)</span> and a feature vector <span class="math notranslate nohighlight">\(x\)</span>, a binarized prediction can be built by comparing the model output (the <strong>score</strong>) to the threshold:</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\hat{y}(x) = \begin{cases}
-1 &amp; \mbox{if } \hat{f}(x) \geq \lambda \\
-0 &amp; \mbox{if } \hat{f}(x) &lt; \lambda
+1 &amp; \mbox{if } f(x) \geq \lambda \\
+0 &amp; \mbox{if } f(x) &lt; \lambda
 \end{cases}
 \end{split}\]</div>
 <p>With a fixed threshold, we can build confusion matrices and all metrics which derive from them: accuracy, precision, recall, F1, MCC, among others.</p>
@@ -630,6 +630,8 @@ title="Print to PDF"
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">confusion_matrix</span><span class="p">,</span> <span class="n">ConfusionMatrixDisplay</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pylab</span> <span class="k">as</span> <span class="nn">plt</span>
 
+<span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;figure.dpi&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">120</span>
+
 <span class="c1"># assume we have a series of observed and predicted labels</span>
 <span class="n">y_real</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>
 <span class="n">y_pred</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>
@@ -659,13 +661,7 @@ title="Print to PDF"
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.linear_model</span> <span class="kn">import</span> <span class="n">LogisticRegression</span>
 
-<span class="n">model</span> <span class="o">=</span> <span class="n">LogisticRegression</span><span class="p">()</span>
-<span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>LogisticRegression()
+<span class="n">model</span> <span class="o">=</span> <span class="n">LogisticRegression</span><span class="p">()</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -987,10 +983,13 @@ c_B(x) &amp; \mbox{with probability $p$}
 \end{cases}\end{split}\]</div>
 <p>attains a FPR of <span class="math notranslate nohighlight">\(\mathrm{FPR_*}\)</span> and TPR of <span class="math notranslate nohighlight">\(\mathrm{TPR_*}\)</span>.</p>
 <p><em>Proof</em>: we do the calculation for FPR; that of TPR follows analogously. By definition, the FPR of <span class="math notranslate nohighlight">\(c_*\)</span> is</p>
-<p>\begin{align}
-\mathbb P (c_<em>(x) = 1 | y = 0) &amp;= p, \mathbb P (c_B(x)=1|y=0) + (1-p) ,\mathbb P(c_A(x)=1|y=0) \
-&amp;= p ,\mathrm{FPR_B} + (1-p) ,\mathrm{FPR_A} = \mathrm{FPR}_</em>
-\end{align}</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align}
+\mathbb P (c_*(x) = 1 | y = 0) &amp;= p\, \mathbb P (c_B(x)=1|y=0) + (1-p) \,\mathbb P(c_A(x)=1|y=0) \\
+&amp;= p \,\mathrm{FPR_B} + (1-p) \,\mathrm{FPR_A} = \mathrm{FPR}_*
+\end{align}
+\end{split}\]</div>
 <p>as claimed.<span class="math notranslate nohighlight">\(\Box\)</span></p>
 <p>The importance of this result is that it gives an <strong>optimal boundary</strong> for a set of classifiers. Consider the situation below, where a new classifier <span class="math notranslate nohighlight">\(C\)</span> (orange) lies in the region below the segment AB. <span class="math notranslate nohighlight">\(C\)</span> is, <em>in any sense</em>, worse then the projection <span class="math notranslate nohighlight">\(C'\)</span> (black) of C onto segment AB, since it has a higher TPR for the “cost” of the same FPR.</p>
 <p><img alt="hull2" src="../_images/hull2.png" /></p>
@@ -1036,7 +1035,7 @@ c_B(x) &amp; \mbox{with probability $p$}
 <span class="n">hull_auc_test</span><span class="p">,</span> <span class="n">fpr_hull_test</span><span class="p">,</span> <span class="n">tpr_hull_test</span> <span class="o">=</span> <span class="n">hull_roc_auc</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_test_pred</span><span class="p">)</span>
 
 <span class="c1">## Plot</span>
-<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">5</span><span class="p">),</span> <span class="n">ncols</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="mi">4</span><span class="p">),</span> <span class="n">ncols</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 
 <span class="c1"># original ROC</span>
 <span class="n">original_auc_train</span> <span class="o">=</span> <span class="n">roc_auc_score</span><span class="p">(</span><span class="n">y_train</span><span class="p">,</span> <span class="n">y_train_pred</span><span class="p">)</span>
@@ -1054,6 +1053,8 @@ c_B(x) &amp; \mbox{with probability $p$}
 <span class="c1"># legends/labels</span>
 <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">();</span> <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
 <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Train&quot;</span><span class="p">);</span> <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Test&quot;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>

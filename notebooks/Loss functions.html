@@ -602,7 +602,12 @@ title="Print to PDF"
 <h2>Loss functions: executive summary<a class="headerlink" href="#loss-functions-executive-summary" title="Permalink to this headline">#</a></h2>
 <p>We start with the conclusions for the lazy reader:</p>
 <ul class="simple">
-<li><p>Simply using <strong>log-loss with weights</strong> is usually more than enough. This can be achieved via <code class="docutils literal notranslate"><span class="pre">class_weight</span></code> parameters in many standard algorithms, and worst-case scenario via <code class="docutils literal notranslate"><span class="pre">sample_weight</span></code> in the <code class="docutils literal notranslate"><span class="pre">.fit</span></code> method of all scikit-learn models.</p></li>
+<li><p>Simply using the standard <strong>log-loss</strong>, and sometimes using <strong>log-loss with weights</strong>, is usually more than enough.</p>
+<ul>
+<li><p>This can be achieved via <code class="docutils literal notranslate"><span class="pre">class_weight</span></code> parameters in many standard algorithms, and worst-case scenario via <code class="docutils literal notranslate"><span class="pre">sample_weight</span></code> in the <code class="docutils literal notranslate"><span class="pre">.fit</span></code> method of all scikit-learn models.</p></li>
+<li><p>A downside (which can be later dealt with) is that adding weights tempers with <strong>model calibration</strong> - see more about it in the Calibration section.</p></li>
+</ul>
+</li>
 <li><p>Given the off-the-shelf LightGBM and XGBoost implementations, we recommend trying to use <strong>focal loss</strong> as an alternative loss function in the imbalanced case</p></li>
 </ul>
 </section>
@@ -700,6 +705,8 @@ title="Print to PDF"
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">import</span> <span class="nn">matplotlib.cm</span> <span class="k">as</span> <span class="nn">cm</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;figure.dpi&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">120</span>
 </pre></div>
 </div>
 </div>
@@ -873,7 +880,13 @@ AP:  0.213
 <h2>Weighting<a class="headerlink" href="#weighting" title="Permalink to this headline">#</a></h2>
 <p>We can easily add weights to different training instances. Effectively, this means considering a weight vector <span class="math notranslate nohighlight">\(w_i\)</span> (one entry for each training sample) and the weighted loss</p>
 <div class="math notranslate nohighlight">
-\[L_\mathrm{weighted} = \frac{\sum_{i=1}^N w_i L(y_i|q_i)}{\sum_{i=1}^N w_i}\]</div>
+\[L_\mathrm{weighted} = \sum_{i=1}^N w_i L(y_i|q_i)\]</div>
+<blockquote>
+<div><p>Assume we set <span class="math notranslate nohighlight">\(w_i=1\)</span> for all points in the majority class, and <span class="math notranslate nohighlight">\(w_i &gt; 1\)</span> for points in the minority, positive class. Then, this procedure is mathematically equivalent to an <em>oversampling</em> strategy where each point in the minority class gets copied <span class="math notranslate nohighlight">\(w_i\)</span> times.</p>
+</div></blockquote>
+<blockquote>
+<div><p>Because of this, issues pertaining to <em>model calibration</em>, ie. faithful prediction of probabilities by the classifier, will be affected. See section on Calibration.</p>
+</div></blockquote>
 <p>In scikit-learn, there are two ways of doing this. We illustrate them both below:</p>
 <p><strong>1)  Direcly pass weights to</strong> <code class="docutils literal notranslate"><span class="pre">.fit</span></code></p>
 <p>Let us build a weight vector which will <strong>give more weight to the minority class</strong>. Any choice would work, but we will specifically pick this one: let <span class="math notranslate nohighlight">\(f_1, f_0\)</span> denote the relative frequency of classes 1 and 2 (here, <span class="math notranslate nohighlight">\(f_1 \approx 0.01\)</span> and <span class="math notranslate nohighlight">\(f_0 \approx 0.99\)</span>; the approximation comes from the fact that <code class="docutils literal notranslate"><span class="pre">y_train</span></code> does not exactly keep the proportions perfect when stratified from <code class="docutils literal notranslate"><span class="pre">y</span></code>)</p>
@@ -950,7 +963,7 @@ AP:  0.118
 </div>
 <p>We see that adding weights improved the performance of the random forest and logistic regression classifiers in terms of AUC; it didn’t do much for gradient boosting (and in fact we had some loss average-precision wise).</p>
 <p><strong>2) Class weights on model instantiation</strong></p>
-<p>Some scikit-learn classifiers have a <code class="docutils literal notranslate"><span class="pre">class_weight</span></code> attribute. What it does is that it receives a dictionary `{0: w_0, 1: w_1}$ for weights to give to elements of each class.</p>
+<p>Some scikit-learn classifiers have a <code class="docutils literal notranslate"><span class="pre">class_weight</span></code> attribute. What it does is that it receives a dictionary <code class="docutils literal notranslate"><span class="pre">{0:</span> <span class="pre">w_0,</span> <span class="pre">1:</span> <span class="pre">w_1}</span></code> for weights to give to elements of each class.</p>
 <p>Instead of passing this dictionary by hand, we can also use <code class="docutils literal notranslate"><span class="pre">class_weight='balanced'</span></code> to automatically give more weights to the minority class.</p>
 <p>In most classifiers, this is equivalent to the weight rule we used above: you will see we get exactly the same results for both <code class="docutils literal notranslate"><span class="pre">RandomForestClassifier</span></code> and <code class="docutils literal notranslate"><span class="pre">LogisticRegression</span></code>:</p>
 <div class="cell docutils container">
@@ -1063,10 +1076,11 @@ AP:  0.118
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/Loss functions_64_0.png" src="../_images/Loss functions_64_0.png" />
+<img alt="../_images/Loss functions_66_0.png" src="../_images/Loss functions_66_0.png" />
 </div>
 </div>
-<p>Notice that the raw model heavily skews the threshold range: almost 80% of the curve lies within thresholds 0 and 0.1. The model with weights is much better at spacing the thresholds at uniform intervals.</p>
+<p>Notice that the raw model heavily skews the threshold range: almost 80% of the curve lies within thresholds 0 and 0.1.</p>
+<p>Is this a bad thing? Again, it depends. We affected model calibration in exchange for 1 point in AUC.</p>
 </section>
 </section>
 <section id="focal-loss">
@@ -1092,7 +1106,7 @@ AP:  0.118
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/Loss functions_70_0.png" src="../_images/Loss functions_70_0.png" />
+<img alt="../_images/Loss functions_72_0.png" src="../_images/Loss functions_72_0.png" />
 </div>
 </div>
 <ul class="simple">
@@ -1101,7 +1115,7 @@ AP:  0.118
 </ul>
 <section id="lightgbm-implementation-of-focal-loss">
 <h3>LightGBM implementation of focal loss<a class="headerlink" href="#lightgbm-implementation-of-focal-loss" title="Permalink to this headline">#</a></h3>
-<p>We have implemented in the <code class="docutils literal notranslate"><span class="pre">focal_lgbm.py</span></code> file a version of the standard LightGBM classifier which uses focal loss.
+<p>We have <a class="reference external" href="https://github.com/pibieta/imbalanced_learning/blob/main/notebooks/focal_lgbm.py">implemented</a> a version of the standard LightGBM classifier which uses focal loss.
 The rationale behind doing this in LightGBM is that it is a library which allows implementation of user-defined losses, as long as we also have the Jacobian/Hessian of that loss.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">

@@ -497,7 +497,7 @@ It is a measure of the difference between class 1 and class 0, and is created fr
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-
+<span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;figure.dpi&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">120</span>
 <span class="kn">from</span> <span class="nn">sklearn.datasets</span> <span class="kn">import</span> <span class="n">make_classification</span>
 <span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">train_test_split</span>
 <span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">roc_curve</span>
@@ -658,8 +658,9 @@ It is a measure of the difference between class 1 and class 0, and is created fr
 <p>We define <strong>Youden’s J statistic</strong> as</p>
 <div class="math notranslate nohighlight">
 \[\boxed{J(\lambda) := y(\lambda) - x(\lambda) = \mathrm{TPR}(\lambda) - \mathrm{FPR}(\lambda)}\]</div>
-<p>so that
-$<span class="math notranslate nohighlight">\(\mathrm{KS} = \sup_{\lambda \in [0,1]} J(\lambda)\)</span>$</p>
+<p>so that</p>
+<div class="math notranslate nohighlight">
+\[\mathrm{KS} = \sup_{\lambda \in [0,1]} J(\lambda)\]</div>
 <p>Note: one will usually see the definition of <span class="math notranslate nohighlight">\(J\)</span> as being <span class="math notranslate nohighlight">\(J = \mathrm{sensitivity + specificity} -1\)</span>, where sensitivity is another name for TPR and specificity is <span class="math notranslate nohighlight">\(1 - \mathrm{FPR}\)</span>.</p>
 <p>There is an intricate visual connection between the ROC curve and the KS metric. <strong>Notice how <span class="math notranslate nohighlight">\(y-x\)</span> is simply the vertical distance, in the ROC plane</strong>, between the ROC curve and the 45 degree diagonal, as we exemplify below:</p>
 <div class="cell docutils container">
@@ -946,7 +947,7 @@ AUC single = 0.69
 </div>
 <div class="cell_output docutils container">
 <script type="application/vnd.jupyter.widget-view+json">
-{"model_id": "297239a1853645e3b2430555ba48088d", "version_major": 2, "version_minor": 0}
+{"model_id": "883df6a414804230a36a85cef9d53df5", "version_major": 2, "version_minor": 0}
 </script><img alt="../_images/Metrics 3 - KS score_57_1.png" src="../_images/Metrics 3 - KS score_57_1.png" />
 </div>
 </div>
@@ -967,7 +968,7 @@ Let’s see if adding class weights improves anything.</p>
 </div>
 <div class="cell_output docutils container">
 <script type="application/vnd.jupyter.widget-view+json">
-{"model_id": "b31299689b644e94aee170b73bd055a5", "version_major": 2, "version_minor": 0}
+{"model_id": "e865778a7a984baaa20564af1e9418a9", "version_major": 2, "version_minor": 0}
 </script><img alt="../_images/Metrics 3 - KS score_60_1.png" src="../_images/Metrics 3 - KS score_60_1.png" />
 </div>
 </div>
