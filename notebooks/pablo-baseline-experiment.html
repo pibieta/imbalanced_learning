@@ -506,20 +506,21 @@ At this point we won’t pay too much attention on optimizing the model’s para
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># basics</span>
 <span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">product</span>
+
 <span class="kn">import</span> <span class="nn">joblib</span>
+<span class="c1"># plotting</span>
+<span class="kn">import</span> <span class="nn">matplotlib</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="nn">sns</span>
-
-<span class="kn">from</span> <span class="nn">tqdm.auto</span> <span class="kn">import</span> <span class="n">tqdm</span>
-<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">product</span>
-
-<span class="c1"># plotting</span>
-<span class="kn">import</span> <span class="nn">matplotlib</span>
 <span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
-
 <span class="c1"># sklearn</span>
 <span class="kn">from</span> <span class="nn">sklearn.datasets</span> <span class="kn">import</span> <span class="n">make_classification</span>
+<span class="kn">from</span> <span class="nn">tqdm.auto</span> <span class="kn">import</span> <span class="n">tqdm</span>
+
+<span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s1">&#39;ignore&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -603,7 +604,7 @@ At this point we won’t pay too much attention on optimizing the model’s para
 <section id="real-life-dataset-i-census-income">
 <h3>Real Life Dataset I : <strong>Census Income</strong><a class="headerlink" href="#real-life-dataset-i-census-income" title="Permalink to this headline">#</a></h3>
 <p>Additionally, we collected two <em>real-life</em> datasets. The first one is related to a classification task that asks for predicting whether a subject’s income exceeds 50K USD/yr based on census data. Also known as “Census Income” dataset that can be found <a class="reference external" href="https://archive-beta.ics.uci.edu/ml/datasets/adult">here</a>.</p>
-<p>The target is defined as whether the income is greater than 50k USD. The covariates are (mostly) categorical features related to census data, so we will have to apply some feature processing before we can actually use the data. Since our discussion is centered on the binary classification problem as a whole we will not spend too much time trying to choose the best way to encode these variables. Rather, we will just apply a <strong>one hot encoding</strong> technique to transform the categorical features into mumerical ones. To do that, we use scikit-learn’s <code class="docutils literal notranslate"><span class="pre">OneHotEncoder</span></code> object <a class="reference external" href="https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.OneHotEncoder.html">see here</a>. Let us then load the dataset and perform the encoding.</p>
+<p>The target is defined as whether the income is greater than 50k USD. The covariates are (mostly) categorical features related to census data, so we will have to apply some feature processing before we can actually use the data. Since our discussion is centered on the binary classification problem as a whole we will not spend too much time trying to choose the best way to encode these variables. Rather, we will just apply a <strong>one hot encoding</strong> technique to transform the categorical features into mumerical ones. To do that, we use scikit-learn’s <code class="docutils literal notranslate"><span class="pre">OneHotEncoder</span></code> object (<a class="reference external" href="https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.OneHotEncoder.html">see here</a>). Let us then load the dataset and perform the encoding.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Census-income dataset</span>
@@ -639,6 +640,23 @@ At this point we won’t pay too much attention on optimizing the model’s para
 <p>The second dataset is related to a classification task that asks for predicting if an e-mail is spam or not, based on a very simple text encoding that counts the frequency of appearance of certain words in the e-mail text. The dataset can be found <a class="reference external" href="https://archive-beta.ics.uci.edu/ml/datasets/spambase">here</a>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">len</span><span class="p">(</span><span class="n">spam_column_names</span> <span class="o">+</span> <span class="p">[</span><span class="s1">&#39;target&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
+<span class="ne">NameError</span><span class="g g-Whitespace">                                 </span>Traceback (most recent call last)
+<span class="nn">/Users/c85538a/datalab/imbalanced_learning/notebooks/pablo-baseline-experiment.ipynb Cell 11</span> in <span class="ni">&lt;cell line: 1&gt;</span><span class="nt">()</span>
+<span class="o">----&gt;</span> <span class="o">&lt;</span><span class="n">a</span> <span class="n">href</span><span class="o">=</span><span class="s1">&#39;vscode-notebook-cell:/Users/c85538a/datalab/imbalanced_learning/notebooks/pablo-baseline-experiment.ipynb#X13sZmlsZQ%3D%3D?line=0&#39;</span><span class="o">&gt;</span><span class="mi">1</span><span class="o">&lt;/</span><span class="n">a</span><span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">spam_column_names</span> <span class="o">+</span> <span class="p">[</span><span class="s1">&#39;target&#39;</span><span class="p">])</span>
+
+<span class="ne">NameError</span>: name &#39;spam_column_names&#39; is not defined
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">spam_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;../data/spambase.data&#39;</span><span class="p">,</span> <span class="n">header</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span>
 <span class="c1"># Load column names:</span>
 <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;../data/spam_col_names.z&#39;</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
@@ -670,7 +688,7 @@ We will start by analyzing the performance dependence on the class imbalance ind
 <span class="kn">from</span> <span class="nn">sklearn.ensemble</span> <span class="kn">import</span> <span class="n">RandomForestClassifier</span><span class="p">,</span> <span class="n">HistGradientBoostingClassifier</span>
 
 <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;../src/&#39;</span><span class="p">)</span>
-<span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">compute_metrics_bootstrap</span>
+<span class="kn">from</span> <span class="nn">utils_p</span> <span class="kn">import</span> <span class="n">compute_metrics_bootstrap</span>
 </pre></div>
 </div>
 </div>
@@ -756,12 +774,8 @@ We will start by analyzing the performance dependence on the class imbalance ind
 </div>
 <div class="cell_output docutils container">
 <script type="application/vnd.jupyter.widget-view+json">
-{"model_id": "1808653b1d71448e83166e318457fa21", "version_major": 2, "version_minor": 0}
-</script><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/Users/c85538a/anaconda3/envs/ibc/lib/python3.9/site-packages/sklearn/linear_model/_sag.py:350: ConvergenceWarning: The max_iter was reached which means the coef_ did not converge
-  warnings.warn(
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Experiment ended!
+{"model_id": "08cd7e851dce48f59c026e00effb59df", "version_major": 2, "version_minor": 0}
+</script><div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Experiment ended!
 </pre></div>
 </div>
 </div>
@@ -828,14 +842,14 @@ We will start by analyzing the performance dependence on the class imbalance ind
 <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span> <span class="o">=</span> <span class="s1">&#39;best&#39;</span><span class="p">,</span> <span class="n">frameon</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">axis</span> <span class="o">=</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.4</span><span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">metric_4_display</span><span class="o">.</span><span class="n">upper</span><span class="p">())</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Census Income dataset&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Synthetic dataset&#39;</span><span class="p">)</span>
 <span class="n">clean_ax</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
 <span class="n">f</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/pablo-baseline-experiment_16_0.png" src="../_images/pablo-baseline-experiment_16_0.png" />
+<img alt="../_images/pablo-baseline-experiment_17_0.png" src="../_images/pablo-baseline-experiment_17_0.png" />
 </div>
 </div>
 <p>Before we go to the next experiment, let us discuss the above results a bit. One interesting conclusion that can be drawn from the above figure is that both versions of the <strong>Logistic Regression</strong> algorithm are the “most stable” ones as the imbalance gets harder. Clearly the more complex models are better at solving the classification problem for the no-imbalance scenario but this advantage gets smaller as the imbalance grows (to the right of the figure). The error regions represent one standard deviation and were computed using the bootstrap technique.</p>
@@ -934,86 +948,8 @@ We will start by analyzing the performance dependence on the class imbalance ind
 </div>
 <div class="cell_output docutils container">
 <script type="application/vnd.jupyter.widget-view+json">
-{"model_id": "e459cf36e59940aaa16eac13e93d4954", "version_major": 2, "version_minor": 0}
-</script><div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Minority class proportion: 0.2
-	Log Regression L2 ...
-	Log Regression L1 ...
-</pre></div>
-</div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/Users/c85538a/anaconda3/envs/ibc/lib/python3.9/site-packages/sklearn/linear_model/_sag.py:350: ConvergenceWarning: The max_iter was reached which means the coef_ did not converge
-  warnings.warn(
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>	Random Forest ...
-	Random Forest w/ class weight...
-	Gradient Boosting ...
-	Gradient Boosting w/ fixed max depth...
-Minority class proportion: 0.1
-	Log Regression L2 ...
-	Log Regression L1 ...
-</pre></div>
-</div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/Users/c85538a/anaconda3/envs/ibc/lib/python3.9/site-packages/sklearn/linear_model/_sag.py:350: ConvergenceWarning: The max_iter was reached which means the coef_ did not converge
-  warnings.warn(
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>	Random Forest ...
-	Random Forest w/ class weight...
-	Gradient Boosting ...
-	Gradient Boosting w/ fixed max depth...
-Minority class proportion: 0.05
-	Log Regression L2 ...
-	Log Regression L1 ...
-</pre></div>
-</div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/Users/c85538a/anaconda3/envs/ibc/lib/python3.9/site-packages/sklearn/linear_model/_sag.py:350: ConvergenceWarning: The max_iter was reached which means the coef_ did not converge
-  warnings.warn(
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>	Random Forest ...
-	Random Forest w/ class weight...
-	Gradient Boosting ...
-	Gradient Boosting w/ fixed max depth...
-Minority class proportion: 0.01
-	Log Regression L2 ...
-	Log Regression L1 ...
-</pre></div>
-</div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/Users/c85538a/anaconda3/envs/ibc/lib/python3.9/site-packages/sklearn/linear_model/_sag.py:350: ConvergenceWarning: The max_iter was reached which means the coef_ did not converge
-  warnings.warn(
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>	Random Forest ...
-	Random Forest w/ class weight...
-	Gradient Boosting ...
-	Gradient Boosting w/ fixed max depth...
-Minority class proportion: 0.005
-	Log Regression L2 ...
-	Log Regression L1 ...
-</pre></div>
-</div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/Users/c85538a/anaconda3/envs/ibc/lib/python3.9/site-packages/sklearn/linear_model/_sag.py:350: ConvergenceWarning: The max_iter was reached which means the coef_ did not converge
-  warnings.warn(
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>	Random Forest ...
-	Random Forest w/ class weight...
-	Gradient Boosting ...
-	Gradient Boosting w/ fixed max depth...
-Minority class proportion: 0.002
-	Log Regression L2 ...
-	Log Regression L1 ...
-</pre></div>
-</div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/Users/c85538a/anaconda3/envs/ibc/lib/python3.9/site-packages/sklearn/linear_model/_sag.py:350: ConvergenceWarning: The max_iter was reached which means the coef_ did not converge
-  warnings.warn(
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>	Random Forest ...
-	Random Forest w/ class weight...
-	Gradient Boosting ...
-	Gradient Boosting w/ fixed max depth...
-end
+{"model_id": "6e991648938b4fcda42dec646d4aac14", "version_major": 2, "version_minor": 0}
+</script><div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Experiment ended!
 </pre></div>
 </div>
 </div>
@@ -1040,7 +976,7 @@ end
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/pablo-baseline-experiment_21_0.png" src="../_images/pablo-baseline-experiment_21_0.png" />
+<img alt="../_images/pablo-baseline-experiment_22_0.png" src="../_images/pablo-baseline-experiment_22_0.png" />
 </div>
 </div>
 <p>The above figure suggests, once again, that both versions of the Logistic Regression are more stable as the class imbalance gets stronger. Morevoer, the L1 regularized logistic regression appears to perform better than its L2 counterpart in regions where imbalance gets more extreme.</p>
@@ -1104,38 +1040,8 @@ end
 </div>
 <div class="cell_output docutils container">
 <script type="application/vnd.jupyter.widget-view+json">
-{"model_id": "7114d00635e3478e9b45fbc143bec02d", "version_major": 2, "version_minor": 0}
-</script><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/var/folders/b5/2y0s6nqs0lbf7n8b47ll_3j40000gs/T/ipykernel_41063/2121354437.py:8: FutureWarning: Passing a set as an indexer is deprecated and will raise in a future version. Use a list instead.
-  X, y = undersample(spam_df[spam_feature_names], spam_df[&#39;target&#39;], d = imbalance)
-/Users/c85538a/anaconda3/envs/ibc/lib/python3.9/site-packages/sklearn/linear_model/_sag.py:350: ConvergenceWarning: The max_iter was reached which means the coef_ did not converge
-  warnings.warn(
-/var/folders/b5/2y0s6nqs0lbf7n8b47ll_3j40000gs/T/ipykernel_41063/2121354437.py:8: FutureWarning: Passing a set as an indexer is deprecated and will raise in a future version. Use a list instead.
-  X, y = undersample(spam_df[spam_feature_names], spam_df[&#39;target&#39;], d = imbalance)
-/Users/c85538a/anaconda3/envs/ibc/lib/python3.9/site-packages/sklearn/linear_model/_sag.py:350: ConvergenceWarning: The max_iter was reached which means the coef_ did not converge
-  warnings.warn(
-/var/folders/b5/2y0s6nqs0lbf7n8b47ll_3j40000gs/T/ipykernel_41063/2121354437.py:8: FutureWarning: Passing a set as an indexer is deprecated and will raise in a future version. Use a list instead.
-  X, y = undersample(spam_df[spam_feature_names], spam_df[&#39;target&#39;], d = imbalance)
-/Users/c85538a/anaconda3/envs/ibc/lib/python3.9/site-packages/sklearn/linear_model/_sag.py:350: ConvergenceWarning: The max_iter was reached which means the coef_ did not converge
-  warnings.warn(
-/var/folders/b5/2y0s6nqs0lbf7n8b47ll_3j40000gs/T/ipykernel_41063/2121354437.py:8: FutureWarning: Passing a set as an indexer is deprecated and will raise in a future version. Use a list instead.
-  X, y = undersample(spam_df[spam_feature_names], spam_df[&#39;target&#39;], d = imbalance)
-/Users/c85538a/anaconda3/envs/ibc/lib/python3.9/site-packages/sklearn/linear_model/_sag.py:350: ConvergenceWarning: The max_iter was reached which means the coef_ did not converge
-  warnings.warn(
-/var/folders/b5/2y0s6nqs0lbf7n8b47ll_3j40000gs/T/ipykernel_41063/2121354437.py:8: FutureWarning: Passing a set as an indexer is deprecated and will raise in a future version. Use a list instead.
-  X, y = undersample(spam_df[spam_feature_names], spam_df[&#39;target&#39;], d = imbalance)
-/Users/c85538a/anaconda3/envs/ibc/lib/python3.9/site-packages/sklearn/linear_model/_sag.py:350: ConvergenceWarning: The max_iter was reached which means the coef_ did not converge
-  warnings.warn(
-/var/folders/b5/2y0s6nqs0lbf7n8b47ll_3j40000gs/T/ipykernel_41063/2121354437.py:8: FutureWarning: Passing a set as an indexer is deprecated and will raise in a future version. Use a list instead.
-  X, y = undersample(spam_df[spam_feature_names], spam_df[&#39;target&#39;], d = imbalance)
-/Users/c85538a/anaconda3/envs/ibc/lib/python3.9/site-packages/sklearn/linear_model/_sag.py:350: ConvergenceWarning: The max_iter was reached which means the coef_ did not converge
-  warnings.warn(
-/var/folders/b5/2y0s6nqs0lbf7n8b47ll_3j40000gs/T/ipykernel_41063/2121354437.py:8: FutureWarning: Passing a set as an indexer is deprecated and will raise in a future version. Use a list instead.
-  X, y = undersample(spam_df[spam_feature_names], spam_df[&#39;target&#39;], d = imbalance)
-/Users/c85538a/anaconda3/envs/ibc/lib/python3.9/site-packages/sklearn/linear_model/_sag.py:350: ConvergenceWarning: The max_iter was reached which means the coef_ did not converge
-  warnings.warn(
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Experiment ended!
+{"model_id": "59c4ca9afead44ac925ab1e3ce3e65e7", "version_major": 2, "version_minor": 0}
+</script><div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Experiment ended!
 </pre></div>
 </div>
 </div>
@@ -1162,7 +1068,7 @@ end
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/pablo-baseline-experiment_25_0.png" src="../_images/pablo-baseline-experiment_25_0.png" />
+<img alt="../_images/pablo-baseline-experiment_26_0.png" src="../_images/pablo-baseline-experiment_26_0.png" />
 </div>
 </div>
 </section>
